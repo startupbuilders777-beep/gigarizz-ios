@@ -9,9 +9,9 @@ struct BioStrengthMeter: View {
 
     var body: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 // Header
-                HStack(spacing: DesignSystem.Spacing.s) {
+                HStack(spacing: DesignSystem.Spacing.small) {
                     Image(systemName: "text.quote")
                         .font(.system(size: 24))
                         .foregroundStyle(DesignSystem.Colors.hinge)

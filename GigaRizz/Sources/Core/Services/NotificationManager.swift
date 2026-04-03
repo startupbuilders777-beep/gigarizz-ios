@@ -29,7 +29,7 @@ final class NotificationManager: ObservableObject {
             if granted {
                 registerNotificationCategories()
                 await scheduleDefaultReminders()
-                PostHogManager.shared.track("notifications_authorized")
+                PostHogManager.shared.trackEvent("notifications_authorized")
             }
             return granted
         } catch { print("Notification authorization error: \(error)"); return false }

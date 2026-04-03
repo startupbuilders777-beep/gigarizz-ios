@@ -17,7 +17,7 @@ struct RizzTipCard: View {
                     .fill(DesignSystem.Colors.flameOrange)
                     .frame(width: 4)
 
-                VStack(spacing: DesignSystem.Spacing.s) {
+                VStack(spacing: DesignSystem.Spacing.small) {
                     // Header with category
                     HStack(spacing: DesignSystem.Spacing.xs) {
                         categoryBadge
@@ -48,7 +48,7 @@ struct RizzTipCard: View {
                     }
 
                     // Actions
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         GRButton(
                             title: tip.actionTitle,
                             icon: actionIcon,
@@ -68,14 +68,14 @@ struct RizzTipCard: View {
                                     .font(DesignSystem.Typography.smallButton)
                             }
                             .foregroundStyle(DesignSystem.Colors.textSecondary)
-                            .padding(.horizontal, DesignSystem.Spacing.s)
+                            .padding(.horizontal, DesignSystem.Spacing.small)
                             .padding(.vertical, DesignSystem.Spacing.xs)
                             .background(DesignSystem.Colors.surfaceSecondary)
                             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.chip))
                         }
                     }
                 }
-                .padding(DesignSystem.Spacing.m)
+                .padding(DesignSystem.Spacing.medium)
             }
         }
     }
@@ -132,7 +132,7 @@ struct TipCategoryIcons: View {
     let categories: [DailyTip.TipCategory]
 
     var body: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             ForEach(categories, id: \.self) { category in
                 VStack(spacing: DesignSystem.Spacing.micro) {
                     Image(systemName: iconFor(category))

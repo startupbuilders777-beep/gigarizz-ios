@@ -15,7 +15,7 @@ struct GenerationResultView: View {
                 DesignSystem.Colors.background
                     .ignoresSafeArea()
 
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     // MARK: - Header
                     VStack(spacing: DesignSystem.Spacing.xs) {
                         Text("Your Photos Are Ready! 🔥")
@@ -26,7 +26,7 @@ struct GenerationResultView: View {
                             .font(DesignSystem.Typography.subheadline)
                             .foregroundStyle(DesignSystem.Colors.textSecondary)
                     }
-                    .padding(.top, DesignSystem.Spacing.m)
+                    .padding(.top, DesignSystem.Spacing.medium)
 
                     // MARK: - Photo Carousel
                     TabView(selection: $selectedIndex) {
@@ -55,7 +55,7 @@ struct GenerationResultView: View {
                     Spacer()
 
                     // MARK: - Action Buttons
-                    VStack(spacing: DesignSystem.Spacing.s) {
+                    VStack(spacing: DesignSystem.Spacing.small) {
                         GRButton(
                             title: "Save All to Photos",
                             icon: "square.and.arrow.down"
@@ -63,7 +63,7 @@ struct GenerationResultView: View {
                             saveAllPhotos()
                         }
 
-                        HStack(spacing: DesignSystem.Spacing.s) {
+                        HStack(spacing: DesignSystem.Spacing.small) {
                             GRButton(title: "Share", icon: "square.and.arrow.up", style: .outline) {
                                 DesignSystem.Haptics.light()
                             }
@@ -73,8 +73,8 @@ struct GenerationResultView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
-                    .padding(.bottom, DesignSystem.Spacing.l)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .padding(.bottom, DesignSystem.Spacing.large)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -99,7 +99,7 @@ struct GenerationResultView: View {
     // MARK: - Photo Card
 
     private func generatedPhotoCard(photo: GeneratedPhoto, index: Int) -> some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             // Placeholder — in production this would load from photo.imageURL
             ZStack {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
@@ -111,7 +111,7 @@ struct GenerationResultView: View {
                         )
                     )
 
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     Image(systemName: "person.fill")
                         .font(.system(size: 80, weight: .ultraLight))
                         .foregroundStyle(.white.opacity(0.5))
@@ -127,7 +127,7 @@ struct GenerationResultView: View {
             }
             .frame(height: 380)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
-            .padding(.horizontal, DesignSystem.Spacing.l)
+            .padding(.horizontal, DesignSystem.Spacing.large)
             .cardShadow()
         }
     }
@@ -137,7 +137,7 @@ struct GenerationResultView: View {
             [DesignSystem.Colors.flameOrange, .orange],
             [.purple, .blue],
             [.teal, .cyan],
-            [.pink, .red],
+            [.pink, .red]
         ]
         return gradients[index % gradients.count]
     }
@@ -161,7 +161,7 @@ struct GenerationResultView: View {
         VStack {
             Spacer()
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(DesignSystem.Colors.success)
                     .font(.system(size: 20))
@@ -170,7 +170,7 @@ struct GenerationResultView: View {
                     .font(DesignSystem.Typography.callout)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }
-            .padding(DesignSystem.Spacing.m)
+            .padding(DesignSystem.Spacing.medium)
             .background(DesignSystem.Colors.surface)
             .clipShape(Capsule())
             .cardShadow()
@@ -187,7 +187,7 @@ struct GenerationResultView: View {
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
-            GeneratedPhoto(userId: "demo", style: "Confident"),
+            GeneratedPhoto(userId: "demo", style: "Confident")
         ],
         style: "Confident"
     )

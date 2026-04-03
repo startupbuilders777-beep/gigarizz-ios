@@ -50,6 +50,8 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
     case tinder = "Tinder"
     case hinge = "Hinge"
     case bumble = "Bumble"
+    case raya = "Raya"
+    case general = "General"
     case other = "Other"
 
     var id: String { rawValue }
@@ -59,6 +61,8 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
         case .tinder: return "flame.fill"
         case .hinge: return "heart.text.square.fill"
         case .bumble: return "bolt.fill"
+        case .raya: return "star.circle.fill"
+        case .general: return "app.fill"
         case .other: return "ellipsis.circle.fill"
         }
     }
@@ -68,6 +72,8 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
         case .tinder: return DesignSystem.Colors.tinder
         case .hinge: return DesignSystem.Colors.hinge
         case .bumble: return DesignSystem.Colors.bumble
+        case .raya: return .purple
+        case .general: return DesignSystem.Colors.flameOrange
         case .other: return DesignSystem.Colors.textSecondary
         }
     }
@@ -116,7 +122,7 @@ extension Match {
         Match(name: "Emma", platform: .hinge, status: .new, matchedDate: Date()),
         Match(name: "Jessica", platform: .bumble, status: .stale, lastMessageDate: Date().addingTimeInterval(-259200), matchedDate: Date().addingTimeInterval(-432000)),
         Match(name: "Olivia", platform: .tinder, status: .dateScheduled, notes: "Coffee at Blue Bottle on Saturday", lastMessageDate: Date().addingTimeInterval(-7200), matchedDate: Date().addingTimeInterval(-172800)),
-        Match(name: "Ava", platform: .hinge, status: .ghosted, lastMessageDate: Date().addingTimeInterval(-604800), matchedDate: Date().addingTimeInterval(-864000)),
+        Match(name: "Ava", platform: .hinge, status: .ghosted, lastMessageDate: Date().addingTimeInterval(-604800), matchedDate: Date().addingTimeInterval(-864000))
     ]
 }
 

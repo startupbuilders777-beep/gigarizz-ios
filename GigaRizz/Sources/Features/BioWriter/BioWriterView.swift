@@ -12,7 +12,7 @@ struct BioWriterView: View {
             DesignSystem.Colors.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
                     platformSelector
                     personalityInput
@@ -28,7 +28,7 @@ struct BioWriterView: View {
                         generatedBiosSection
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -58,18 +58,18 @@ struct BioWriterView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     // MARK: - Platform Selector
 
     private var platformSelector: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("What app?")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 ForEach(BioPlatform.allCases) { platform in
                     Button {
                         withAnimation(DesignSystem.Animation.quickSpring) {
@@ -114,7 +114,7 @@ struct BioWriterView: View {
     // MARK: - Personality Input
 
     private var personalityInput: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Your personality")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -148,7 +148,7 @@ struct BioWriterView: View {
                     .font(DesignSystem.Typography.caption)
             }
             .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
-            .padding(.horizontal, DesignSystem.Spacing.s)
+            .padding(.horizontal, DesignSystem.Spacing.small)
             .padding(.vertical, DesignSystem.Spacing.xs)
             .background(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
             .clipShape(Capsule())
@@ -158,7 +158,7 @@ struct BioWriterView: View {
     // MARK: - Interests Input
 
     private var interestsInput: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             HStack {
                 Text("Your interests")
                     .font(DesignSystem.Typography.callout)
@@ -207,7 +207,7 @@ struct BioWriterView: View {
     // MARK: - Vibe Selector
 
     private var vibeSelector: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Bio vibe")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -224,7 +224,7 @@ struct BioWriterView: View {
                                 .foregroundStyle(
                                     viewModel.selectedVibe == vibe ? .white : DesignSystem.Colors.textSecondary
                                 )
-                                .padding(.horizontal, DesignSystem.Spacing.s)
+                                .padding(.horizontal, DesignSystem.Spacing.small)
                                 .padding(.vertical, DesignSystem.Spacing.xs)
                                 .background(
                                     viewModel.selectedVibe == vibe
@@ -254,20 +254,20 @@ struct BioWriterView: View {
     // MARK: - Generating
 
     private var generatingSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             ProgressView()
                 .tint(DesignSystem.Colors.flameOrange)
             Text("Crafting your perfect bio...")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
         }
-        .padding(.vertical, DesignSystem.Spacing.l)
+        .padding(.vertical, DesignSystem.Spacing.large)
     }
 
     // MARK: - Generated Bios
 
     private var generatedBiosSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
             HStack {
                 Text("Your Bios")
                     .font(DesignSystem.Typography.title)
@@ -289,7 +289,7 @@ struct BioWriterView: View {
     }
 
     private func bioCard(_ bio: GeneratedBio, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             HStack {
                 Label(bio.style, systemImage: bio.icon)
                     .font(DesignSystem.Typography.caption)
@@ -305,7 +305,7 @@ struct BioWriterView: View {
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
                 .textSelection(.enabled)
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 Button {
                     UIPasteboard.general.string = bio.text
                     DesignSystem.Haptics.success()
@@ -313,7 +313,7 @@ struct BioWriterView: View {
                     Label("Copy", systemImage: "doc.on.doc")
                         .font(DesignSystem.Typography.smallButton)
                         .foregroundStyle(DesignSystem.Colors.flameOrange)
-                        .padding(.horizontal, DesignSystem.Spacing.s)
+                        .padding(.horizontal, DesignSystem.Spacing.small)
                         .padding(.vertical, DesignSystem.Spacing.xs)
                         .background(DesignSystem.Colors.flameOrange.opacity(0.1))
                         .clipShape(Capsule())
@@ -330,7 +330,7 @@ struct BioWriterView: View {
                 }
             }
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
     }

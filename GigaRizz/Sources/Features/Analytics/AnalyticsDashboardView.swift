@@ -11,7 +11,7 @@ struct AnalyticsDashboardView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     timeRangePicker
                     heroStatsRow
                     generationChartCard
@@ -21,7 +21,7 @@ struct AnalyticsDashboardView: View {
                     streakCard
                     insightsCard
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -43,7 +43,7 @@ struct AnalyticsDashboardView: View {
                         .font(DesignSystem.Typography.callout)
                         .fontWeight(selectedTimeRange == range ? .bold : .regular)
                         .foregroundStyle(selectedTimeRange == range ? DesignSystem.Colors.background : DesignSystem.Colors.textSecondary)
-                        .padding(.horizontal, DesignSystem.Spacing.m)
+                        .padding(.horizontal, DesignSystem.Spacing.medium)
                         .padding(.vertical, DesignSystem.Spacing.xs)
                         .background(selectedTimeRange == range ? DesignSystem.Colors.flameOrange : Color.clear)
                         .clipShape(Capsule())
@@ -54,7 +54,7 @@ struct AnalyticsDashboardView: View {
     }
 
     private var heroStatsRow: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             heroStat(value: "\(viewModel.analytics?.totalGenerations ?? 0)", label: "Photos", icon: "photo.stack.fill", color: DesignSystem.Colors.flameOrange)
             heroStat(value: "\(viewModel.analytics?.totalMatches ?? 0)", label: "Matches", icon: "heart.fill", color: .pink)
             heroStat(value: String(format: "%.0f%%", viewModel.analytics?.matchRate ?? 0), label: "Rate", icon: "chart.line.uptrend.xyaxis", color: .green)
@@ -73,7 +73,7 @@ struct AnalyticsDashboardView: View {
 
     private var generationChartCard: some View {
         GRCard {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Photo Generations").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -98,7 +98,7 @@ struct AnalyticsDashboardView: View {
 
     private var matchRateCard: some View {
         GRCard {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Text("Match Rate Trend").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
                 HStack(alignment: .bottom, spacing: 0) {
                     ForEach(Array(viewModel.matchRateTrend.enumerated()), id: \.offset) { index, rate in
@@ -120,10 +120,10 @@ struct AnalyticsDashboardView: View {
 
     private var platformBreakdownCard: some View {
         GRCard {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Text("Platform Breakdown").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
                 ForEach(viewModel.platformStats, id: \.platform) { stat in
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Circle().fill(stat.color).frame(width: 10, height: 10)
                         Text(stat.platform).font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textPrimary)
                         Spacer()
@@ -143,7 +143,7 @@ struct AnalyticsDashboardView: View {
 
     private var stylePerformanceCard: some View {
         GRCard {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Text("Top Performing Styles").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
                 ForEach(viewModel.styleStats) { stat in
                     HStack {
@@ -165,7 +165,7 @@ struct AnalyticsDashboardView: View {
 
     private var streakCard: some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 VStack(spacing: DesignSystem.Spacing.xs) {
                     Text("\u{1F525}").font(.system(size: 32))
                     Text("\(viewModel.analytics?.streakDays ?? 0)").font(DesignSystem.Typography.title).foregroundStyle(DesignSystem.Colors.flameOrange).fontWeight(.bold)
@@ -191,10 +191,10 @@ struct AnalyticsDashboardView: View {
 
     private var insightsCard: some View {
         GRCard {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.m) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Label("AI Insights", systemImage: "brain.head.profile").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
                 ForEach(viewModel.insights, id: \.self) { insight in
-                    HStack(alignment: .top, spacing: DesignSystem.Spacing.s) {
+                    HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "lightbulb.fill").font(.system(size: 12)).foregroundStyle(DesignSystem.Colors.goldAccent)
                         Text(insight).font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textSecondary)
                     }
