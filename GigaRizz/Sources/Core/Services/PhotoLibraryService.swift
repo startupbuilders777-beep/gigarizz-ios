@@ -52,7 +52,7 @@ final class PhotoLibraryService: ObservableObject {
         if #available(iOS 14, *) {
             status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         } else {
-            status = PHPhotoLibrary.requestAuthorization()
+            status = PHPhotoLibrary.authorizationStatus()
         }
 
         authorizationStatus = status
@@ -171,10 +171,8 @@ final class PhotoLibraryService: ObservableObject {
                 // Create asset from image
                 let creationRequest = PHAssetCreationRequest.creationRequestForAsset(from: image)
 
-                // Add metadata if provided
-                if let metadata = metadata {
-                    creationRequest.metadata = metadata
-                }
+                // Note: PHAssetCreationRequest does not support direct metadata assignment
+                // Metadata must be embedded in the image before saving
 
                 // Set creation date
                 creationRequest.creationDate = Date()
@@ -222,7 +220,7 @@ final class PhotoLibraryService: ObservableObject {
     // MARK: - Settings URL
 
     /// Returns URL to iOS Settings app for photo library permissions.
-    static func settingsURL: URL? {
+    static var settingsURL: URL? {
         URL(string: "App-Prefs:root=Privacy&path=PHOTOS") ?? URL(string: UIApplication.openSettingsURLString)
     }
 
@@ -270,7 +268,7 @@ struct SaveProgressView: View {
     let totalToSave: Int
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             // Circular progress
             ZStack {
                 Circle()
@@ -316,7 +314,7 @@ struct SaveSuccessView: View {
     @State private var scale: CGFloat = 0.5
 
     var body: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             // Animated checkmark
             ZStack {
                 Circle()
@@ -344,7 +342,7 @@ struct SaveSuccessView: View {
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(Capsule())
         .cardShadow()
@@ -358,7 +356,7 @@ struct PermissionDeniedView: View {
     let onRetry: () -> Void
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: "photo.fill")
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(DesignSystem.Colors.error)
@@ -388,7 +386,7 @@ struct PermissionDeniedView: View {
                 }
             }
         }
-        .padding(DesignSystem.Spacing.l)
+        .padding(DesignSystem.Spacing.large)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
         .cardShadow()

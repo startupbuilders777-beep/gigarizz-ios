@@ -129,6 +129,15 @@ struct GenerateView: View {
                 }
 
                 Spacer()
+
+                // Gallery button
+                NavigationLink {
+                    GeneratedPhotosGalleryView()
+                } label: {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 20))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                }
             }
         }
         .padding(.top, DesignSystem.Spacing.medium)

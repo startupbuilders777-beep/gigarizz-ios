@@ -42,6 +42,16 @@ struct Match: Identifiable, Codable, Equatable {
         guard let days = daysSinceLastMessage else { return false }
         return days >= 3
     }
+
+    var hasUnread: Bool = false
+    var lastMessage: String?
+
+    var inboxSortPriority: Int {
+        if hasUnread { return 0 }
+        if status == .new { return 1 }
+        if isStale { return 3 }
+        return 2
+    }
 }
 
 // MARK: - Dating Platform

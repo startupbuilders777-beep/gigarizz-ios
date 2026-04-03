@@ -22,7 +22,7 @@ struct SharePromptView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
 
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 headerSection
                 photoPreviewSection
                 captionSection
