@@ -184,41 +184,65 @@ enum DesignSystem {
 
     // MARK: - Haptics
 
+    /// Haptic feedback namespace — delegates to centralized HapticManager.
+    /// Use HapticManager.shared or HapticManager static methods directly for full functionality.
     enum Haptics {
+        /// Light haptic for subtle button taps.
         static func light() {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.light()
         }
 
+        /// Medium haptic for card swipes and snaps.
         static func medium() {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.medium()
         }
 
+        /// Heavy haptic for significant actions.
         static func heavy() {
-            let generator = UIImpactFeedbackGenerator(style: .heavy)
+            HapticManager.heavy()
+        }
+
+        /// Success notification for completed actions.
+        static func success() {
+            HapticManager.success()
+        }
+
+        /// Warning notification for cautionary states.
+        static func warning() {
+            HapticManager.warning()
+        }
+
+        /// Error notification for failed operations.
+        static func error() {
+            HapticManager.error()
+        }
+
+        /// Soft haptic for gentle interactions.
+        static func soft() {
+            HapticManager.soft()
+        }
+
+        /// Selection haptic for pickers and segment controls.
+        static func selection() {
+            HapticManager.selection()
+        }
+
+        static func selection() {
+            let generator = UISelectionFeedbackGenerator()
+            generator.prepare()
+            generator.selectionChanged()
+        }
+
+        static func soft() {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
             generator.prepare()
             generator.impactOccurred()
         }
 
-        static func success() {
-            let generator = UINotificationFeedbackGenerator()
+        static func rigid() {
+            let generator = UIImpactFeedbackGenerator(style: .rigid)
             generator.prepare()
-            generator.notificationOccurred(.success)
-        }
-
-        static func warning() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.warning)
-        }
-
-        static func error() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.error)
+            generator.impactOccurred()
         }
     }
 }

@@ -19,6 +19,36 @@ struct SettingsView: View {
                     .listRowBackground(DesignSystem.Colors.surface)
 
                     Section {
+                        HStack(spacing: DesignSystem.Spacing.medium) {
+                            Image(systemName: "hand.tap.fill").font(.system(size: 18)).foregroundStyle(DesignSystem.Colors.flameOrange).frame(width: 28)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Haptic Feedback").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
+                                Text(UIAccessibility.isReduceMotionEnabled ? "Disabled (Reduce Motion)" : "Enabled").font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary)
+                            }
+                            Spacer()
+                            if !UIAccessibility.isReduceMotionEnabled {
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(DesignSystem.Colors.success)
+                            }
+                        }
+                        Button {
+                            // Open system accessibility settings
+                            if let url = URL(string: "App-prefs:root=ACCESSIBILITY") {
+                                UIApplication.shared.open(url)
+                            }
+                        } label: {
+                            HStack(spacing: DesignSystem.Spacing.medium) {
+                                Image(systemName: "gear").font(.system(size: 18)).foregroundStyle(DesignSystem.Colors.textSecondary).frame(width: 28)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Reduce Motion Settings").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
+                                    Text("Open system accessibility").font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary)
+                                }
+                                Spacer()
+                            }
+                        }
+                    } header: { Text("Accessibility").foregroundStyle(DesignSystem.Colors.textSecondary) }
+                    .listRowBackground(DesignSystem.Colors.surface)
+
+                    Section {
                         if subscriptionManager.currentTier == .free {
                             Button { showPaywall = true } label: {
                                 settingsRow(icon: "flame.fill", title: "Upgrade to Pro", subtitle: "Unlock all features", color: DesignSystem.Colors.flameOrange, accessibilityLabel: "Upgrade to Pro, unlocks all features")
