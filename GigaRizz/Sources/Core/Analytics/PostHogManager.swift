@@ -66,6 +66,28 @@ final class PostHogManager: ObservableObject {
         track("onboarding_completed")
     }
 
+    func trackOnboardingStarted(type: String) {
+        track("onboarding_started", properties: ["type": type])
+    }
+
+    func trackOnboardingStepCompleted(step: String, stepIndex: Int) {
+        track("onboarding_step_completed", properties: [
+            "step": step,
+            "step_index": stepIndex
+        ])
+    }
+
+    func trackOnboardingStepSkipped(step: String, stepIndex: Int) {
+        track("onboarding_step_skipped", properties: [
+            "step": step,
+            "step_index": stepIndex
+        ])
+    }
+
+    func trackOnboardingResumed(resumeStep: Int) {
+        track("onboarding_resumed", properties: ["resume_step": resumeStep])
+    }
+
     // MARK: - Subscription Events
 
     func trackPaywallViewed(trigger: String, variant: String? = nil) {

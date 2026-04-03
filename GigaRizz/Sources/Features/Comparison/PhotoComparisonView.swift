@@ -73,7 +73,7 @@ struct PhotoComparisonView: View {
             }
             .sheet(isPresented: $showShareSheet) {
                 if let comparisonImage = createComparisonImage() {
-                    ShareSheet(activityItems: [comparisonImage])
+                    ShareSheet(items: [comparisonImage])
                 }
             }
             .overlay {
@@ -367,18 +367,6 @@ struct PhotoComparisonView: View {
             }
         }
     }
-}
-
-// MARK: - ShareSheet UIKit bridge
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {

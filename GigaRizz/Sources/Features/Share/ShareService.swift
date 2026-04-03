@@ -155,7 +155,7 @@ final class ShareService: ObservableObject {
             "photo_id": photoId,
             "style": style,
             "destination": activityType?.displayName ?? "unknown",
-            "destination_type": activityType?.isSocialMedia ? "social" : "direct"
+            "destination_type": (activityType?.isSocialMedia ?? false) ? "social" : "direct"
         ])
     }
 }

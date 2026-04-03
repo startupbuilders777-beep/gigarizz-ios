@@ -3,8 +3,10 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @EnvironmentObject private var onboardingStateManager: OnboardingStateManager
     @State private var showDeleteConfirmation = false
     @State private var showPaywall = false
+    @State private var showPhotoTutorial = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -39,6 +41,16 @@ struct SettingsView: View {
 
                     Section {
                         Button {
+                            onboardingStateManager.resetForPhotoTutorial()
+                            showPhotoTutorial = true
+                        } label: {
+                            settingsRow(icon: "camera.fill", title: "Retake Photo Tutorial", subtitle: "Learn how to take better selfies", color: DesignSystem.Colors.flameOrange)
+                        }
+                    } header: { Text("Tips & Help").foregroundStyle(DesignSystem.Colors.textSecondary) }
+                    .listRowBackground(DesignSystem.Colors.surface)
+
+                    Section {
+                        Button {
                             do { try authManager.signOut(); dismiss() } catch { }
                         } label: {
                             settingsRow(icon: "rectangle.portrait.and.arrow.right", title: "Sign Out", subtitle: "", color: DesignSystem.Colors.warning)
@@ -63,6 +75,13 @@ struct SettingsView: View {
                 Button("Delete", role: .destructive) { Task { try? await authManager.deleteAccount(); dismiss() } }
             } message: { Text("This will permanently delete your account and all data. This cannot be undone.") }
             .sheet(isPresented: $showPaywall) { PaywallView() }
+            .fullScreenCover(isPresented: $showPhotoTutorial) {
+                OnboardingView(
+                    stateManager: onboardingStateManager,
+                    hasCompletedOnboarding: $onboardingStateManager.hasCompletedOnboarding,
+                    photoTutorialOnly: true
+                )
+            }
         }
     }
 
@@ -78,4 +97,4 @@ struct SettingsView: View {
     }
 }
 
-#Preview { SettingsView().environmentObject(AuthManager()).environmentObject(SubscriptionManager()).preferredColorScheme(.dark) }
+#Preview { SettingsView().environmentObject(AuthManager()).environmentObject(SubscriptionManager()).environmentObject(OnboardingStateManager.shared).preferredColorScheme(.dark) }

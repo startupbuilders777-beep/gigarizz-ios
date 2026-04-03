@@ -46,10 +46,12 @@ struct ShareConfiguration {
 
 // MARK: - Share Aspect Ratio
 
-enum ShareAspectRatio: String, CaseIterable {
+enum ShareAspectRatio: String, CaseIterable, Identifiable {
     case square = "1:1"      // Tinder
     case portrait = "4:5"    // Hinge
     case stories = "9:16"    // Instagram Stories
+
+    var id: String { rawValue }
 
     var displayName: String {
         rawValue

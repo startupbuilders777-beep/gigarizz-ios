@@ -112,6 +112,11 @@ enum DesignSystem {
         static let xl: CGFloat = 32
         /// 48pt extra extra large.
         static let xxl: CGFloat = 48
+
+        // Convenience aliases
+        static let s: CGFloat = small
+        static let m: CGFloat = medium
+        static let l: CGFloat = large
     }
 
     // MARK: - Corner Radius

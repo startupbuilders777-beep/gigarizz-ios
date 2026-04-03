@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import LinkPresentation
 
 // MARK: - Share Sheet
 
@@ -49,12 +50,9 @@ extension UIActivity.ActivityType {
             return false
         default:
             // Check for Instagram, TikTok, Snapchat
-            if let rawValue = rawValue {
-                return rawValue.contains("instagram") ||
-                       rawValue.contains("tiktok") ||
-                       rawValue.contains("snapchat")
-            }
-            return false
+            return rawValue.contains("instagram") ||
+                   rawValue.contains("tiktok") ||
+                   rawValue.contains("snapchat")
         }
     }
 
@@ -67,12 +65,10 @@ extension UIActivity.ActivityType {
         case .copyToPasteboard: return "Copy"
         case .postToWeibo: return "Weibo"
         default:
-            if let rawValue = rawValue {
-                if rawValue.contains("instagram") { return "Instagram" }
-                if rawValue.contains("tiktok") { return "TikTok" }
-                if rawValue.contains("snapchat") { return "Snapchat" }
-                if rawValue.contains("whatsapp") { return "WhatsApp" }
-            }
+            if rawValue.contains("instagram") { return "Instagram" }
+            if rawValue.contains("tiktok") { return "TikTok" }
+            if rawValue.contains("snapchat") { return "Snapchat" }
+            if rawValue.contains("whatsapp") { return "WhatsApp" }
             return "Other"
         }
     }
@@ -81,7 +77,7 @@ extension UIActivity.ActivityType {
 // MARK: - Share Item Provider
 
 /// Custom item provider for sharing photos with metadata.
-class ShareItemProvider: UIActivityItemProvider {
+final class ShareItemProvider: NSObject, UIActivityItemSource {
     private let image: UIImage
     private let caption: String?
     private let deepLinkURL: URL?
@@ -90,10 +86,14 @@ class ShareItemProvider: UIActivityItemProvider {
         self.image = image
         self.caption = caption
         self.deepLinkURL = deepLinkURL
-        super.init(activityItem: image, placeholderItem: image)
+        super.init()
     }
 
-    override func activityViewController(
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        return image
+    }
+
+    func activityViewController(
         _ activityViewController: UIActivityViewController,
         itemForActivityType activityType: UIActivity.ActivityType?
     ) -> Any? {
@@ -101,7 +101,7 @@ class ShareItemProvider: UIActivityItemProvider {
         return image
     }
 
-    override func activityViewController(
+    func activityViewController(
         _ activityViewController: UIActivityViewController,
         subjectForActivityType activityType: UIActivity.ActivityType?
     ) -> String {
@@ -109,11 +109,8 @@ class ShareItemProvider: UIActivityItemProvider {
         return "My GigaRizz Photo"
     }
 
-    override func activityViewControllerLinkMetadata(
-        _ activityViewController: UIActivityViewController
-    ) -> LPLinkMetadata? {
+    func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
         let metadata = LPLinkMetadata()
-        metadata.imageProvider = NSItemProvider(contentsOf: URL(fileURLWithPath: ""))
         metadata.title = caption ?? "My AI-generated dating photo"
         if let url = deepLinkURL {
             metadata.originalURL = url
