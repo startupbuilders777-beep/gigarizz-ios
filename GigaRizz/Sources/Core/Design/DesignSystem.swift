@@ -191,8 +191,8 @@ enum DesignSystem {
     // MARK: - Shadows
 
     enum Shadow {
-        static let card = ShadowStyle(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-        static let elevated = ShadowStyle(color: .black.opacity(0.3), radius: 16, x: 0, y: 8)
+        static let card = ShadowStyle(color: .black.opacity(0.2), radius: 8, offsetX: 0, offsetY: 4)
+        static let elevated = ShadowStyle(color: .black.opacity(0.3), radius: 16, offsetX: 0, offsetY: 8)
     }
 
     // MARK: - Animation
@@ -243,7 +243,7 @@ enum DesignSystem {
 }
 
 struct ShadowStyle {
-    let color: Color; let radius: CGFloat; let x: CGFloat; let y: CGFloat
+    let color: Color; let radius: CGFloat; let offsetX: CGFloat; let offsetY: CGFloat
 }
 
 extension Color {
@@ -251,24 +251,24 @@ extension Color {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
+        let alpha, red, green, blue: UInt64
         switch hex.count {
-        case 3:  (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6:  (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8:  (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default: (a, r, g, b) = (255, 0, 0, 0)
+        case 3:  (alpha, red, green, blue) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6:  (alpha, red, green, blue) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8:  (alpha, red, green, blue) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default: (alpha, red, green, blue) = (255, 0, 0, 0)
         }
-        self.init(.sRGB, red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, opacity: Double(a) / 255)
+        self.init(.sRGB, red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255, opacity: Double(alpha) / 255)
     }
 }
 
 extension View {
     func cardShadow() -> some View {
         shadow(color: DesignSystem.Shadow.card.color, radius: DesignSystem.Shadow.card.radius,
-               x: DesignSystem.Shadow.card.x, y: DesignSystem.Shadow.card.y)
+               x: DesignSystem.Shadow.card.offsetX, y: DesignSystem.Shadow.card.offsetY)
     }
     func elevatedShadow() -> some View {
         shadow(color: DesignSystem.Shadow.elevated.color, radius: DesignSystem.Shadow.elevated.radius,
-               x: DesignSystem.Shadow.elevated.x, y: DesignSystem.Shadow.elevated.y)
+               x: DesignSystem.Shadow.elevated.offsetX, y: DesignSystem.Shadow.elevated.offsetY)
     }
 }
