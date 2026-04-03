@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Share Prompt View
 
@@ -391,7 +391,7 @@ struct SharePromptView: View {
     private func sharePhoto() async {
         // Create placeholder image for demo
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: 1080, height: 1080))
-        let placeholderImage = renderer.image { context in
+        let placeholderImage = renderer.image { _ in
             let gradient = gradientForIndex(selectedPhotoIndex)
             UIColor(gradient[0]).setFill()
             UIRectFill(CGRect(origin: .zero, size: renderer.format.bounds.size))

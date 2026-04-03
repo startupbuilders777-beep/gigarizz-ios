@@ -76,7 +76,7 @@ final class ShareService: ObservableObject {
     /// Adds a subtle watermark to the bottom of the image.
     private func addWatermark(to image: UIImage, text: String) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: image.size)
-        return renderer.image { context in
+        return renderer.image { _ in
             // Draw original image
             image.draw(in: CGRect(origin: .zero, size: image.size))
 
