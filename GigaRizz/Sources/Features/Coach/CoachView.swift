@@ -3,6 +3,7 @@ import SwiftUI
 struct CoachView: View {
     @StateObject private var viewModel = CoachViewModel()
     @State private var showPaywall = false
+    @State private var showRizzDashboard = false
 
     var body: some View {
         ZStack {
@@ -10,6 +11,7 @@ struct CoachView: View {
             ScrollView {
                 VStack(spacing: DesignSystem.Spacing.l) {
                     headerSection
+                    rizzCoachDashboardLink
                     bioGeneratorSection
                     openingLinesSection
                     hingePromptsSection
@@ -20,6 +22,47 @@ struct CoachView: View {
         }
         .navigationTitle("Coach").toolbarColorScheme(.dark, for: .navigationBar)
         .sheet(isPresented: $showPaywall) { PaywallView() }
+        .navigationDestination(isPresented: $showRizzDashboard) { RizzCoachDashboardView() }
+    }
+
+    private var rizzCoachDashboardLink: some View {
+        Button {
+            showRizzDashboard = true
+            DesignSystem.Haptics.light()
+        } label: {
+            GRCard {
+                HStack(spacing: DesignSystem.Spacing.m) {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "figure.walk.motion")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
+                        Text("Rizz Coach Dashboard")
+                            .font(DesignSystem.Typography.callout)
+                            .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        Text("Your personalized dating advisor")
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14))
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private var headerSection: some View {
