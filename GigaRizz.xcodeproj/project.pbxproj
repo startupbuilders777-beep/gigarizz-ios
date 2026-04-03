@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		07F3495938687229A4A95457 /* MatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E0D0EBC83EA99EE768B07C /* MatchModel.swift */; };
 		0828509A141D353DE64434E9 /* PhotoAuditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF12F41146BB80249527B05 /* PhotoAuditViewModel.swift */; };
+		09395B88CF16B19E360A33EA /* GenerationLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC0E3367EA6B91188590072 /* GenerationLoadingView.swift */; };
 		09B4D9267632BBF03E1F80EE /* AddMatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27ACDC055F37AC1A5A414E4E /* AddMatchView.swift */; };
 		0DDCBADDE8895A53DF83F560 /* PhotoPack+Essential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7904112A6A3FC4F1A5E7F466 /* PhotoPack+Essential.swift */; };
 		14D1B7D40556F5C4515EF9D6 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA527A2343B1451620BAA531 /* CoachView.swift */; };
@@ -114,6 +115,7 @@
 		468C42D376A0CB15BC0A3C6C /* BeforeAfterShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeAfterShareView.swift; sourceTree = "<group>"; };
 		4AB6EAB7092E24EC5F0182DB /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardView.swift; sourceTree = "<group>"; };
 		4C87434085205F077DB4F389 /* AnalyticsDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardViewModel.swift; sourceTree = "<group>"; };
+		4DC0E3367EA6B91188590072 /* GenerationLoadingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GenerationLoadingView.swift; sourceTree = "<group>"; };
 		4E4C556C0D13E6B51CC1EC24 /* RizzScoreCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzScoreCard.swift; sourceTree = "<group>"; };
 		523FBC7A73A632B307693DC5 /* GRComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRComponents.swift; sourceTree = "<group>"; };
 		544291A9D2E84F87825B3197 /* ResponseTimeTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTimeTrackerView.swift; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 			children = (
 				A052E2A6CE99F9D561649B8D /* GenerationResultView.swift */,
 				86962B847609C3E672068CFC /* GenerationTipsView.swift */,
+				4DC0E3367EA6B91188590072 /* GenerationLoadingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -816,6 +819,7 @@
 				9F15E65A4E663969437B977B /* WeeklyRizzReportView.swift in Sources */,
 				174CB4CBFC3D31E0BB11A304 /* FirstGenerationFlowView.swift in Sources */,
 				BD4D7F28B3CEB1E51709F2C7 /* FirstGenerationViewModel.swift in Sources */,
+				09395B88CF16B19E360A33EA /* GenerationLoadingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

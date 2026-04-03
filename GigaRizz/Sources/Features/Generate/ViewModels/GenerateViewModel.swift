@@ -141,6 +141,15 @@ final class GenerateViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Cancel Generation
+
+    func cancelGeneration() {
+        aiService.cancelGeneration()
+        isGenerating = false
+        generationProgress = 0
+        PostHogManager.shared.track("generation_cancelled")
+    }
+
     // MARK: - Reset
 
     func reset() {
