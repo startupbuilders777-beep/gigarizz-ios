@@ -13,8 +13,8 @@ struct SettingsView: View {
                 DesignSystem.Colors.background.ignoresSafeArea()
                 List {
                     Section {
-                        settingsRow(icon: "person.circle.fill", title: "Email", subtitle: authManager.userEmail ?? "Not signed in", color: DesignSystem.Colors.flameOrange)
-                        settingsRow(icon: "crown.fill", title: "Plan", subtitle: subscriptionManager.currentTier.displayName, color: DesignSystem.Colors.goldAccent)
+                        settingsRow(icon: "person.circle.fill", title: "Email", subtitle: authManager.userEmail ?? "Not signed in", color: DesignSystem.Colors.flameOrange, accessibilityLabel: "Email address, \(authManager.userEmail ?? "Not signed in")")
+                        settingsRow(icon: "crown.fill", title: "Plan", subtitle: subscriptionManager.currentTier.displayName, color: DesignSystem.Colors.goldAccent, accessibilityLabel: "Subscription plan, \(subscriptionManager.currentTier.displayName)")
                     } header: { Text("Account").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 
@@ -51,19 +51,23 @@ struct SettingsView: View {
                     Section {
                         if subscriptionManager.currentTier == .free {
                             Button { showPaywall = true } label: {
-                                settingsRow(icon: "flame.fill", title: "Upgrade to Pro", subtitle: "Unlock all features", color: DesignSystem.Colors.flameOrange)
+                                settingsRow(icon: "flame.fill", title: "Upgrade to Pro", subtitle: "Unlock all features", color: DesignSystem.Colors.flameOrange, accessibilityLabel: "Upgrade to Pro, unlocks all features")
                             }
+                            .accessibilityAddTraits(.isButton)
                         }
                         Button { Task { await subscriptionManager.restorePurchases() } } label: {
-                            settingsRow(icon: "arrow.counterclockwise", title: "Restore Purchases", subtitle: "Recover previous subscription", color: DesignSystem.Colors.textSecondary)
+                            settingsRow(icon: "arrow.counterclockwise", title: "Restore Purchases", subtitle: "Recover previous subscription", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Restore Purchases, recover previous subscription")
                         }
+                        .accessibilityAddTraits(.isButton)
                     } header: { Text("Subscription").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 
                     Section {
-                        settingsRow(icon: "info.circle.fill", title: "Version", subtitle: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0", color: DesignSystem.Colors.textSecondary)
-                        settingsRow(icon: "doc.text.fill", title: "Terms of Service", subtitle: "", color: DesignSystem.Colors.textSecondary)
-                        settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary)
+                        settingsRow(icon: "info.circle.fill", title: "Version", subtitle: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
+                        settingsRow(icon: "doc.text.fill", title: "Terms of Service", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Terms of Service")
+                            .accessibilityAddTraits(.isLink)
+                        settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Privacy Policy")
+                            .accessibilityAddTraits(.isLink)
                     } header: { Text("About").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 
@@ -71,21 +75,32 @@ struct SettingsView: View {
                         Button {
                             do { try authManager.signOut(); dismiss() } catch { }
                         } label: {
-                            settingsRow(icon: "rectangle.portrait.and.arrow.right", title: "Sign Out", subtitle: "", color: DesignSystem.Colors.warning)
+                            settingsRow(icon: "rectangle.portrait.and.arrow.right", title: "Sign Out", subtitle: "", color: DesignSystem.Colors.warning, accessibilityLabel: "Sign Out")
                         }
+                        .accessibilityAddTraits(.isButton)
+
                         Button { showDeleteConfirmation = true } label: {
-                            settingsRow(icon: "trash.fill", title: "Delete Account", subtitle: "Permanently delete all data", color: DesignSystem.Colors.error)
+                            settingsRow(icon: "trash.fill", title: "Delete Account", subtitle: "Permanently delete all data", color: DesignSystem.Colors.error, accessibilityLabel: "Delete Account, permanently delete all data")
                         }
+                        .accessibilityAddTraits(.isButton)
                     } header: { Text("Account Actions").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
                 }
                 .scrollContentBackground(.hidden).listStyle(.insetGrouped)
             }
-            .navigationTitle("Settings").navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { dismiss() } label: { Text("Done").font(DesignSystem.Typography.smallButton).foregroundStyle(DesignSystem.Colors.flameOrange) }
+                    Button { dismiss() } label: {
+                        Text("Done")
+                            .font(DesignSystem.Typography.smallButton)
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    }
+                    .accessibilityLabel("Done")
+                    .accessibilityHint("Double tap to close settings")
+                    .accessibilityAddTraits(.isButton)
                 }
             }
             .alert("Delete Account?", isPresented: $showDeleteConfirmation) {
@@ -96,15 +111,29 @@ struct SettingsView: View {
         }
     }
 
-    private func settingsRow(icon: String, title: String, subtitle: String, color: Color) -> some View {
+    private func settingsRow(icon: String, title: String, subtitle: String, color: Color, accessibilityLabel: String) -> some View {
         HStack(spacing: DesignSystem.Spacing.medium) {
-            Image(systemName: icon).font(.system(size: 18)).foregroundStyle(color).frame(width: 28)
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(color)
+                .frame(width: 28)
+                .accessibilityHidden(true)
+
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
-                if !subtitle.isEmpty { Text(subtitle).font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary) }
+                Text(title)
+                    .font(DesignSystem.Typography.callout)
+                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(DesignSystem.Typography.footnote)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
             }
+
             Spacer()
         }
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 
