@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 // MARK: - Generation Result View
 
@@ -7,6 +8,8 @@ struct GenerationResultView: View {
     let style: String
     @State private var selectedIndex = 0
     @State private var showSaveConfirmation = false
+    @State private var showComparison = false
+    @State private var sourcePhotos: [UIImage] = []
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -64,6 +67,11 @@ struct GenerationResultView: View {
                         }
 
                         HStack(spacing: DesignSystem.Spacing.s) {
+                            GRButton(title: "Compare", icon: "rectangle.split.2x1", style: .outline) {
+                                DesignSystem.Haptics.light()
+                                showComparison = true
+                            }
+
                             GRButton(title: "Share", icon: "square.and.arrow.up", style: .outline) {
                                 DesignSystem.Haptics.light()
                             }
@@ -92,6 +100,17 @@ struct GenerationResultView: View {
                 if showSaveConfirmation {
                     saveConfirmationOverlay
                 }
+            }
+            .sheet(isPresented: $showComparison) {
+                let demoImages = [
+                    UIImage(systemName: "person.crop.square.fill")!.withTintColor(.gray),
+                    UIImage(systemName: "person.crop.square.fill")!.withTintColor(.gray)
+                ]
+                PhotoComparisonView(
+                    sourcePhotos: sourcePhotos.isEmpty ? demoImages : sourcePhotos,
+                    generatedPhotos: generatedPhotos,
+                    styleName: style
+                )
             }
         }
     }

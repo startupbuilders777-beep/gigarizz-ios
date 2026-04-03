@@ -47,6 +47,7 @@
 		FCC25A57E42BF5C5CB69705C /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6D82BF7273BF14619B5BD /* MatchDetailView.swift */; };
 		FE2234BAD8CB4B2822DC4790 /* MatchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7A4B2EC7B04F30CC5252A1 /* MatchesView.swift */; };
 		FEF1ED44644BCFC05200D6E6 /* MatchesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D1A8F547E6E8631AE0F136 /* MatchesViewModel.swift */; };
+		90041FACB3934521B79EFA75 /* PhotoComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5604995FC34B06A7A3AB07 /* PhotoComparisonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,6 +86,7 @@
 		E80D96DC49FA3D51691C3699 /* AIGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGenerationService.swift; sourceTree = "<group>"; };
 		FA527A2343B1451620BAA531 /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
 		FF044D066B14BB54FDCA8D9A /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		AB5604995FC34B06A7A3AB07 /* PhotoComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoComparisonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,9 +189,18 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		52BB793AF22328673A00091D /* Features */ = {
+				B7881B03D7FC463E931B3945 /* Comparison */ = {
 			isa = PBXGroup;
 			children = (
+				AB5604995FC34B06A7A3AB07 /* PhotoComparisonView.swift */,
+			);
+			path = Comparison;
+			sourceTree = "<group>";
+		};
+52BB793AF22328673A00091D /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B7881B03D7FC463E931B3945 /* Comparison */,
 				384DEAE0688DBEB849A7F3A2 /* Auth */,
 				EA22912A97D0AAF035A58AAF /* Coach */,
 				D2D04093FB8F20E07570B362 /* Gallery */,
@@ -602,6 +613,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90041FACB3934521B79EFA75 /* PhotoComparisonView.swift in Sources */,
 				6DC6FEBAAA9CA42B91576354 /* AIGenerationService.swift in Sources */,
 				09B4D9267632BBF03E1F80EE /* AddMatchView.swift in Sources */,
 				5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */,
