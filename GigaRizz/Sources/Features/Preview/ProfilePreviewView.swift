@@ -11,7 +11,7 @@ struct ProfilePreviewView: View {
     private let demoPhotos = [
         "Generated Photo 1",
         "Generated Photo 2",
-        "Generated Photo 3",
+        "Generated Photo 3"
     ]
 
     private let demoBio = "Adventure seeker & coffee snob ☕️\nLet's explore the city together 🌆\nSwipe right if you like bad puns"
@@ -308,27 +308,27 @@ struct ProfilePreviewView: View {
                 "Lead with your best AI-generated photo — first impressions are everything on Tinder.",
                 "Use 4-6 photos showing different sides of your personality.",
                 "Outdoor/adventure photos get 19% more right swipes.",
-                "Avoid group photos as your first pic — they want to see YOU.",
+                "Avoid group photos as your first pic — they want to see YOU."
             ]
         case .hinge:
             return [
                 "Hinge is about prompts — pair great photos with witty, specific answers.",
                 "Photos with genuine smiles get 2x more likes on Hinge.",
                 "Use the voice prompt feature to stand out — very few people do.",
-                "Show a hobby or passion in at least one photo.",
+                "Show a hobby or passion in at least one photo."
             ]
         case .bumble:
             return [
                 "Women make the first move on Bumble — make your photos approachable.",
                 "Clear, well-lit headshots work best for your primary photo.",
                 "Fill out your entire profile — complete profiles get 4x more matches.",
-                "Bio badges (interests, lifestyle) help with Bumble's algorithm.",
+                "Bio badges (interests, lifestyle) help with Bumble's algorithm."
             ]
         case .raya, .general, .other:
             return [
                 "Quality over quantity — 3-5 strong photos beat 9 mediocre ones.",
                 "Mix close-ups and full-body shots for a well-rounded profile.",
-                "Natural lighting always beats harsh flash or indoor lighting.",
+                "Natural lighting always beats harsh flash or indoor lighting."
             ]
         }
     }

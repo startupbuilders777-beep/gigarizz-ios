@@ -37,7 +37,7 @@ final class ScreenshotTestHelper: ObservableObject {
             ScreenConfig(name: "coach_main", description: "Rizz Coach with AI suggestions", darkMode: true, category: .social),
             ScreenConfig(name: "matches_list", description: "Match inbox tracking", darkMode: true, category: .social),
             ScreenConfig(name: "rating_view", description: "App rating pre-prompt with stars", darkMode: true, category: .social),
-            ScreenConfig(name: "settings_main", description: "Settings with all options", darkMode: true, category: .settings),
+            ScreenConfig(name: "settings_main", description: "Settings with all options", darkMode: true, category: .settings)
         ]
     }
 

@@ -9,7 +9,7 @@ struct GRButton: View {
     }
 
     let title: String
-    var icon: String? = nil
+    var icon: String?
     var style: Style = .primary
     var isLoading: Bool = false
     var isDisabled: Bool = false
@@ -124,8 +124,8 @@ struct EmptyStateView: View {
     let icon: String
     let title: String
     let subtitle: String
-    var ctaTitle: String? = nil
-    var ctaAction: (() -> Void)? = nil
+    var ctaTitle: String?
+    var ctaAction: (() -> Void)?
 
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.l) {

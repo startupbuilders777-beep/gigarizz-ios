@@ -1,6 +1,6 @@
-import Foundation
-import FirebaseAuth
 import Combine
+import FirebaseAuth
+import Foundation
 
 /// Manages Firebase Authentication state and user identity.
 @MainActor

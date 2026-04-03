@@ -128,7 +128,7 @@ extension PhotoPack {
                 icon: "airplane",
                 aiPrompt: "Adventure travel portrait, scenic exotic location, person looking confident and adventurous, golden hour sunset, wide angle landscape, professional travel photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
         tier: .free,
@@ -184,7 +184,7 @@ extension PhotoPack {
                 icon: "moon.stars.fill",
                 aiPrompt: "Night out portrait, upscale bar or restaurant, well-dressed smart casual, warm ambient lighting, confident relaxed pose, social nightlife photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [DesignSystem.Colors.tinder, .pink],
         tier: .plus,
@@ -240,7 +240,7 @@ extension PhotoPack {
                 icon: "theatermask.and.paintbrush.fill",
                 aiPrompt: "Fun personality photo, playful expression, interesting unique setting, shows sense of humor, creative composition, memorable dating photo",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [DesignSystem.Colors.hinge, Color(hex: "8B7355")],
         tier: .plus,
@@ -296,7 +296,7 @@ extension PhotoPack {
                 icon: "face.smiling.inverse",
                 aiPrompt: "Genuine laughing candid portrait, mid-laugh natural joy, bright warm setting, authentic happy moment, not posed, natural photography captures real personality",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [DesignSystem.Colors.bumble, .orange],
         tier: .plus,
@@ -352,7 +352,7 @@ extension PhotoPack {
                 icon: "sun.max.fill",
                 aiPrompt: "Executive casual portrait, upscale cafe or lounge, relaxed polished look, casual luxury outfit, warm ambient lighting, premium lifestyle photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [.gray, .blue],
         tier: .plus,
@@ -408,7 +408,7 @@ extension PhotoPack {
                 icon: "globe.americas.fill",
                 aiPrompt: "Cultural immersion portrait, local market or temple or historic site, respectful engaged expression, vibrant colors, authentic travel experience photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [.teal, .cyan],
         tier: .plus,
@@ -464,7 +464,7 @@ extension PhotoPack {
                 icon: "star.fill",
                 aiPrompt: "VIP lounge portrait, exclusive upscale setting, designer outfit, confident commanding presence, dramatic lighting, luxury nightlife photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [.purple, .indigo],
         tier: .gold,
@@ -520,7 +520,7 @@ extension PhotoPack {
                 icon: "tennisball.fill",
                 aiPrompt: "Sports action portrait, playing tennis or basketball or surfing, dynamic action pose, athletic skill display, natural outdoor lighting, sports photography",
                 importance: .bonus
-            ),
+            )
         ],
         gradient: [.red, DesignSystem.Colors.flameOrange],
         tier: .plus,
@@ -538,7 +538,7 @@ extension PhotoPack {
         professionalPack,
         adventurePack,
         nightOutPack,
-        fitnessPack,
+        fitnessPack
     ]
 
     /// Packs available for a given tier

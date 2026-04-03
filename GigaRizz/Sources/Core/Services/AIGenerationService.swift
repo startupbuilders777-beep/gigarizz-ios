@@ -64,8 +64,7 @@ final class AIGenerationService: ObservableObject {
             isGenerating = false; generationProgress = 1.0
             DesignSystem.Haptics.success()
             return GenerationResult(photos: photos, style: style.name, processingTime: processingTime)
-        } catch is CancellationError { isGenerating = false; throw GenerationError.cancelled }
-        catch { isGenerating = false; errorMessage = error.localizedDescription; DesignSystem.Haptics.error(); throw error }
+        } catch is CancellationError { isGenerating = false; throw GenerationError.cancelled } catch { isGenerating = false; errorMessage = error.localizedDescription; DesignSystem.Haptics.error(); throw error }
     }
 
     private func generateWithReplicateAPI(sourceImages: [UIImage], style: StylePreset, userId: String, count: Int) async throws -> [GeneratedPhoto] {

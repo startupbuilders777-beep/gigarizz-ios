@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Background Scene
 
@@ -28,7 +28,7 @@ struct BackgroundReplacerView: View {
         BackgroundScene(name: "Sports Car", icon: "car.fill", gradient: [.red, .orange], description: "Luxury car backdrop", prompt: "luxury sports car sunset"),
         BackgroundScene(name: "Travel Exotic", icon: "airplane", gradient: [.cyan, .blue], description: "Exotic destination vibes", prompt: "exotic travel destination tropical"),
         BackgroundScene(name: "Dog Park", icon: "dog.fill", gradient: [DesignSystem.Colors.goldAccent, .orange], description: "With a cute dog", prompt: "dog park sunny day golden retriever"),
-        BackgroundScene(name: "Concert", icon: "music.note", gradient: [.pink, .purple], description: "VIP festival energy", prompt: "concert festival vip area lights"),
+        BackgroundScene(name: "Concert", icon: "music.note", gradient: [.pink, .purple], description: "VIP festival energy", prompt: "concert festival vip area lights")
     ]
 
     var body: some View {
@@ -151,7 +151,7 @@ struct BackgroundReplacerView: View {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.s)
             ], spacing: DesignSystem.Spacing.s) {
                 ForEach(scenes) { scene in
                     sceneCard(scene)

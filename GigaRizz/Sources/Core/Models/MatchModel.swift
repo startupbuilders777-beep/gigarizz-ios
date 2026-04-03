@@ -133,7 +133,7 @@ extension Match {
         Match(name: "Emma", platform: .hinge, status: .new, matchedDate: Date()),
         Match(name: "Jessica", platform: .bumble, status: .stale, lastMessageDate: Date().addingTimeInterval(-259200), matchedDate: Date().addingTimeInterval(-432000)),
         Match(name: "Olivia", platform: .tinder, status: .dateScheduled, notes: "Coffee at Blue Bottle on Saturday", lastMessageDate: Date().addingTimeInterval(-7200), matchedDate: Date().addingTimeInterval(-172800)),
-        Match(name: "Ava", platform: .hinge, status: .ghosted, lastMessageDate: Date().addingTimeInterval(-604800), matchedDate: Date().addingTimeInterval(-864000)),
+        Match(name: "Ava", platform: .hinge, status: .ghosted, lastMessageDate: Date().addingTimeInterval(-604800), matchedDate: Date().addingTimeInterval(-864000))
     ]
 }
 

@@ -224,7 +224,7 @@ struct GenerationResultView: View {
             [DesignSystem.Colors.flameOrange, .orange],
             [.purple, .blue],
             [.teal, .cyan],
-            [.pink, .red],
+            [.pink, .red]
         ]
         return gradients[index % gradients.count]
     }
@@ -322,7 +322,7 @@ struct GenerationResultView: View {
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
-            GeneratedPhoto(userId: "demo", style: "Confident"),
+            GeneratedPhoto(userId: "demo", style: "Confident")
         ],
         style: "Confident"
     )

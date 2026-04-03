@@ -32,7 +32,7 @@ struct OnboardingView: View {
         OnboardingStep(id: 6, icon: "brain.head.profile", title: "Your Rizz Coach", subtitle: "AI-written bios, opening lines, and\nHinge prompts that actually work.", gradient: [.cyan, .blue], lottieHint: "brain"),
         OnboardingStep(id: 7, icon: "heart.text.square.fill", title: "Track Your Matches", subtitle: "Log matches, track conversations,\nand never ghost anyone again.", gradient: [.pink, .red], lottieHint: "heart"),
         OnboardingStep(id: 8, icon: "crown.fill", title: "Free vs Pro", subtitle: "3 free photos daily. Upgrade for unlimited\ngenerations, all styles, and HD downloads.", gradient: [DesignSystem.Colors.goldAccent, .orange], lottieHint: "crown"),
-        OnboardingStep(id: 9, icon: "bolt.fill", title: "Let's Get Started", subtitle: "Your dating profile glow-up\nstarts right now. Ready?", gradient: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent], lottieHint: "rocket"),
+        OnboardingStep(id: 9, icon: "bolt.fill", title: "Let's Get Started", subtitle: "Your dating profile glow-up\nstarts right now. Ready?", gradient: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent], lottieHint: "rocket")
     ]
 
     var body: some View {
@@ -311,7 +311,7 @@ struct OnboardingView: View {
 
     private var backgroundParticles: some View {
         GeometryReader { geo in
-            ForEach(0..<15, id: \.self) { i in
+            ForEach(0..<15, id: \.self) { _ in
                 Circle()
                     .fill(DesignSystem.Colors.flameOrange.opacity(Double.random(in: 0.03...0.08)))
                     .frame(width: CGFloat.random(in: 4...12))

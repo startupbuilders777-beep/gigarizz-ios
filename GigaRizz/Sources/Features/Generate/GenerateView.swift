@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Generate View
 
@@ -213,7 +213,7 @@ struct GenerateView: View {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs)
             ], spacing: DesignSystem.Spacing.xs) {
                 ForEach(viewModel.selectedPhotos) { photo in
                     ZStack(alignment: .topTrailing) {

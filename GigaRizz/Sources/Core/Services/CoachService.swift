@@ -152,7 +152,7 @@ final class CoachService: ObservableObject {
             ("A life goal of mine", "To visit every continent and have a local friend on each one to show me the hidden gems"),
             ("My most irrational fear", "That one day autocorrect will ruin the perfect text at the worst possible moment"),
             ("I bet you can't", "Name a better brunch spot than the one I found last weekend. Challenge accepted?"),
-            ("Green flags I look for", "You send memes at appropriate times, tip well, and can laugh at yourself"),
+            ("Green flags I look for", "You send memes at appropriate times, tip well, and can laugh at yourself")
         ]
 
         DesignSystem.Haptics.success()

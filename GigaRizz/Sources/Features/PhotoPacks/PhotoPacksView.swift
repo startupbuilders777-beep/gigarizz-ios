@@ -4,8 +4,8 @@ import SwiftUI
 
 struct PhotoPacksView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    @State private var selectedPlatform: DatingPlatform? = nil
-    @State private var selectedPack: PhotoPack? = nil
+    @State private var selectedPlatform: DatingPlatform?
+    @State private var selectedPack: PhotoPack?
     @State private var showPackDetail = false
     @State private var showPaywall = false
 

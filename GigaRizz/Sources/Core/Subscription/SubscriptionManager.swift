@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import RevenueCat
-import Combine
 
 // MARK: - Subscription Tier
 
