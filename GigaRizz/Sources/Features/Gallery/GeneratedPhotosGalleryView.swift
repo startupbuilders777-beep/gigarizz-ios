@@ -101,11 +101,14 @@ struct GeneratedPhotosGalleryView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 16))
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .accessibilityHidden(true)
 
             TextField("Search by date, style, platform...", text: $viewModel.searchText)
                 .font(DesignSystem.Typography.subheadline)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
                 .textFieldStyle(.plain)
+                .accessibilityLabel("Search photos")
+                .accessibilityHint("Enter search terms to filter photos by date, style, or platform")
 
             if !viewModel.searchText.isEmpty {
                 Button {
@@ -115,6 +118,8 @@ struct GeneratedPhotosGalleryView: View {
                         .font(.system(size: 16))
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                 }
+                .accessibilityLabel("Clear search")
+                .accessibilityHint("Double tap to clear search text")
             }
         }
         .padding(DesignSystem.Spacing.small)
@@ -180,7 +185,9 @@ struct GeneratedPhotosGalleryView: View {
                     .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
             )
         }
-        .accessibilityLabel("\(mode.rawValue) tab")
+        .accessibilityLabel("\(mode.rawValue) tab\(count != nil ? ", \(count!) items" : "")")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityHint("Double tap to select")
     }
 
     // MARK: - Platform Filter Bar
@@ -218,6 +225,8 @@ struct GeneratedPhotosGalleryView: View {
                     .fill(isSelected ? (platform?.color ?? DesignSystem.Colors.flameOrange) : DesignSystem.Colors.surface)
             )
         }
+        .accessibilityLabel("\(name) platform filter")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
     // MARK: - Style Filter Bar
@@ -251,6 +260,8 @@ struct GeneratedPhotosGalleryView: View {
                         .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
                 )
         }
+        .accessibilityLabel("\(name) style filter")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
     // MARK: - Album Selector Bar
@@ -495,6 +506,8 @@ struct GeneratedPhotosGalleryView: View {
 
     private func photoCell(_ item: GalleryPhotoItem, index: Int) -> some View {
         let isSelected = viewModel.selectedPhotoIds.contains(item.id)
+        let totalPhotos = viewModel.filteredPhotos.count
+        let favoriteText = item.photo.isFavorite ? " favorited" : ""
 
         return ZStack(alignment: .topTrailing) {
             // Photo thumbnail placeholder
@@ -510,6 +523,7 @@ struct GeneratedPhotosGalleryView: View {
                 Image(systemName: "person.fill")
                     .font(.system(size: 30, weight: .ultraLight))
                     .foregroundStyle(.white.opacity(0.3))
+                    .accessibilityHidden(true)
 
                 // Style badge overlay
                 VStack {
@@ -590,6 +604,9 @@ struct GeneratedPhotosGalleryView: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityLabel("Photo \(index + 1) of \(totalPhotos), \(item.photo.style)\(favoriteText)")
+        .accessibilityHint("Double tap to view full size, long press to select")
+        .accessibilityAddTraits(.isButton)
     }
 
     private func selectionCheckbox(_ isSelected: Bool) -> some View {
@@ -604,6 +621,9 @@ struct GeneratedPhotosGalleryView: View {
                     .foregroundStyle(.white)
             }
         }
+        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
+        .accessibilityHint("Double tap to toggle selection")
+        .accessibilityAddTraits(.isButton)
     }
 
     private func gradientForStyle(_ style: String) -> [Color] {
@@ -629,6 +649,7 @@ struct GeneratedPhotosGalleryView: View {
             Image(systemName: "internaldrive")
                 .font(.system(size: 14))
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Storage: \(viewModel.storageSizeText)")
