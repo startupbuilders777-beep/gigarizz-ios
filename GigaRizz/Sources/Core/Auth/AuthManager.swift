@@ -28,11 +28,15 @@ final class AuthManager: ObservableObject {
 
     // MARK: - Init
 
-    init() {}
+    init() {
+        // Guard against unconfigured Firebase (e.g. during unit test bootstrap).
+        guard FirebaseApp.app() != nil else { return }
+    }
 
     // MARK: - Auth State
 
     func startAuthStateListener() {
+        guard FirebaseApp.app() != nil else { return }
         authStateListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
                 self?.currentUser = user
