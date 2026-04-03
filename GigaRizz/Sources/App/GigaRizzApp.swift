@@ -5,6 +5,7 @@ struct GigaRizzApp: App {
     @StateObject private var authManager = AuthManager()
     @StateObject private var subscriptionManager = SubscriptionManager()
     @StateObject private var postHogManager = PostHogManager()
+    @StateObject private var ratingManager = AppRatingManager.shared
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some Scene {
@@ -27,6 +28,7 @@ struct GigaRizzApp: App {
             .onAppear {
                 authManager.startAuthStateListener()
                 postHogManager.initPostHog()
+                ratingManager.trackAppLaunch()
             }
         }
     }
