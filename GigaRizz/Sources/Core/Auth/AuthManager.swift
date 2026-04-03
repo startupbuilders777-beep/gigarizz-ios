@@ -1,16 +1,26 @@
-import Foundation
-import FirebaseAuth
 import Combine
+import FirebaseAuth
+import Foundation
 
 /// Manages Firebase Authentication state and user identity.
 @MainActor
 final class AuthManager: ObservableObject {
+    // MARK: - Singleton
+
+    static let shared = AuthManager()
+
     // MARK: - Published Properties
 
     @Published var currentUser: User?
     @Published var isAuthenticated = false
     @Published var isLoading = false
     @Published var errorMessage: String?
+
+    // MARK: - Computed Properties
+
+    var currentUserId: String? {
+        currentUser?.uid
+    }
 
     // MARK: - Private Properties
 

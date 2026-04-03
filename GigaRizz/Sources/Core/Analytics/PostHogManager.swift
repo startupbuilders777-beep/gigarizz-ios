@@ -97,6 +97,12 @@ final class PostHogManager: ObservableObject {
         track("referral_code_shared")
     }
 
+    // MARK: - Track Event
+
+    func trackEvent(_ event: String, properties: [String: Any] = [:]) {
+        track(event, properties: properties)
+    }
+
     // MARK: - Private
 
     private func track(_ event: String, properties: [String: Any] = [:]) {

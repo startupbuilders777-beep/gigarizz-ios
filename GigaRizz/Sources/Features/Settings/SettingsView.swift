@@ -67,7 +67,7 @@ struct SettingsView: View {
     }
 
     private func settingsRow(icon: String, title: String, subtitle: String, color: Color) -> some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: icon).font(.system(size: 18)).foregroundStyle(color).frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)

@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Photo Audit View
 
@@ -34,11 +34,11 @@ struct PhotoAuditView: View {
 
     private var uploadPrompt: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 Spacer().frame(height: DesignSystem.Spacing.xl)
 
                 // Hero
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     ZStack {
                         Circle()
                             .fill(
@@ -70,7 +70,7 @@ struct PhotoAuditView: View {
                 }
 
                 // What we analyze
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     Text("What We Analyze")
                         .font(DesignSystem.Typography.title)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -82,7 +82,7 @@ struct PhotoAuditView: View {
                     auditCategoryPreview(icon: "tshirt.fill", name: "Outfit", desc: "Style, fit, color coordination")
                     auditCategoryPreview(icon: "figure.stand", name: "Body Language", desc: "Posture, confidence signals, openness")
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // Upload CTA
                 PhotosPicker(
@@ -101,7 +101,7 @@ struct PhotoAuditView: View {
                     .background(DesignSystem.Colors.flameOrange)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 Text("Free for all users - no account required")
                     .font(DesignSystem.Typography.footnote)
@@ -113,7 +113,7 @@ struct PhotoAuditView: View {
     }
 
     private func auditCategoryPreview(icon: String, name: String, desc: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: icon)
                 .font(.system(size: 16))
                 .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -131,7 +131,7 @@ struct PhotoAuditView: View {
             }
             Spacer()
         }
-        .padding(DesignSystem.Spacing.s)
+        .padding(DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
     }
@@ -156,7 +156,7 @@ struct PhotoAuditView: View {
                 }
             }
 
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 Text(viewModel.analysisStageText)
                     .font(DesignSystem.Typography.title)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -196,7 +196,7 @@ struct PhotoAuditView: View {
 
     private func auditResultsView(_ result: PhotoAuditResult) -> some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 // Photo preview with score overlay
                 photoWithScore(result)
 
@@ -204,7 +204,7 @@ struct PhotoAuditView: View {
                 verdictBanner(result)
 
                 // Category breakdowns
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     Text("Detailed Analysis")
                         .font(DesignSystem.Typography.title)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -213,10 +213,10 @@ struct PhotoAuditView: View {
                         categoryScoreRow(category)
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // Improvement tips
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     Text("How to Improve")
                         .font(DesignSystem.Typography.title)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -225,10 +225,10 @@ struct PhotoAuditView: View {
                         tipRow(number: index + 1, text: tip)
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // CTA: Generate better photos
-                VStack(spacing: DesignSystem.Spacing.s) {
+                VStack(spacing: DesignSystem.Spacing.small) {
                     Text("Want photos that score 9+?")
                         .font(DesignSystem.Typography.callout)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -242,7 +242,7 @@ struct PhotoAuditView: View {
                         DesignSystem.Haptics.light()
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -288,7 +288,7 @@ struct PhotoAuditView: View {
                         .font(.system(size: 28))
                 }
             }
-            .padding(DesignSystem.Spacing.m)
+            .padding(DesignSystem.Spacing.medium)
             .background(
                 LinearGradient(
                     colors: [.clear, .black.opacity(0.8)],
@@ -303,12 +303,12 @@ struct PhotoAuditView: View {
             )
         }
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func verdictBanner(_ result: PhotoAuditResult) -> some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 Text(scoreEmoji(result.overallScore))
                     .font(.system(size: 36))
                 VStack(alignment: .leading, spacing: 2) {
@@ -322,7 +322,7 @@ struct PhotoAuditView: View {
                 Spacer()
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func categoryScoreRow(_ category: AuditCategory) -> some View {
@@ -365,13 +365,13 @@ struct PhotoAuditView: View {
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(DesignSystem.Spacing.s)
+        .padding(DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
     }
 
     private func tipRow(number: Int, text: String) -> some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spacing.s) {
+        HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
             Text("\(number)")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(.white)
@@ -384,7 +384,7 @@ struct PhotoAuditView: View {
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(DesignSystem.Spacing.s)
+        .padding(DesignSystem.Spacing.small)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))

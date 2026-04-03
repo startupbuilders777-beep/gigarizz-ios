@@ -13,7 +13,7 @@ struct RizzCoachDashboardView: View {
             DesignSystem.Colors.background.ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
                     rizzScoreSection
                     weeklyReportSection
@@ -23,7 +23,7 @@ struct RizzCoachDashboardView: View {
                     dailyTipSection
                     privacySection
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
             .refreshable {
@@ -43,7 +43,7 @@ struct RizzCoachDashboardView: View {
 
     private var headerSection: some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 ZStack {
                     Circle()
                         .fill(
@@ -69,7 +69,7 @@ struct RizzCoachDashboardView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     // MARK: - Rizz Score
@@ -98,7 +98,7 @@ struct RizzCoachDashboardView: View {
     // MARK: - Photo Performance
 
     private var photoPerformanceSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Label("Photo Performance", systemImage: "photo.stack.fill")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -124,7 +124,7 @@ struct RizzCoachDashboardView: View {
     // MARK: - Daily Tip
 
     private var dailyTipSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             if let tip = viewModel.dailyTip {
                 RizzTipCard(
                     tip: tip,
@@ -142,7 +142,7 @@ struct RizzCoachDashboardView: View {
                     title: "No Tips Today",
                     subtitle: "Check back tomorrow for new dating advice.",
                     ctaTitle: "Get New Tip",
-                    ctaAction: { Task { await viewModel.getNewTip() }}
+                    ctaAction: { Task { await viewModel.getNewTip() } }
                 )
             }
         }
@@ -152,7 +152,7 @@ struct RizzCoachDashboardView: View {
 
     private var privacySection: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 HStack {
                     Image(systemName: "lock.shield.fill")
                         .font(.system(size: 20))

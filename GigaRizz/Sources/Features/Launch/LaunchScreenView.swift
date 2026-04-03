@@ -10,7 +10,7 @@ struct LaunchScreenView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
 
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 Spacer()
 
                 // Animated logo
@@ -21,7 +21,7 @@ struct LaunchScreenView: View {
                             RadialGradient(
                                 colors: [
                                     DesignSystem.Colors.flameOrange.opacity(0.3),
-                                    DesignSystem.Colors.flameOrange.opacity(0.0),
+                                    DesignSystem.Colors.flameOrange.opacity(0.0)
                                 ],
                                 center: .center,
                                 startRadius: 30,
