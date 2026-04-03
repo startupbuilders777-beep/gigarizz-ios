@@ -3,16 +3,25 @@ import SwiftUI
 // MARK: - Main Tab View
 
 struct MainTabView: View {
-    @State private var selectedTab: Tab = .generate
+    @State private var selectedTab: Tab = .home
 
     enum Tab: String, CaseIterable {
-        case generate, profile, coach, matches
+        case home, generate, profile, coach, matches
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
+            .tag(Tab.home)
+
+            NavigationStack {
                 GenerateView()
+                    .environmentObject(AIGenerationService.shared)
             }
             .tabItem {
                 Label("Generate", systemImage: "wand.and.stars")
@@ -49,5 +58,7 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
+        .environmentObject(AuthManager())
+        .environmentObject(SubscriptionManager())
         .preferredColorScheme(.dark)
 }

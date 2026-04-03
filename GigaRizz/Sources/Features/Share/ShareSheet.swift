@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import LinkPresentation
 
 // MARK: - Share Sheet
 
@@ -49,12 +50,9 @@ extension UIActivity.ActivityType {
             return false
         default:
             // Check for Instagram, TikTok, Snapchat
-            if let rawValue = rawValue {
-                return rawValue.contains("instagram") ||
-                       rawValue.contains("tiktok") ||
-                       rawValue.contains("snapchat")
-            }
-            return false
+            return rawValue.contains("instagram") ||
+                   rawValue.contains("tiktok") ||
+                   rawValue.contains("snapchat")
         }
     }
 
@@ -67,12 +65,10 @@ extension UIActivity.ActivityType {
         case .copyToPasteboard: return "Copy"
         case .postToWeibo: return "Weibo"
         default:
-            if let rawValue = rawValue {
-                if rawValue.contains("instagram") { return "Instagram" }
-                if rawValue.contains("tiktok") { return "TikTok" }
-                if rawValue.contains("snapchat") { return "Snapchat" }
-                if rawValue.contains("whatsapp") { return "WhatsApp" }
-            }
+            if rawValue.contains("instagram") { return "Instagram" }
+            if rawValue.contains("tiktok") { return "TikTok" }
+            if rawValue.contains("snapchat") { return "Snapchat" }
+            if rawValue.contains("whatsapp") { return "WhatsApp" }
             return "Other"
         }
     }
@@ -90,7 +86,7 @@ class ShareItemProvider: UIActivityItemProvider {
         self.image = image
         self.caption = caption
         self.deepLinkURL = deepLinkURL
-        super.init(activityItem: image, placeholderItem: image)
+        super.init(placeholderItem: image)
     }
 
     override func activityViewController(

@@ -33,7 +33,7 @@ struct BeforeAfterShareView: View {
         }
         .sheet(isPresented: $showShareSheet) {
             if let image = renderedImage {
-                ShareSheet(activityItems: [image, shareCaption])
+                ShareSheet(items: [image, shareCaption])
             }
         }
     }
@@ -380,9 +380,9 @@ struct BeforeAfterShareView: View {
     }
 }
 
-// MARK: - ShareSheet UIKit bridge
+// MARK: - ShareSheet UIKit bridge (local)
 
-struct ShareSheet: UIViewControllerRepresentable {
+private struct LocalShareSheet: UIViewControllerRepresentable {
     let activityItems: [Any]
 
     func makeUIViewController(context: Context) -> UIActivityViewController {

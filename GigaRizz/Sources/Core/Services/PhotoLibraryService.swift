@@ -222,13 +222,13 @@ final class PhotoLibraryService: ObservableObject {
     // MARK: - Settings URL
 
     /// Returns URL to iOS Settings app for photo library permissions.
-    static func settingsURL: URL? {
+    static func settingsURL() -> URL? {
         URL(string: "App-Prefs:root=Privacy&path=PHOTOS") ?? URL(string: UIApplication.openSettingsURLString)
     }
 
     /// Opens iOS Settings for photo library permissions.
     func openSettings() {
-        guard let url = Self.settingsURL else { return }
+        guard let url = Self.settingsURL() else { return }
         UIApplication.shared.open(url)
     }
 }

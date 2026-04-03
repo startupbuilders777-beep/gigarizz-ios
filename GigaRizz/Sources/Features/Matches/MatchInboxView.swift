@@ -89,7 +89,7 @@ struct MatchInboxView: View {
     // MARK: - Empty State
 
     private var emptyInboxView: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.large) {
             Spacer()
 
             ZStack {
@@ -134,7 +134,7 @@ struct MatchInboxView: View {
     }
 
     private var noResultsView: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.large) {
             Spacer()
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 44, weight: .light))
@@ -152,9 +152,9 @@ struct MatchInboxView: View {
     }
 
     private var loadingView: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             ForEach(0..<5, id: \.self) { _ in
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.medium) {
                     ShimmerView().frame(width: 48, height: 48).clipShape(Circle())
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                         ShimmerView().frame(width: 120, height: 16)
@@ -162,8 +162,8 @@ struct MatchInboxView: View {
                     }
                     Spacer()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
-                .padding(.vertical, DesignSystem.Spacing.s)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                .padding(.vertical, DesignSystem.Spacing.small)
             }
         }
     }
@@ -180,14 +180,14 @@ struct MatchConversationCell: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 profilePhoto
                 contentStack
                 Spacer()
                 rightStack
             }
             .frame(height: 72)
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .contentShape(Rectangle())
         }
         .buttonStyle(CellPressStyle())
@@ -221,10 +221,10 @@ struct MatchConversationCell: View {
                     .clipShape(Circle())
             }
 
-            // Unread dot
-            if match.hasUnread {
+            // Unread dot (using stale status as proxy)
+            if match.isStale {
                 Circle()
-                    .fill(DesignSystem.Colors.flameOrange)
+                    .fill(DesignSystem.Colors.warning)
                     .frame(width: 10, height: 10)
                     .overlay {
                         Circle()
@@ -241,7 +241,7 @@ struct MatchConversationCell: View {
                 Text(match.name)
                     .font(DesignSystem.Typography.callout)
                     .fontWeight(.semibold)
-                    .foregroundStyle(match.hasUnread ? DesignSystem.Colors.textPrimary : DesignSystem.Colors.textPrimary.opacity(0.85))
+                    .foregroundStyle(match.status == .new ? DesignSystem.Colors.textPrimary : DesignSystem.Colors.textPrimary.opacity(0.85))
                     .lineLimit(1)
 
                 Image(systemName: match.platform.icon)
@@ -252,7 +252,7 @@ struct MatchConversationCell: View {
             HStack(spacing: DesignSystem.Spacing.xs) {
                 Text(lastMessageText)
                     .font(DesignSystem.Typography.footnote)
-                    .foregroundStyle(match.hasUnread ? DesignSystem.Colors.textPrimary.opacity(0.7) : DesignSystem.Colors.textSecondary)
+                    .foregroundStyle(match.status == .new ? DesignSystem.Colors.textPrimary.opacity(0.7) : DesignSystem.Colors.textSecondary)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -274,7 +274,7 @@ struct MatchConversationCell: View {
             if let date = match.lastMessageDate {
                 Text(timeAgo(date))
                     .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(match.hasUnread ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textSecondary)
+                    .foregroundStyle(match.status == .new ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textSecondary)
             } else {
                 Text(timeAgo(match.matchedDate))
                     .font(DesignSystem.Typography.caption)
@@ -286,7 +286,7 @@ struct MatchConversationCell: View {
     }
 
     private var accessibilityLabel: String {
-        let unreadText = match.hasUnread ? "Unread. " : ""
+        let unreadText = match.status == .new ? "Unread. " : ""
         let badgeText = inboxBadge.label
         let messageText = match.lastMessage ?? "No messages"
         let timeText = match.lastMessageDate.map { timeAgo($0) } ?? timeAgo(match.matchedDate)
@@ -357,12 +357,12 @@ struct InboxChatPreview: View {
 
                     // Messages
                     ScrollView {
-                        LazyVStack(spacing: DesignSystem.Spacing.s) {
+                        LazyVStack(spacing: DesignSystem.Spacing.small) {
                             ForEach(viewModel.messages(for: match.id)) { message in
                                 MessageBubble(message: message)
                             }
                         }
-                        .padding(DesignSystem.Spacing.m)
+                        .padding(DesignSystem.Spacing.medium)
                     }
 
                     // Input bar
@@ -399,7 +399,7 @@ struct InboxChatPreview: View {
     }
 
     private var matchHeader: some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Text(String(match.name.prefix(1)).uppercased())
                 .font(DesignSystem.Typography.title)
                 .foregroundStyle(match.platform.color)
@@ -424,17 +424,17 @@ struct InboxChatPreview: View {
 
             InboxBadgeView(badge: InboxBadge.from(match: match))
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
     }
 
     private var inputBar: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             TextField("Message...", text: $messageText)
                 .font(DesignSystem.Typography.subheadline)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
-                .padding(.horizontal, DesignSystem.Spacing.m)
-                .padding(.vertical, DesignSystem.Spacing.s)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                .padding(.vertical, DesignSystem.Spacing.small)
                 .background(DesignSystem.Colors.surfaceSecondary)
                 .clipShape(Capsule())
                 .focused($isInputFocused)
@@ -453,8 +453,8 @@ struct InboxChatPreview: View {
             .disabled(messageText.isEmpty)
             .sensoryFeedback(.impact(weight: .medium), trigger: messageText.isEmpty == false)
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
     }
 
@@ -479,8 +479,8 @@ struct MessageBubble: View {
                 Text(message.text)
                     .font(DesignSystem.Typography.subheadline)
                     .foregroundStyle(message.isFromMe ? .white : DesignSystem.Colors.textPrimary)
-                    .padding(.horizontal, DesignSystem.Spacing.m)
-                    .padding(.vertical, DesignSystem.Spacing.s)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .padding(.vertical, DesignSystem.Spacing.small)
                     .background(
                         message.isFromMe
                         ? DesignSystem.Colors.flameOrange
@@ -531,6 +531,60 @@ struct MessageBubbleShape: Shape {
 }
 
 // MARK: - Supporting Types
+
+// MARK: - Inbox Badge
+
+/// Badge indicating match status in inbox view.
+enum InboxBadge: String {
+    case new, unread, active, stale, ghosted, dateScheduled, archived
+
+    static func from(match: Match) -> InboxBadge {
+        switch match.status {
+        case .new: return .new
+        case .active: return .active
+        case .stale: return .stale
+        case .ghosted: return .ghosted
+        case .dateScheduled: return .dateScheduled
+        case .archived: return .archived
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .new: return "sparkles"
+        case .unread: return "circle.fill"
+        case .active: return "message.fill"
+        case .stale: return "clock.fill"
+        case .ghosted: return "eye.slash.fill"
+        case .dateScheduled: return "calendar.badge.checkmark"
+        case .archived: return "archivebox.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .new: return DesignSystem.Colors.success
+        case .unread: return DesignSystem.Colors.flameOrange
+        case .active: return DesignSystem.Colors.flameOrange
+        case .stale: return DesignSystem.Colors.warning
+        case .ghosted: return DesignSystem.Colors.error
+        case .dateScheduled: return .cyan
+        case .archived: return DesignSystem.Colors.textSecondary
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .new: return "NEW"
+        case .unread: return "1"
+        case .active: return "Active"
+        case .stale: return "Stale"
+        case .ghosted: return "Ghosted"
+        case .dateScheduled: return "Date"
+        case .archived: return "Archived"
+        }
+    }
+}
 
 struct ConversationMessage: Identifiable, Equatable {
     let id: String
