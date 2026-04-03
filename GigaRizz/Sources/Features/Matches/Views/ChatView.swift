@@ -198,7 +198,7 @@ struct ChatMessageBubble: View {
     ChatView(match: Match.demoMatches[0])
 }
 
-#Preview("Message Bubbles") {
+#Preview("Chat Message Bubbles") {
     VStack(spacing: 16) {
         ChatMessageBubble(
             message: ChatMessage(content: "Hey! How's your day going?", isFromUser: false),

@@ -134,22 +134,31 @@ struct ProfileView: View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Quick Actions").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.small) {
+                NavigationLink {
+                    GeneratedPhotosGalleryView()
+                } label: {
+                    quickActionCardContent(icon: "photo.on.rectangle.angled", title: "Gallery", subtitle: "All photos")
+                }
+
                 quickActionCard(icon: "wand.and.stars", title: "Generate", subtitle: "New photos")
                 quickActionCard(icon: "brain.head.profile", title: "Coach", subtitle: "Get help")
                 quickActionCard(icon: "square.and.arrow.up", title: "Share", subtitle: "Invite friends")
-                quickActionCard(icon: "star.fill", title: "Rate App", subtitle: "Leave review")
             }
         }
     }
 
     private func quickActionCard(icon: String, title: String, subtitle: String) -> some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.xs) {
-                Image(systemName: icon).font(.system(size: 24)).foregroundStyle(DesignSystem.Colors.flameOrange)
-                Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
-                Text(subtitle).font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
-            }.frame(maxWidth: .infinity)
+            quickActionCardContent(icon: icon, title: title, subtitle: subtitle)
         }
+    }
+
+    private func quickActionCardContent(icon: String, title: String, subtitle: String) -> some View {
+        VStack(spacing: DesignSystem.Spacing.xs) {
+            Image(systemName: icon).font(.system(size: 24)).foregroundStyle(DesignSystem.Colors.flameOrange)
+            Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
+            Text(subtitle).font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
+        }.frame(maxWidth: .infinity)
     }
 }
 
