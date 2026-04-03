@@ -5,6 +5,7 @@ struct ProfileView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @State private var showSettings = false
     @State private var showPaywall = false
+    @State private var showProfilePreview = false
     @State private var photoScore: PhotoScore?
     @State private var isAnalyzing = false
 
@@ -24,6 +25,7 @@ struct ProfileView: View {
         .toolbar { ToolbarItem(placement: .topBarTrailing) { Button { showSettings = true } label: { Image(systemName: "gearshape.fill").foregroundStyle(DesignSystem.Colors.textSecondary) } } }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showPaywall) { PaywallView() }
+        .navigationDestination(isPresented: $showProfilePreview) { ProfilePreviewView() }
     }
 
     private var profileHeader: some View {
@@ -136,7 +138,9 @@ struct ProfileView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.s) {
                 quickActionCard(icon: "wand.and.stars", title: "Generate", subtitle: "New photos")
                 quickActionCard(icon: "brain.head.profile", title: "Coach", subtitle: "Get help")
-                quickActionCard(icon: "square.and.arrow.up", title: "Share", subtitle: "Invite friends")
+                Button { showProfilePreview = true } label: {
+                    quickActionCard(icon: "eye.fill", title: "Preview", subtitle: "Dating apps")
+                }
                 quickActionCard(icon: "star.fill", title: "Rate App", subtitle: "Leave review")
             }
         }
