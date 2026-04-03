@@ -20,7 +20,10 @@ struct MatchesView: View {
         .navigationTitle("Matches").toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button { showAddMatch = true } label: { Image(systemName: "plus.circle.fill").foregroundStyle(DesignSystem.Colors.flameOrange) }
+                Button {
+                    DesignSystem.Haptics.medium()
+                    showAddMatch = true
+                } label: { Image(systemName: "plus.circle.fill").foregroundStyle(DesignSystem.Colors.flameOrange) }
             }
         }
         .sheet(isPresented: $showAddMatch) { AddMatchView(viewModel: viewModel) }
@@ -48,7 +51,10 @@ struct MatchesView: View {
     private var matchList: some View {
         VStack(spacing: DesignSystem.Spacing.xs) {
             ForEach(viewModel.matches) { match in
-                Button { selectedMatch = match } label: { matchRow(match) }
+                Button {
+                    DesignSystem.Haptics.light()
+                    selectedMatch = match
+                } label: { matchRow(match) }
             }
         }
     }

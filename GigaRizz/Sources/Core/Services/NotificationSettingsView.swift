@@ -16,7 +16,10 @@ struct NotificationSettingsView: View {
                     if notificationManager.isAuthorized {
                         Label("Notifications Enabled", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
                     } else {
-                        Button { Task { await notificationManager.requestAuthorization() } } label: {
+                        Button {
+                            DesignSystem.Haptics.medium()
+                            Task { await notificationManager.requestAuthorization() }
+                        } label: {
                             Label("Enable Notifications", systemImage: "bell.badge.fill").foregroundStyle(DesignSystem.Colors.flameOrange)
                         }
                     }
@@ -31,7 +34,10 @@ struct NotificationSettingsView: View {
                 } header: { Text("Notification Types") }
 
                 Section {
-                    Button(role: .destructive) { notificationManager.removeAllNotifications() } label: {
+                    Button(role: .destructive) {
+                        DesignSystem.Haptics.heavy()
+                        notificationManager.removeAllNotifications()
+                    } label: {
                         Label("Remove All Notifications", systemImage: "bell.slash.fill")
                     }
                 } header: { Text("Management") }

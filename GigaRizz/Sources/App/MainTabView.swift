@@ -18,6 +18,9 @@ struct MainTabView: View {
                 .tabItem { Label("Matches", systemImage: "heart.text.square.fill") }.tag(4)
         }
         .tint(DesignSystem.Colors.flameOrange)
+        .onChange(of: selectedTab) { _, _ in
+            DesignSystem.Haptics.light()
+        }
         .onAppear { configureTabBarAppearance() }
     }
 

@@ -30,7 +30,10 @@ struct ProfileView: View {
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button { showSettings = true } label: {
+                Button {
+                    DesignSystem.Haptics.light()
+                    showSettings = true
+                } label: {
                     Image(systemName: "gearshape.fill")
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                 }
@@ -110,6 +113,7 @@ struct ProfileView: View {
                 }
                 if subscriptionManager.currentTier == .free {
                     GRButton(title: "Upgrade to Pro", icon: "crown.fill") {
+                        DesignSystem.Haptics.medium()
                         showPaywall = true
                     }
                 }
@@ -130,6 +134,7 @@ struct ProfileView: View {
                 style: .secondary,
                 isLoading: isAnalyzing
             ) {
+                DesignSystem.Haptics.light()
                 runPhotoAudit()
             }
         }
@@ -225,24 +230,31 @@ struct ProfileView: View {
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.s) {
                 Button {
+                    DesignSystem.Haptics.light()
                     // Navigate to Generate tab
                 } label: {
                     quickActionContent(icon: "wand.and.stars", title: "Generate", subtitle: "New photos")
                 }
                 Button {
+                    DesignSystem.Haptics.light()
                     showBackgroundReplacer = true
                 } label: {
                     quickActionContent(icon: "photo.on.rectangle.angled", title: "Backgrounds", subtitle: "Scene swap")
                 }
                 Button {
+                    DesignSystem.Haptics.light()
                     // Navigate to Coach tab
                 } label: {
                     quickActionContent(icon: "brain.head.profile", title: "Coach", subtitle: "Get help")
                 }
-                Button { showProfilePreview = true } label: {
+                Button {
+                    DesignSystem.Haptics.light()
+                    showProfilePreview = true
+                } label: {
                     quickActionContent(icon: "eye.fill", title: "Preview", subtitle: "Dating apps")
                 }
                 Button {
+                    DesignSystem.Haptics.light()
                     showRating = true
                 } label: {
                     quickActionContent(icon: "star.fill", title: "Rate App", subtitle: "Leave review")

@@ -28,8 +28,11 @@ struct SettingsView: View {
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    Button("Done") {
+                        DesignSystem.Haptics.light()
+                        dismiss()
+                    }
+                    .foregroundStyle(DesignSystem.Colors.flameOrange)
                 }
             }
             .sheet(isPresented: $showPaywall) { PaywallView() }
@@ -85,6 +88,7 @@ struct SettingsView: View {
 
             if subscriptionManager.currentTier == .free {
                 Button {
+                    DesignSystem.Haptics.medium()
                     showPaywall = true
                 } label: {
                     Label("Upgrade to Pro", systemImage: "flame.fill")
@@ -94,6 +98,7 @@ struct SettingsView: View {
             }
 
             Button {
+                DesignSystem.Haptics.light()
                 Task { await subscriptionManager.restorePurchases() }
             } label: {
                 Label("Restore Purchases", systemImage: "arrow.clockwise")
@@ -112,6 +117,7 @@ struct SettingsView: View {
             }.listRowBackground(DesignSystem.Colors.surface)
 
             Button {
+                DesignSystem.Haptics.light()
                 showRating = true
             } label: {
                 Label("Rate GigaRizz", systemImage: "star.fill")
@@ -120,6 +126,7 @@ struct SettingsView: View {
             .listRowBackground(DesignSystem.Colors.surface)
 
             Button {
+                DesignSystem.Haptics.light()
                 // Open support email
             } label: {
                 Label("Contact Support", systemImage: "envelope")
@@ -128,6 +135,7 @@ struct SettingsView: View {
             .listRowBackground(DesignSystem.Colors.surface)
 
             Button {
+                DesignSystem.Haptics.medium()
                 // Share app
             } label: {
                 Label("Share GigaRizz", systemImage: "square.and.arrow.up")
@@ -142,6 +150,7 @@ struct SettingsView: View {
     private var dangerSection: some View {
         Section {
             Button {
+                DesignSystem.Haptics.medium()
                 showSignOutConfirmation = true
             } label: {
                 Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
@@ -150,6 +159,7 @@ struct SettingsView: View {
             .listRowBackground(DesignSystem.Colors.surface)
 
             Button {
+                DesignSystem.Haptics.heavy()
                 showDeleteConfirmation = true
             } label: {
                 Label("Delete Account", systemImage: "trash.fill")
@@ -172,13 +182,17 @@ struct SettingsView: View {
             }
             .listRowBackground(DesignSystem.Colors.surface)
 
-            Button { } label: {
+            Button {
+                DesignSystem.Haptics.light()
+            } label: {
                 Text("Terms of Service")
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }
             .listRowBackground(DesignSystem.Colors.surface)
 
-            Button { } label: {
+            Button {
+                DesignSystem.Haptics.light()
+            } label: {
                 Text("Privacy Policy")
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }

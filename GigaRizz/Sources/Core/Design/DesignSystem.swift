@@ -1,4 +1,127 @@
 import SwiftUI
+import UIKit
+
+// MARK: - Haptic Manager
+/// Centralized haptic feedback system for GigaRizz.
+/// Uses cached generators for performance and respects reduce-motion accessibility.
+@MainActor
+final class HapticManager {
+    static let shared = HapticManager()
+
+    private var lightGenerator: UIImpactFeedbackGenerator?
+    private var mediumGenerator: UIImpactFeedbackGenerator?
+    private var heavyGenerator: UIImpactFeedbackGenerator?
+    private var softGenerator: UIImpactFeedbackGenerator?
+    private var rigidGenerator: UIImpactFeedbackGenerator?
+    private var notificationGenerator: UINotificationFeedbackGenerator?
+    private var selectionGenerator: UISelectionFeedbackGenerator?
+
+    private init() {
+        prepareAll()
+    }
+
+    /// Pre-warms all haptic generators for low-latency feedback.
+    func prepareAll() {
+        lightGenerator = UIImpactFeedbackGenerator(style: .light)
+        mediumGenerator = UIImpactFeedbackGenerator(style: .medium)
+        heavyGenerator = UIImpactFeedbackGenerator(style: .heavy)
+        softGenerator = UIImpactFeedbackGenerator(style: .soft)
+        rigidGenerator = UIImpactFeedbackGenerator(style: .rigid)
+        notificationGenerator = UINotificationFeedbackGenerator()
+        selectionGenerator = UISelectionFeedbackGenerator()
+
+        lightGenerator?.prepare()
+        mediumGenerator?.prepare()
+        heavyGenerator?.prepare()
+        softGenerator?.prepare()
+        rigidGenerator?.prepare()
+        notificationGenerator?.prepare()
+        selectionGenerator?.prepare()
+    }
+
+    // MARK: - Impact
+
+    /// Light tap — selection, button press, toggle
+    func impactLight() {
+        guard !isReduceMotionEnabled else { return }
+        lightGenerator?.impactOccurred()
+        lightGenerator?.prepare()
+    }
+
+    /// Medium snap — card swipe, tab switch, picker change
+    func impactMedium() {
+        guard !isReduceMotionEnabled else { return }
+        mediumGenerator?.impactOccurred()
+        mediumGenerator?.prepare()
+    }
+
+    /// Heavy thud — destructive confirm, major action commit
+    func impactHeavy() {
+        guard !isReduceMotionEnabled else { return }
+        heavyGenerator?.impactOccurred()
+        heavyGenerator?.prepare()
+    }
+
+    /// Soft spring — gentle bounce for pull-to-refresh, slider snap
+    func impactSoft() {
+        guard !isReduceMotionEnabled else { return }
+        softGenerator?.impactOccurred()
+        softGenerator?.prepare()
+    }
+
+    /// Rigid snap — precise mechanical feedback for dials, wheels
+    func impactRigid() {
+        guard !isReduceMotionEnabled else { return }
+        rigidGenerator?.impactOccurred()
+        rigidGenerator?.prepare()
+    }
+
+    /// Variable intensity impact — 0.0 to 1.0
+    func impact(intensity: CGFloat) {
+        guard !isReduceMotionEnabled else { return }
+        let clamped = max(0, min(1, intensity))
+        lightGenerator?.impactOccurred(intensity: clamped)
+        lightGenerator?.prepare()
+    }
+
+    // MARK: - Notification
+
+    /// Success — photo generated, action completed, subscription activated
+    func notificationSuccess() {
+        guard !isReduceMotionEnabled else { return }
+        notificationGenerator?.notificationOccurred(.success)
+        notificationGenerator?.prepare()
+    }
+
+    /// Warning — photo limit reached, free tier restriction, streak at risk
+    func notificationWarning() {
+        guard !isReduceMotionEnabled else { return }
+        notificationGenerator?.notificationOccurred(.warning)
+        notificationGenerator?.prepare()
+    }
+
+    /// Error — generation failed, network error, purchase failed
+    func notificationError() {
+        guard !isReduceMotionEnabled else { return }
+        notificationGenerator?.notificationOccurred(.error)
+        notificationGenerator?.prepare()
+    }
+
+    // MARK: - Selection
+
+    /// Selection change — scrolling through photo styles, picker, carousel
+    func selectionChanged() {
+        guard !isReduceMotionEnabled else { return }
+        selectionGenerator?.selectionChanged()
+        selectionGenerator?.prepare()
+    }
+
+    // MARK: - Accessibility
+
+    private var isReduceMotionEnabled: Bool {
+        UIAccessibility.isReduceMotionEnabled
+    }
+}
 
 // MARK: - Design System
 
@@ -83,32 +206,39 @@ enum DesignSystem {
 
     // MARK: - Haptics
 
+    /// Delegates to the centralized HapticManager.
+    /// Call site remains unchanged — all existing DesignSystem.Haptics.* calls work as-is.
     @MainActor
     enum Haptics {
-        static func light() {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.prepare(); generator.impactOccurred()
-        }
-        static func medium() {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.prepare(); generator.impactOccurred()
-        }
-        static func heavy() {
-            let generator = UIImpactFeedbackGenerator(style: .heavy)
-            generator.prepare(); generator.impactOccurred()
-        }
-        static func success() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare(); generator.notificationOccurred(.success)
-        }
-        static func warning() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare(); generator.notificationOccurred(.warning)
-        }
-        static func error() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare(); generator.notificationOccurred(.error)
-        }
+        /// Light tap — button press, toggle, selection
+        static func light() { HapticManager.shared.impactLight() }
+
+        /// Medium snap — card swipe, tab switch, picker change
+        static func medium() { HapticManager.shared.impactMedium() }
+
+        /// Heavy thud — destructive confirm, major action commit
+        static func heavy() { HapticManager.shared.impactHeavy() }
+
+        /// Soft spring — gentle bounce for pull-to-refresh, slider snap
+        static func soft() { HapticManager.shared.impactSoft() }
+
+        /// Rigid snap — precise mechanical feedback for dials, wheels
+        static func rigid() { HapticManager.shared.impactRigid() }
+
+        /// Success — photo generated, action completed, subscription activated
+        static func success() { HapticManager.shared.notificationSuccess() }
+
+        /// Warning — photo limit reached, free tier restriction, streak at risk
+        static func warning() { HapticManager.shared.notificationWarning() }
+
+        /// Error — generation failed, network error, purchase failed
+        static func error() { HapticManager.shared.notificationError() }
+
+        /// Selection change — scrolling through photo styles, picker, carousel
+        static func selection() { HapticManager.shared.selectionChanged() }
+
+        /// Variable intensity impact — intensity from 0.0 to 1.0
+        static func impact(intensity: CGFloat) { HapticManager.shared.impact(intensity: intensity) }
     }
 }
 
