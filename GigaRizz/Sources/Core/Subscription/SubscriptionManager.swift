@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import RevenueCat
-import Combine
 
 // MARK: - Subscription Tier
 
@@ -61,8 +61,6 @@ enum BannerState: Equatable {
 
 @MainActor
 final class SubscriptionManager: NSObject, ObservableObject {
-    static let shared = SubscriptionManager()
-
     // MARK: - Published Properties
 
     @Published var currentTier: SubscriptionTier = .free
@@ -76,8 +74,6 @@ final class SubscriptionManager: NSObject, ObservableObject {
     private var purchases: Purchases { Purchases.shared }
 
     // MARK: - Override
-
-    var isSubscribed: Bool { currentTier != .free }
 
     var canGeneratePhoto: Bool {
         dailyPhotosUsed < currentTier.dailyPhotoLimit

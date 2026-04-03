@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Generate View
 
@@ -19,7 +19,7 @@ struct GenerateView: View {
                 generatingOverlay
             } else {
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         headerBanner
                         firstTimePrompt
                         photoPickerSection
@@ -27,7 +27,7 @@ struct GenerateView: View {
                         generateButton
                         usageBanner
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                     .padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
@@ -131,13 +131,13 @@ struct GenerateView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     // MARK: - Photo Picker Section
 
     private var photoPickerSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             HStack {
                 Text("Your Photos")
                     .font(DesignSystem.Typography.callout)
@@ -175,7 +175,7 @@ struct GenerateView: View {
     }
 
     private var emptyPhotoPickerContent: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: "photo.on.rectangle.angled")
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -213,7 +213,7 @@ struct GenerateView: View {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs)
             ], spacing: DesignSystem.Spacing.xs) {
                 ForEach(viewModel.selectedPhotos) { photo in
                     ZStack(alignment: .topTrailing) {
@@ -267,13 +267,13 @@ struct GenerateView: View {
     // MARK: - Style Picker Section
 
     private var stylePickerSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Choose Style")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: DesignSystem.Spacing.s) {
+                HStack(spacing: DesignSystem.Spacing.small) {
                     ForEach(StylePreset.allPresets) { preset in
                         StylePresetCard(
                             preset: preset,
@@ -365,7 +365,7 @@ struct GenerateView: View {
                         Text("Upgrade")
                             .font(DesignSystem.Typography.smallButton)
                             .foregroundStyle(DesignSystem.Colors.deepNight)
-                            .padding(.horizontal, DesignSystem.Spacing.m)
+                            .padding(.horizontal, DesignSystem.Spacing.medium)
                             .padding(.vertical, DesignSystem.Spacing.xs)
                             .background(
                                 LinearGradient(
@@ -384,7 +384,7 @@ struct GenerateView: View {
     // MARK: - Generating Overlay
 
     private var generatingOverlay: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.xl) {
             Spacer()
 
             Image(systemName: "wand.and.stars")
@@ -398,7 +398,7 @@ struct GenerateView: View {
                 )
                 .symbolEffect(.pulse, isActive: true)
 
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 Text(viewModel.progressText)
                     .font(DesignSystem.Typography.title)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -414,9 +414,10 @@ struct GenerateView: View {
                     .contentTransition(.numericText())
             }
 
-            // Dating Tips Carousel
-            GenerationTipsView()
-                .padding(.horizontal, DesignSystem.Spacing.m)
+            Text("This takes about 30 seconds.\nDon't close the app!")
+                .font(DesignSystem.Typography.footnote)
+                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .multilineTextAlignment(.center)
 
             Spacer()
 

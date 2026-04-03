@@ -2,10 +2,9 @@ import SwiftUI
 
 @main
 struct GigaRizzApp: App {
-    @StateObject private var authManager = AuthManager.shared
-    @StateObject private var subscriptionManager = SubscriptionManager.shared
-    @StateObject private var postHogManager = PostHogManager.shared
-    @StateObject private var ratingManager = AppRatingManager.shared
+    @StateObject private var authManager = AuthManager()
+    @StateObject private var subscriptionManager = SubscriptionManager()
+    @StateObject private var postHogManager = PostHogManager()
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some Scene {
@@ -28,7 +27,6 @@ struct GigaRizzApp: App {
             .onAppear {
                 authManager.startAuthStateListener()
                 postHogManager.initPostHog()
-                ratingManager.trackAppLaunch()
             }
         }
     }
