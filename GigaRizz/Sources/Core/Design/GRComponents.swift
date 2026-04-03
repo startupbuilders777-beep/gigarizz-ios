@@ -177,6 +177,64 @@ struct EmptyStateView: View {
     }
 }
 
+// MARK: - RankBadge
+
+/// Visual rank indicator for favorites (#1, #2, #3...).
+struct RankBadge: View {
+    let rank: Int
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(DesignSystem.Colors.flameOrange)
+                .frame(width: 24, height: 24)
+
+            Text("\(rank)")
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+        }
+        .overlay(
+            Circle()
+                .strokeBorder(.white.opacity(0.3), lineWidth: 1)
+        )
+        .shadow(color: DesignSystem.Colors.flameOrange.opacity(0.4), radius: 2, y: 1)
+        .accessibilityLabel("Rank #\(rank)")
+    }
+}
+
+// MARK: - FavoritesStatsCard
+
+/// Small stat card for favorites header.
+struct FavoritesStatsCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        VStack(spacing: DesignSystem.Spacing.micro) {
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundStyle(color)
+
+            Text(value)
+                .font(DesignSystem.Typography.callout)
+                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                .lineLimit(1)
+
+            Text(title)
+                .font(.system(size: 10))
+                .foregroundStyle(DesignSystem.Colors.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignSystem.Spacing.small)
+        .background(DesignSystem.Colors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title): \(value)")
+    }
+}
+
 // MARK: - Previews
 
 #Preview("GRButton Styles") {

@@ -226,6 +226,24 @@ enum DesignSystem {
         static func selection() {
             HapticManager.selection()
         }
+
+        static func selection() {
+            let generator = UISelectionFeedbackGenerator()
+            generator.prepare()
+            generator.selectionChanged()
+        }
+
+        static func soft() {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+
+        static func rigid() {
+            let generator = UIImpactFeedbackGenerator(style: .rigid)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
 }
 

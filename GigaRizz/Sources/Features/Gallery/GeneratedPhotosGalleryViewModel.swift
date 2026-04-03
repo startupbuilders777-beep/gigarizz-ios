@@ -330,6 +330,18 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
     func toggleFavorite(_ itemId: String) {
         if let index = allPhotos.firstIndex(where: { $0.id == itemId }) {
             let photo = allPhotos[index].photo
+            let newIsFavorite = !photo.isFavorite
+
+            // When adding to favorites, assign next rank
+            let newRank: Int?
+            if newIsFavorite {
+                // Count existing favorites to get next rank
+                let currentFavoriteCount = allPhotos.filter { $0.photo.isFavorite }.count
+                newRank = currentFavoriteCount + 1
+            } else {
+                newRank = nil
+            }
+
             let updatedPhoto = GeneratedPhoto(
                 id: photo.id,
                 userId: photo.userId,
@@ -337,12 +349,40 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
                 imageURL: photo.imageURL,
                 thumbnailURL: photo.thumbnailURL,
                 createdAt: photo.createdAt,
-                isFavorite: !photo.isFavorite
+                isFavorite: newIsFavorite,
+                favoriteRank: newRank
             )
             allPhotos[index] = GalleryPhotoItem(photo: updatedPhoto, platformTag: allPhotos[index].platformTag)
+
+            // If removing from favorites, shift ranks down
+            if !newIsFavorite && photo.favoriteRank != nil {
+                shiftFavoriteRanksAfterRemoval(removedRank: photo.favoriteRank!)
+            }
+
             saveToStorage()
             updateDisplayedPhotos()
             DesignSystem.Haptics.medium()
+        }
+    }
+
+    // MARK: - Shift Favorite Ranks After Removal
+
+    private func shiftFavoriteRanksAfterRemoval(removedRank: Int) {
+        for i in allPhotos.indices {
+            let photo = allPhotos[i].photo
+            if photo.isFavorite && photo.favoriteRank != nil && photo.favoriteRank! > removedRank {
+                let shiftedPhoto = GeneratedPhoto(
+                    id: photo.id,
+                    userId: photo.userId,
+                    style: photo.style,
+                    imageURL: photo.imageURL,
+                    thumbnailURL: photo.thumbnailURL,
+                    createdAt: photo.createdAt,
+                    isFavorite: true,
+                    favoriteRank: photo.favoriteRank! - 1
+                )
+                allPhotos[i] = GalleryPhotoItem(photo: shiftedPhoto, platformTag: allPhotos[i].platformTag)
+            }
         }
     }
 

@@ -45,6 +45,7 @@ struct GeneratedPhoto: Identifiable, Codable, Equatable {
     let thumbnailURL: URL?
     let createdAt: Date
     var isFavorite: Bool
+    var favoriteRank: Int? // User-defined ranking (#1 = best, nil = not favorite)
 
     init(
         id: String = UUID().uuidString,
@@ -53,7 +54,8 @@ struct GeneratedPhoto: Identifiable, Codable, Equatable {
         imageURL: URL? = nil,
         thumbnailURL: URL? = nil,
         createdAt: Date = Date(),
-        isFavorite: Bool = false
+        isFavorite: Bool = false,
+        favoriteRank: Int? = nil
     ) {
         self.id = id
         self.userId = userId
@@ -62,6 +64,7 @@ struct GeneratedPhoto: Identifiable, Codable, Equatable {
         self.thumbnailURL = thumbnailURL
         self.createdAt = createdAt
         self.isFavorite = isFavorite
+        self.favoriteRank = favoriteRank
     }
 }
 
