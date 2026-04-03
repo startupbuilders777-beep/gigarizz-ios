@@ -384,49 +384,16 @@ struct GenerateView: View {
     // MARK: - Generating Overlay
 
     private var generatingOverlay: some View {
-        VStack(spacing: DesignSystem.Spacing.xl) {
-            Spacer()
-
-            Image(systemName: "wand.and.stars")
-                .font(.system(size: 64, weight: .light))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .symbolEffect(.pulse, isActive: true)
-
-            VStack(spacing: DesignSystem.Spacing.small) {
-                Text(viewModel.progressText)
-                    .font(DesignSystem.Typography.title)
-                    .foregroundStyle(DesignSystem.Colors.textPrimary)
-
-                ProgressView(value: viewModel.generationProgress)
-                    .tint(DesignSystem.Colors.flameOrange)
-                    .scaleEffect(y: 2)
-                    .padding(.horizontal, DesignSystem.Spacing.xl)
-
-                Text("\(Int(viewModel.generationProgress * 100))%")
-                    .font(DesignSystem.Typography.scoreDisplay)
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-                    .contentTransition(.numericText())
+        GenerationLoadingView(
+            progress: $viewModel.generationProgress,
+            isGenerating: $viewModel.isGenerating,
+            onCancel: {
+                viewModel.cancelGeneration()
+            },
+            onComplete: {
+                // Results will be shown via showResults sheet
             }
-
-            Text("This takes about 30 seconds.\nDon't close the app!")
-                .font(DesignSystem.Typography.footnote)
-                .foregroundStyle(DesignSystem.Colors.textSecondary)
-                .multilineTextAlignment(.center)
-
-            Spacer()
-
-            GRButton(title: "Cancel", style: .outline) {
-                viewModel.isGenerating = false
-            }
-            .padding(.horizontal, DesignSystem.Spacing.xl)
-            .padding(.bottom, DesignSystem.Spacing.xl)
-        }
+        )
     }
 }
 
