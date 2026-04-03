@@ -97,13 +97,15 @@ final class PostHogManager: ObservableObject {
         track("referral_code_shared")
     }
 
-    // MARK: - Private
+    // MARK: - Public Tracking
 
-    private func track(_ event: String, properties: [String: Any] = [:]) {
+    func track(_ event: String, properties: [String: Any] = [:]) {
         guard isInitialized else { return }
         var allProperties = properties
         allProperties["timestamp"] = ISO8601DateFormatter().string(from: Date())
         allProperties["app_version"] = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         PostHogSDK.shared.capture(event, properties: allProperties)
     }
+
+    // MARK: - Private
 }
