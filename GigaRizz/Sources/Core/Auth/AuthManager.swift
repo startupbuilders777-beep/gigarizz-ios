@@ -32,6 +32,13 @@ final class AuthManager: ObservableObject {
 
     // MARK: - Auth State
 
+    /// Current user ID (convenience accessor)
+    var currentUserId: String? {
+        currentUser?.uid
+    }
+
+    // MARK: - Auth State
+
     func startAuthStateListener() {
         authStateListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
