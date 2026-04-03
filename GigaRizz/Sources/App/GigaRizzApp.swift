@@ -2,9 +2,9 @@ import SwiftUI
 
 @main
 struct GigaRizzApp: App {
-    @StateObject private var authManager = AuthManager()
-    @StateObject private var subscriptionManager = SubscriptionManager()
-    @StateObject private var postHogManager = PostHogManager()
+    @StateObject private var authManager = AuthManager.shared
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
+    @StateObject private var postHogManager = PostHogManager.shared
     @StateObject private var ratingManager = AppRatingManager.shared
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 

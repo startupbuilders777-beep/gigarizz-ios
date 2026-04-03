@@ -99,7 +99,7 @@ final class PostHogManager: ObservableObject {
 
     // MARK: - Private
 
-    private func track(_ event: String, properties: [String: Any] = [:]) {
+    func track(_ event: String, properties: [String: Any] = [:]) {
         guard isInitialized else { return }
         var allProperties = properties
         allProperties["timestamp"] = ISO8601DateFormatter().string(from: Date())
