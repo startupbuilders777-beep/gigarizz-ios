@@ -16,10 +16,7 @@ struct GRButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: {
-            DesignSystem.Haptics.light()
-            action()
-        }, label: {
+        Button(action: action, label: {
             HStack(spacing: DesignSystem.Spacing.xs) {
                 if isLoading {
                     ProgressView()
@@ -47,6 +44,7 @@ struct GRButton: View {
         })
         .disabled(isDisabled || isLoading)
         .opacity(isDisabled ? 0.5 : 1.0)
+        .buttonStyle(HapticButtonStyle(hapticStyle: .light))
     }
 
     private var backgroundColor: Color {
