@@ -40,7 +40,8 @@ struct GenerateView: View {
         .sheet(isPresented: $viewModel.showResults) {
             GenerationResultView(
                 generatedPhotos: viewModel.generatedPhotos,
-                style: viewModel.selectedStyle?.name ?? "Custom"
+                style: viewModel.selectedStyle?.name ?? "Custom",
+                userId: authManager.userId ?? "anonymous"
             )
         }
         .sheet(isPresented: $viewModel.showPaywall) {
