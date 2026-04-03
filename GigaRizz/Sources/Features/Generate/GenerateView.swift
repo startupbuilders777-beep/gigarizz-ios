@@ -7,6 +7,8 @@ struct GenerateView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = GenerateViewModel()
+    @AppStorage("hasGeneratedPhotos") private var hasGeneratedPhotos = false
+    @State private var showFirstGenerationFlow = false
 
     var body: some View {
         ZStack {
@@ -19,6 +21,7 @@ struct GenerateView: View {
                 ScrollView {
                     VStack(spacing: DesignSystem.Spacing.l) {
                         headerBanner
+                        firstTimePrompt
                         photoPickerSection
                         stylePickerSection
                         generateButton
@@ -43,6 +46,11 @@ struct GenerateView: View {
         .sheet(isPresented: $viewModel.showPaywall) {
             PaywallView()
         }
+        .fullScreenCover(isPresented: $showFirstGenerationFlow) {
+            FirstGenerationFlowView()
+                .environmentObject(authManager)
+                .environmentObject(subscriptionManager)
+        }
         .alert("Error", isPresented: .init(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -50,6 +58,54 @@ struct GenerateView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .onAppear {
+            // Show guided flow for first-time users
+            if !hasGeneratedPhotos {
+                showFirstGenerationFlow = true
+            }
+        }
+    }
+
+    // MARK: - First-Time User Prompt
+
+    private var firstTimePrompt: some View {
+        Group {
+            if !hasGeneratedPhotos {
+                Button {
+                    showFirstGenerationFlow = true
+                    DesignSystem.Haptics.light()
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.s) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 18))
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("New here?")
+                                .font(DesignSystem.Typography.callout)
+                                .foregroundStyle(DesignSystem.Colors.textPrimary)
+
+                            Text("Try our guided photo wizard")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14))
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    }
+                    .padding(DesignSystem.Spacing.m)
+                    .background(DesignSystem.Colors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                            .strokeBorder(DesignSystem.Colors.flameOrange.opacity(0.3), lineWidth: 1)
+                    )
+                }
+            }
         }
     }
 
