@@ -89,7 +89,7 @@ struct MatchInboxView: View {
     // MARK: - Empty State
 
     private var emptyInboxView: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.large) {
             Spacer()
 
             ZStack {
@@ -134,7 +134,7 @@ struct MatchInboxView: View {
     }
 
     private var noResultsView: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.large) {
             Spacer()
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 44, weight: .light))
@@ -152,9 +152,9 @@ struct MatchInboxView: View {
     }
 
     private var loadingView: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             ForEach(0..<5, id: \.self) { _ in
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.medium) {
                     ShimmerView().frame(width: 48, height: 48).clipShape(Circle())
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                         ShimmerView().frame(width: 120, height: 16)
@@ -162,8 +162,8 @@ struct MatchInboxView: View {
                     }
                     Spacer()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
-                .padding(.vertical, DesignSystem.Spacing.s)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                .padding(.vertical, DesignSystem.Spacing.small)
             }
         }
     }
@@ -180,14 +180,14 @@ struct MatchConversationCell: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 profilePhoto
                 contentStack
                 Spacer()
                 rightStack
             }
             .frame(height: 72)
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .contentShape(Rectangle())
         }
         .buttonStyle(CellPressStyle())
@@ -308,6 +308,49 @@ struct MatchConversationCell: View {
     }
 }
 
+// MARK: - Inbox Badge
+
+enum InboxBadge {
+    case unread
+    case newMatch
+    case replied
+    case stale
+
+    var icon: String {
+        switch self {
+        case .unread: return "circle.fill"
+        case .newMatch: return "heart.fill"
+        case .replied: return "checkmark"
+        case .stale: return "clock"
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .unread: return ""
+        case .newMatch: return "NEW"
+        case .replied: return "REPLIED"
+        case .stale: return "STALE"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .unread: return DesignSystem.Colors.flameOrange
+        case .newMatch: return DesignSystem.Colors.success
+        case .replied: return DesignSystem.Colors.textSecondary
+        case .stale: return DesignSystem.Colors.textSecondary
+        }
+    }
+
+    static func from(match: Match) -> InboxBadge {
+        if match.isNewMatch { return .newMatch }
+        if match.hasUnreadMessages { return .unread }
+        if match.lastMessageIsFromUser { return .replied }
+        return .stale
+    }
+}
+
 // MARK: - Inbox Badge View
 
 struct InboxBadgeView: View {
@@ -357,12 +400,12 @@ struct InboxChatPreview: View {
 
                     // Messages
                     ScrollView {
-                        LazyVStack(spacing: DesignSystem.Spacing.s) {
+                        LazyVStack(spacing: DesignSystem.Spacing.small) {
                             ForEach(viewModel.messages(for: match.id)) { message in
                                 MessageBubble(message: message)
                             }
                         }
-                        .padding(DesignSystem.Spacing.m)
+                        .padding(DesignSystem.Spacing.medium)
                     }
 
                     // Input bar
@@ -399,7 +442,7 @@ struct InboxChatPreview: View {
     }
 
     private var matchHeader: some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Text(String(match.name.prefix(1)).uppercased())
                 .font(DesignSystem.Typography.title)
                 .foregroundStyle(match.platform.color)
@@ -424,17 +467,17 @@ struct InboxChatPreview: View {
 
             InboxBadgeView(badge: InboxBadge.from(match: match))
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
     }
 
     private var inputBar: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             TextField("Message...", text: $messageText)
                 .font(DesignSystem.Typography.subheadline)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
-                .padding(.horizontal, DesignSystem.Spacing.m)
-                .padding(.vertical, DesignSystem.Spacing.s)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                .padding(.vertical, DesignSystem.Spacing.small)
                 .background(DesignSystem.Colors.surfaceSecondary)
                 .clipShape(Capsule())
                 .focused($isInputFocused)
@@ -453,8 +496,8 @@ struct InboxChatPreview: View {
             .disabled(messageText.isEmpty)
             .sensoryFeedback(.impact(weight: .medium), trigger: messageText.isEmpty == false)
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
     }
 
@@ -479,8 +522,8 @@ struct MessageBubble: View {
                 Text(message.text)
                     .font(DesignSystem.Typography.subheadline)
                     .foregroundStyle(message.isFromMe ? .white : DesignSystem.Colors.textPrimary)
-                    .padding(.horizontal, DesignSystem.Spacing.m)
-                    .padding(.vertical, DesignSystem.Spacing.s)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .padding(.vertical, DesignSystem.Spacing.small)
                     .background(
                         message.isFromMe
                         ? DesignSystem.Colors.flameOrange

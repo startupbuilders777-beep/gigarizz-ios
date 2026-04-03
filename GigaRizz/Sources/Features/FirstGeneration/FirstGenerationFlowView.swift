@@ -65,9 +65,9 @@ struct FirstGenerationFlowView: View {
 
     private var uploadStep: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 // Header
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     ZStack {
                         Circle()
                             .fill(
@@ -103,12 +103,12 @@ struct FirstGenerationFlowView: View {
                 .padding(.top, DesignSystem.Spacing.xl)
 
                 // Photo requirements
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     requirementRow(icon: "checkmark.circle.fill", text: "Clear face visibility", isMet: true)
                     requirementRow(icon: "checkmark.circle.fill", text: "Different angles & poses", isMet: true)
                     requirementRow(icon: "checkmark.circle.fill", text: "Good lighting (no harsh shadows)", isMet: true)
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // Photo picker area
                 if viewModel.selectedPhotos.isEmpty {
@@ -129,7 +129,7 @@ struct FirstGenerationFlowView: View {
                     viewModel.proceedToStyle()
                     DesignSystem.Haptics.medium()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -141,7 +141,7 @@ struct FirstGenerationFlowView: View {
             maxSelectionCount: viewModel.maximumPhotos,
             matching: .images
         ) {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                         .strokeBorder(
@@ -150,7 +150,7 @@ struct FirstGenerationFlowView: View {
                         )
                         .frame(height: 200)
 
-                    VStack(spacing: DesignSystem.Spacing.m) {
+                    VStack(spacing: DesignSystem.Spacing.medium) {
                         Image(systemName: "plus.circle.fill")
                             .font(.system(size: 40, weight: .light))
                             .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -169,7 +169,7 @@ struct FirstGenerationFlowView: View {
                 .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private var photoGrid: some View {
@@ -228,7 +228,7 @@ struct FirstGenerationFlowView: View {
                 }
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private var photoCountIndicator: some View {
@@ -249,11 +249,11 @@ struct FirstGenerationFlowView: View {
                     .foregroundStyle(DesignSystem.Colors.warning)
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func requirementRow(icon: String, text: String, isMet: Bool) -> some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             Image(systemName: icon)
                 .font(.system(size: 14))
                 .foregroundStyle(isMet ? DesignSystem.Colors.success : DesignSystem.Colors.textSecondary)
@@ -264,7 +264,7 @@ struct FirstGenerationFlowView: View {
 
             Spacer()
         }
-        .padding(DesignSystem.Spacing.s)
+        .padding(DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
     }
@@ -273,9 +273,9 @@ struct FirstGenerationFlowView: View {
 
     private var styleStep: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 // Header
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     Text("Choose Your Style")
                         .font(DesignSystem.Typography.headline)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -292,7 +292,7 @@ struct FirstGenerationFlowView: View {
                 // AI suggestion card
                 if let suggestedStyle = viewModel.aiSuggestedStyle {
                     GRCard {
-                        HStack(spacing: DesignSystem.Spacing.m) {
+                        HStack(spacing: DesignSystem.Spacing.medium) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
                                     .fill(
@@ -343,22 +343,22 @@ struct FirstGenerationFlowView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                 }
 
                 // Style options
                 Text("Or choose a different style:")
                     .font(DesignSystem.Typography.footnote)
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         ForEach(viewModel.availableStyles) { style in
                             styleCard(style)
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                 }
 
                 // Generate button
@@ -370,7 +370,7 @@ struct FirstGenerationFlowView: View {
                     viewModel.proceedToGenerating()
                     DesignSystem.Haptics.medium()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -381,7 +381,7 @@ struct FirstGenerationFlowView: View {
             viewModel.selectedStyle = style
             DesignSystem.Haptics.light()
         } label: {
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
                         .fill(
@@ -474,7 +474,7 @@ struct FirstGenerationFlowView: View {
             }
 
             // Progress text
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Text(viewModel.progressText)
                     .font(DesignSystem.Typography.title)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -537,11 +537,11 @@ struct FirstGenerationFlowView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: 80)
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func tipCard(_ tip: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             Image(systemName: "lightbulb.fill")
                 .font(.system(size: 20))
                 .foregroundStyle(DesignSystem.Colors.goldAccent)
@@ -553,7 +553,7 @@ struct FirstGenerationFlowView: View {
 
             Spacer()
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
     }
@@ -562,9 +562,9 @@ struct FirstGenerationFlowView: View {
 
     private var resultsStep: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 // Success header
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     ZStack {
                         Circle()
                             .fill(
@@ -599,7 +599,7 @@ struct FirstGenerationFlowView: View {
                 shareGlowUpSection
 
                 // Action buttons
-                VStack(spacing: DesignSystem.Spacing.s) {
+                VStack(spacing: DesignSystem.Spacing.small) {
                     GRButton(
                         title: "Save All to Photos",
                         icon: "square.and.arrow.down"
@@ -617,7 +617,7 @@ struct FirstGenerationFlowView: View {
                         DesignSystem.Haptics.light()
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -630,14 +630,14 @@ struct FirstGenerationFlowView: View {
 
     private var photoMasonryGrid: some View {
         LazyVGrid(columns: [
-            GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-            GridItem(.flexible(), spacing: DesignSystem.Spacing.s)
-        ], spacing: DesignSystem.Spacing.s) {
+            GridItem(.flexible(), spacing: DesignSystem.Spacing.small),
+            GridItem(.flexible(), spacing: DesignSystem.Spacing.small)
+        ], spacing: DesignSystem.Spacing.small) {
             ForEach(Array(viewModel.generatedPhotos.enumerated()), id: \.element.id) { index, photo in
                 generatedPhotoCard(photo: photo, index: index)
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func generatedPhotoCard(photo: GeneratedPhoto, index: Int) -> some View {
@@ -653,7 +653,7 @@ struct FirstGenerationFlowView: View {
                 )
                 .frame(height: index % 3 == 0 ? 220 : 180)
 
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Image(systemName: "person.fill")
                     .font(.system(size: 40, weight: .ultraLight))
                     .foregroundStyle(.white.opacity(0.5))
@@ -699,7 +699,7 @@ struct FirstGenerationFlowView: View {
 
     private var shareGlowUpSection: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Text("Share Your Glow-Up")
                     .font(DesignSystem.Typography.callout)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -708,7 +708,7 @@ struct FirstGenerationFlowView: View {
                     .font(DesignSystem.Typography.footnote)
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
 
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.medium) {
                     shareButton(title: "Instagram", icon: "camera.fill", color: .purple) {
                         viewModel.shareToInstagram()
                     }
@@ -723,7 +723,7 @@ struct FirstGenerationFlowView: View {
                 }
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func shareButton(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
@@ -747,7 +747,7 @@ struct FirstGenerationFlowView: View {
         VStack {
             Spacer()
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(DesignSystem.Colors.success)
                     .font(.system(size: 20))
@@ -756,7 +756,7 @@ struct FirstGenerationFlowView: View {
                     .font(DesignSystem.Typography.callout)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }
-            .padding(DesignSystem.Spacing.m)
+            .padding(DesignSystem.Spacing.medium)
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
             .cardShadow()
