@@ -42,6 +42,7 @@ struct ProfileView: View {
         .navigationDestination(isPresented: $showBackgroundReplacer) {
             BackgroundReplacerView()
         }
+        .navigationDestination(isPresented: $showProfilePreview) { ProfilePreviewView() }
     }
 
     // MARK: - Profile Header
@@ -237,6 +238,9 @@ struct ProfileView: View {
                     // Navigate to Coach tab
                 } label: {
                     quickActionContent(icon: "brain.head.profile", title: "Coach", subtitle: "Get help")
+                }
+                Button { showProfilePreview = true } label: {
+                    quickActionContent(icon: "eye.fill", title: "Preview", subtitle: "Dating apps")
                 }
                 Button {
                     showRating = true
