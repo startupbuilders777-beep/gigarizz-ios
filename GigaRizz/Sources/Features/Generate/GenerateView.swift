@@ -77,7 +77,7 @@ struct GenerateView: View {
                     showFirstGenerationFlow = true
                     DesignSystem.Haptics.light()
                 } label: {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "sparkles")
                             .font(.system(size: 18))
                             .foregroundStyle(DesignSystem.Colors.goldAccent)
@@ -98,7 +98,7 @@ struct GenerateView: View {
                             .font(.system(size: 14))
                             .foregroundStyle(DesignSystem.Colors.flameOrange)
                     }
-                    .padding(DesignSystem.Spacing.m)
+                    .padding(DesignSystem.Spacing.medium)
                     .background(DesignSystem.Colors.surface)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                     .overlay(

@@ -96,7 +96,7 @@ final class AuthManager: ObservableObject {
     // MARK: - Helpers
 
     var userId: String? {
-        currentUser?.uid
+        currentUserId
     }
 
     var userEmail: String? {
