@@ -1,5 +1,5 @@
-import SwiftUI
 import PostHog
+import SwiftUI
 
 // MARK: - Supporting Types
 

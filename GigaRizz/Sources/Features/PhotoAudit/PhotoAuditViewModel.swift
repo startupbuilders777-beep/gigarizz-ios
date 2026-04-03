@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Audit Models
 
@@ -58,13 +58,13 @@ struct AuditCategory: Identifiable, Equatable {
 
 @MainActor
 final class PhotoAuditViewModel: ObservableObject {
-    @Published var photosPickerItem: PhotosPickerItem? = nil
-    @Published var selectedImage: UIImage? = nil
+    @Published var photosPickerItem: PhotosPickerItem? 
+    @Published var selectedImage: UIImage? 
     @Published var isAnalyzing = false
     @Published var analysisProgress: Double = 0
     @Published var analysisStageText = "Starting analysis..."
-    @Published var auditResult: PhotoAuditResult? = nil
-    @Published var errorMessage: String? = nil
+    @Published var auditResult: PhotoAuditResult? 
+    @Published var errorMessage: String? 
 
     private let stages = [
         (0.0, "Detecting face and features..."),
@@ -74,7 +74,7 @@ final class PhotoAuditViewModel: ObservableObject {
         (0.60, "Scanning background..."),
         (0.75, "Rating outfit and style..."),
         (0.85, "Assessing body language..."),
-        (0.95, "Calculating final score..."),
+        (0.95, "Calculating final score...")
     ]
 
     // MARK: - Load and Analyze
@@ -123,7 +123,7 @@ final class PhotoAuditViewModel: ObservableObject {
         auditResult = result
         isAnalyzing = false
         DesignSystem.Haptics.success()
-        PostHogManager.shared.track("photo_audit_completed", properties: ["overall_score": result.overallScore])
+        PostHogManager.shared.trackEvent("photo_audit_completed", properties: ["overall_score": result.overallScore])
     }
 
     // MARK: - Generate Audit (Simulated AI)
@@ -159,7 +159,7 @@ final class PhotoAuditViewModel: ObservableObject {
             AuditCategory(name: "Expression", icon: "face.smiling", score: round(expression * 10) / 10, feedback: expressionFeedback(expression)),
             AuditCategory(name: "Background", icon: "photo.fill", score: round(background * 10) / 10, feedback: backgroundFeedback(background)),
             AuditCategory(name: "Outfit", icon: "tshirt.fill", score: round(outfit * 10) / 10, feedback: outfitFeedback(outfit)),
-            AuditCategory(name: "Body Language", icon: "figure.stand", score: round(bodyLanguage * 10) / 10, feedback: bodyLanguageFeedback(bodyLanguage)),
+            AuditCategory(name: "Body Language", icon: "figure.stand", score: round(bodyLanguage * 10) / 10, feedback: bodyLanguageFeedback(bodyLanguage))
         ]
 
         let improvements = generateImprovements(categories)

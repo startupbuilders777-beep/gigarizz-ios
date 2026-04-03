@@ -8,7 +8,7 @@ struct OnboardingView: View {
         OnboardingPage(icon: "flame.fill", title: "Welcome to GigaRizz", subtitle: "Your AI-powered dating photo upgrade.\nBetter photos = more matches.", gradient: [DesignSystem.Colors.flameOrange, .orange]),
         OnboardingPage(icon: "camera.fill", title: "Upload Your Selfies", subtitle: "Pick 3-6 of your best selfies.\nWe'll use AI to create fire dating photos.", gradient: [.purple, .blue]),
         OnboardingPage(icon: "wand.and.stars", title: "Choose Your Style", subtitle: "Confident, Adventurous, Golden Hour \u{2014}\npick a look that's 100% you.", gradient: [.teal, .cyan]),
-        OnboardingPage(icon: "heart.circle.fill", title: "Get More Matches", subtitle: "AI coach helps with bios, openers,\nand conversation starters. Let's go!", gradient: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent]),
+        OnboardingPage(icon: "heart.circle.fill", title: "Get More Matches", subtitle: "AI coach helps with bios, openers,\nand conversation starters. Let's go!", gradient: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent])
     ]
 
     var body: some View {
@@ -23,7 +23,7 @@ struct OnboardingView: View {
                         }
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m).frame(height: 44)
+                .padding(.horizontal, DesignSystem.Spacing.medium).frame(height: 44)
 
                 TabView(selection: $currentPage) {
                     ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
@@ -40,7 +40,7 @@ struct OnboardingView: View {
                             .frame(width: index == currentPage ? 24 : 8, height: 8)
                             .animation(DesignSystem.Animation.quickSpring, value: currentPage)
                     }
-                }.padding(.bottom, DesignSystem.Spacing.l)
+                }.padding(.bottom, DesignSystem.Spacing.large)
 
                 GRButton(
                     title: currentPage == pages.count - 1 ? "Get Started" : "Continue",
@@ -51,7 +51,7 @@ struct OnboardingView: View {
                     } else { completeOnboarding() }
                     DesignSystem.Haptics.light()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m).padding(.bottom, DesignSystem.Spacing.xl)
+                .padding(.horizontal, DesignSystem.Spacing.medium).padding(.bottom, DesignSystem.Spacing.xl)
             }
         }
     }
@@ -66,7 +66,7 @@ struct OnboardingView: View {
                     .shadow(color: page.gradient.first?.opacity(0.4) ?? .clear, radius: 20, y: 10)
                 Image(systemName: page.icon).font(.system(size: 48, weight: .bold)).foregroundStyle(.white)
             }
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Text(page.title).font(DesignSystem.Typography.headline).foregroundStyle(DesignSystem.Colors.textPrimary).multilineTextAlignment(.center)
                 Text(page.subtitle).font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textSecondary).multilineTextAlignment(.center).lineSpacing(4)
             }

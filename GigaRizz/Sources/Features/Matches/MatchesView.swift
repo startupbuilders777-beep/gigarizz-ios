@@ -12,8 +12,8 @@ struct MatchesView: View {
                 EmptyStateView(icon: "heart.circle", title: "No Matches Yet", subtitle: "Add your matches to track conversations and never miss a follow-up.", ctaTitle: "Add First Match") { showAddMatch = true }
             } else {
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) { statsBar; matchList }
-                    .padding(.horizontal, DesignSystem.Spacing.m).padding(.bottom, DesignSystem.Spacing.xxl)
+                    VStack(spacing: DesignSystem.Spacing.large) { statsBar; matchList }
+                    .padding(.horizontal, DesignSystem.Spacing.medium).padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
         }
@@ -28,12 +28,12 @@ struct MatchesView: View {
     }
 
     private var statsBar: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             statCard(count: viewModel.matches.count, label: "Total", color: DesignSystem.Colors.flameOrange)
             statCard(count: viewModel.activeCount, label: "Active", color: DesignSystem.Colors.success)
             statCard(count: viewModel.staleCount, label: "Stale", color: DesignSystem.Colors.warning)
             statCard(count: viewModel.scheduledCount, label: "Dates", color: .cyan)
-        }.padding(.top, DesignSystem.Spacing.m)
+        }.padding(.top, DesignSystem.Spacing.medium)
     }
 
     private func statCard(count: Int, label: String, color: Color) -> some View {
@@ -55,7 +55,7 @@ struct MatchesView: View {
 
     private func matchRow(_ match: Match) -> some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 ZStack {
                     Circle().fill(match.platform.color.opacity(0.2)).frame(width: 48, height: 48)
                     Text(String(match.name.prefix(1))).font(DesignSystem.Typography.title).foregroundStyle(match.platform.color)

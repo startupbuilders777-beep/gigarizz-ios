@@ -18,7 +18,7 @@ struct SignInView: View {
                 Spacer()
 
                 // MARK: - Logo Area
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     Image(systemName: "flame.fill")
                         .font(.system(size: 64, weight: .bold))
                         .foregroundStyle(
@@ -44,12 +44,12 @@ struct SignInView: View {
                 Spacer()
 
                 // MARK: - Form
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     TextField("Email", text: $email)
                         .textFieldStyle(.plain)
                         .font(DesignSystem.Typography.body)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
-                        .padding(DesignSystem.Spacing.m)
+                        .padding(DesignSystem.Spacing.medium)
                         .background(DesignSystem.Colors.surfaceSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                         .textContentType(.emailAddress)
@@ -60,7 +60,7 @@ struct SignInView: View {
                         .textFieldStyle(.plain)
                         .font(DesignSystem.Typography.body)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
-                        .padding(DesignSystem.Spacing.m)
+                        .padding(DesignSystem.Spacing.medium)
                         .background(DesignSystem.Colors.surfaceSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                         .textContentType(.password)
@@ -90,7 +90,7 @@ struct SignInView: View {
                         }
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // MARK: - Toggle
                 Button {
