@@ -43,7 +43,7 @@ struct AppRatingView: View {
                 .scaleEffect(selectedRating > 0 ? 1.1 : 1.0)
                 .animation(DesignSystem.Animation.cardSpring, value: selectedRating)
 
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 Text("How's GigaRizz?")
                     .font(DesignSystem.Typography.headline)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -54,7 +54,7 @@ struct AppRatingView: View {
             }
 
             // Star rating
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 ForEach(1...5, id: \.self) { star in
                     Button {
                         withAnimation(DesignSystem.Animation.quickSpring) {
@@ -73,7 +73,7 @@ struct AppRatingView: View {
                     }
                 }
             }
-            .padding(.vertical, DesignSystem.Spacing.m)
+            .padding(.vertical, DesignSystem.Spacing.medium)
 
             // Contextual message
             if selectedRating > 0 {
@@ -90,11 +90,11 @@ struct AppRatingView: View {
                     .textFieldStyle(.plain)
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
-                    .padding(DesignSystem.Spacing.m)
+                    .padding(DesignSystem.Spacing.medium)
                     .frame(minHeight: 80)
                     .background(DesignSystem.Colors.surface)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
 
@@ -108,7 +108,7 @@ struct AppRatingView: View {
                 ) {
                     submitRating()
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xl)
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
@@ -122,7 +122,7 @@ struct AppRatingView: View {
         VStack(spacing: DesignSystem.Spacing.xl) {
             Spacer()
 
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 Text("\u{2764}\u{FE0F}")
                     .font(.system(size: 80))
 
@@ -143,7 +143,7 @@ struct AppRatingView: View {
             GRButton(title: "Done", icon: "checkmark") {
                 dismiss()
             }
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .padding(.bottom, DesignSystem.Spacing.xl)
         }
     }

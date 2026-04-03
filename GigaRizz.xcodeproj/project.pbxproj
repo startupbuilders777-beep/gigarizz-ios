@@ -10,6 +10,7 @@
 		07F3495938687229A4A95457 /* MatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E0D0EBC83EA99EE768B07C /* MatchModel.swift */; };
 		0828509A141D353DE64434E9 /* PhotoAuditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF12F41146BB80249527B05 /* PhotoAuditViewModel.swift */; };
 		09B4D9267632BBF03E1F80EE /* AddMatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27ACDC055F37AC1A5A414E4E /* AddMatchView.swift */; };
+		0DDCBADDE8895A53DF83F560 /* PhotoPack+Essential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7904112A6A3FC4F1A5E7F466 /* PhotoPack+Essential.swift */; };
 		14D1B7D40556F5C4515EF9D6 /* CoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA527A2343B1451620BAA531 /* CoachView.swift */; };
 		167F45C9F000D4C828EDD5EE /* PHPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE7EE035980A46F7CBEAE29 /* PHPickerSheet.swift */; };
 		177F9704FA0C511AA9AACE7C /* GenerationTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86962B847609C3E672068CFC /* GenerationTipsView.swift */; };
@@ -19,14 +20,15 @@
 		24CAE72831C5D8686A5F6013 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD71821CA50C08195C451B /* Kingfisher */; };
 		251B17C7067466EC2BAAACD7 /* PhotoPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627AB2CF8A5C95CF2194C47E /* PhotoPickerViewModel.swift */; };
 		2ACC1F1B48B4FE7C5EF63440 /* ProfilePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCDAC804046EB3748B615D9 /* ProfilePreviewView.swift */; };
+		3042D01002919BC525EB004C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38D8916B6B86B3B3F34C12D /* ChatMessage.swift */; };
 		47084037144A9AF6E74F8808 /* RizzCoachDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C926641C1F7D0A54F963CF9 /* RizzCoachDashboardView.swift */; };
 		4897191A08D8B0A9BB5E9E65 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40A9783F89E6E9C937D4313 /* SignInView.swift */; };
 		4A05F753EF1ADC3A3890D643 /* RizzTipCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968982CF6D829164203ADA68 /* RizzTipCard.swift */; };
 		4AFDA95C02C3276EDE91BE3E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC8FFD9A522719D74AC123 /* OnboardingView.swift */; };
 		4B1B4CF55DD356E9D42FFF6D /* PhotoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC754BA427734B785AAB655F /* PhotoPickerView.swift */; };
-		4F3B0267BB4B89A4106D9E6C /* MatchInboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FF599CFA48AB3386915EB3 /* MatchInboxViewModel.swift */; };
 		4F556934BBF66A63BE59B3A1 /* BeforeAfterShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468C42D376A0CB15BC0A3C6C /* BeforeAfterShareView.swift */; };
 		55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D43BF3150F2A4D233B24EEE /* StylePreset.swift */; };
+		58E4CEEA1ECB0747CE0150FD /* PhotoPack+Lifestyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313CBEFE82A93219A468D01F /* PhotoPack+Lifestyle.swift */; };
 		5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF044D066B14BB54FDCA8D9A /* AuthManager.swift */; };
 		5BA02A3B076C46DE049DBA3E /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC1097CAE9654D20FD7806F /* PostHog */; };
 		5BD3BBDB04341F1AD6BCE740 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0FD2A7F64E5572764412F3AC /* SnapKit */; };
@@ -40,6 +42,7 @@
 		7B73827B1D05F4DD26CE3FEA /* CoachService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762CE5CAA525B372E9C22BE9 /* CoachService.swift */; };
 		7CBA6D6BE54A15B270FC5F46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664F72CC6B63018EBE8BCBC6 /* Assets.xcassets */; };
 		7E11238E667A23635A13EDC8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F49FCAFFE752C731AD3C66 /* ProfileView.swift */; };
+		88422529836B60A6525E0137 /* PhotoPack+DatingApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA702B467FB4CD7A36A07DE4 /* PhotoPack+DatingApps.swift */; };
 		884DF129FE5252A900D6B891 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A1380E103F2774685DCAE /* LaunchScreenView.swift */; };
 		8888E9BA7AD10776961B89C3 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771A6980E69DDA58928A77B5 /* DesignSystem.swift */; };
 		888CD699D163446317D2F07F /* AppRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD213F248B9EE41CF6C92D /* AppRatingView.swift */; };
@@ -54,7 +57,10 @@
 		9F15E65A4E663969437B977B /* WeeklyRizzReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D99DBDE4CC7944E3A414E /* WeeklyRizzReportView.swift */; };
 		A255EDB42A2B5BB8F94DD59C /* RateLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */; };
 		A34588E89DA7AC7DB5ED3D8E /* RizzScoreCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4C556C0D13E6B51CC1EC24 /* RizzScoreCard.swift */; };
+		A8BC2A7C0C5851EB9C63846F /* ChatSuggestionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A461B7AC96D2E40A200905 /* ChatSuggestionBar.swift */; };
+		B32A47DFDAB4B85C0F5ADCB4 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018C0185C8E7C67B378D5A00 /* ChatView.swift */; };
 		BDA18D8F727A0E538DA1F675 /* BackgroundReplacerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BE05C5361F4F0B6D06CB99 /* BackgroundReplacerView.swift */; };
+		BEBC155E96B18B66C58523E1 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45475E83909CBE53112C0900 /* ChatViewModel.swift */; };
 		C239059B870A9DE6503B416B /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BA81384D47610FDEFEA3E1 /* SubscriptionManager.swift */; };
 		C2CFEA339C5F5E99D0537172 /* ScreenshotTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E73EA2477A3D71BE96B1198 /* ScreenshotTestHelper.swift */; };
 		C4E0EB5E894EE414F7F78E51 /* GenerationResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A052E2A6CE99F9D561649B8D /* GenerationResultView.swift */; };
@@ -69,7 +75,6 @@
 		E524CE40274FAA4B15F642A8 /* GigaRizzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4999B0A3C3D5BA1FD6C2B7E /* GigaRizzApp.swift */; };
 		E89386DDCF92D398C0D2E0CA /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6233D056D0B7A10738D2F5C /* PhotoModel.swift */; };
 		E97813F160D6FDD26E794D13 /* BioStrengthMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE95FE09BA3D814B95FD01 /* BioStrengthMeter.swift */; };
-		E9A9972EB735E94CBE8A96FD /* MatchInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F220CE10BD2C5715FE293 /* MatchInboxView.swift */; };
 		EB7177E0E5CDAF49B0D844B0 /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB6EAB7092E24EC5F0182DB /* AnalyticsDashboardView.swift */; };
 		EBD8891EEABCE6A2E53E6B6C /* AnalyticsDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C87434085205F077DB4F389 /* AnalyticsDashboardViewModel.swift */; };
 		EBFBD93305D5B59E8548663F /* ResponseTimeTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544291A9D2E84F87825B3197 /* ResponseTimeTrackerView.swift */; };
@@ -83,11 +88,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		018C0185C8E7C67B378D5A00 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		01BE3D86958EC3A1DBA3FFE1 /* RizzCoachViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzCoachViewModel.swift; sourceTree = "<group>"; };
 		01EB93A4DF9AFB701AA149B0 /* CoachViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachViewModel.swift; sourceTree = "<group>"; };
 		0C926641C1F7D0A54F963CF9 /* RizzCoachDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzCoachDashboardView.swift; sourceTree = "<group>"; };
 		0E5CCAAC4EB4E9507D22A921 /* AIAPIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAPIConfig.swift; sourceTree = "<group>"; };
 		0F5D701F8726B37572BCAEBF /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		16A461B7AC96D2E40A200905 /* ChatSuggestionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSuggestionBar.swift; sourceTree = "<group>"; };
 		16AE4A40F0549C69C4889419 /* BioWriterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioWriterView.swift; sourceTree = "<group>"; };
 		19BD213F248B9EE41CF6C92D /* AppRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingView.swift; sourceTree = "<group>"; };
 		1BD5950DD8B3A5EE578F6144 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
@@ -95,20 +102,20 @@
 		295D99DBDE4CC7944E3A414E /* WeeklyRizzReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRizzReportView.swift; sourceTree = "<group>"; };
 		2993E988AAD878A7C4B2F58D /* ToolsHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsHubView.swift; sourceTree = "<group>"; };
 		2BD6FE4338DA841B0740EA20 /* GigaRizz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GigaRizz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		313CBEFE82A93219A468D01F /* PhotoPack+Lifestyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoPack+Lifestyle.swift"; sourceTree = "<group>"; };
 		34FDEFCC77AAF81F8B5DA8DC /* PhotoPacksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPacksView.swift; sourceTree = "<group>"; };
 		398A1380E103F2774685DCAE /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
 		39990244FCECB24250F8F92F /* PhotoPerformanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPerformanceCard.swift; sourceTree = "<group>"; };
 		3A548541E642578F8BC8E19C /* BioWriterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioWriterViewModel.swift; sourceTree = "<group>"; };
 		3D43BF3150F2A4D233B24EEE /* StylePreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePreset.swift; sourceTree = "<group>"; };
+		45475E83909CBE53112C0900 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		468C42D376A0CB15BC0A3C6C /* BeforeAfterShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeAfterShareView.swift; sourceTree = "<group>"; };
-		4A0F220CE10BD2C5715FE293 /* MatchInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchInboxView.swift; sourceTree = "<group>"; };
 		4AB6EAB7092E24EC5F0182DB /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardView.swift; sourceTree = "<group>"; };
 		4C87434085205F077DB4F389 /* AnalyticsDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardViewModel.swift; sourceTree = "<group>"; };
 		4E4C556C0D13E6B51CC1EC24 /* RizzScoreCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzScoreCard.swift; sourceTree = "<group>"; };
 		523FBC7A73A632B307693DC5 /* GRComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GRComponents.swift; sourceTree = "<group>"; };
 		544291A9D2E84F87825B3197 /* ResponseTimeTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTimeTrackerView.swift; sourceTree = "<group>"; };
 		54E0D0EBC83EA99EE768B07C /* MatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchModel.swift; sourceTree = "<group>"; };
-		56FF599CFA48AB3386915EB3 /* MatchInboxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchInboxViewModel.swift; sourceTree = "<group>"; };
 		59E6D82BF7273BF14619B5BD /* MatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailView.swift; sourceTree = "<group>"; };
 		5A0E38BCE2E268A6CF768B41 /* PhotoAuditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAuditView.swift; sourceTree = "<group>"; };
 		5CE7EE035980A46F7CBEAE29 /* PHPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerSheet.swift; sourceTree = "<group>"; };
@@ -120,6 +127,7 @@
 		771A6980E69DDA58928A77B5 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimiter.swift; sourceTree = "<group>"; };
 		77F49FCAFFE752C731AD3C66 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		7904112A6A3FC4F1A5E7F466 /* PhotoPack+Essential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoPack+Essential.swift"; sourceTree = "<group>"; };
 		859EEBB906EF7DA9074D21F5 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		86962B847609C3E672068CFC /* GenerationTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationTipsView.swift; sourceTree = "<group>"; };
 		8DEC8FFD9A522719D74AC123 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -141,12 +149,14 @@
 		D1BE05C5361F4F0B6D06CB99 /* BackgroundReplacerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundReplacerView.swift; sourceTree = "<group>"; };
 		D40A9783F89E6E9C937D4313 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		D6233D056D0B7A10738D2F5C /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
+		DA702B467FB4CD7A36A07DE4 /* PhotoPack+DatingApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoPack+DatingApps.swift"; sourceTree = "<group>"; };
 		DBCDAC804046EB3748B615D9 /* ProfilePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePreviewView.swift; sourceTree = "<group>"; };
 		DBF12F41146BB80249527B05 /* PhotoAuditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAuditViewModel.swift; sourceTree = "<group>"; };
 		DC3A7D6C19AFECB3D15EBE6C /* PostHogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHogManager.swift; sourceTree = "<group>"; };
 		DD5E0B4932B80706F0AABB88 /* PhotoQualityIssue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoQualityIssue.swift; sourceTree = "<group>"; };
 		E1FE95FE09BA3D814B95FD01 /* BioStrengthMeter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioStrengthMeter.swift; sourceTree = "<group>"; };
 		E288299C6545840AB3D8B823 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		E38D8916B6B86B3B3F34C12D /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		E80D96DC49FA3D51691C3699 /* AIGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGenerationService.swift; sourceTree = "<group>"; };
 		FA527A2343B1451620BAA531 /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
 		FB6EFBA315394EFC7F48FDC0 /* PhotoPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPack.swift; sourceTree = "<group>"; };
@@ -553,9 +563,13 @@
 		DB624DC3A3B768E0C4D048A4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E38D8916B6B86B3B3F34C12D /* ChatMessage.swift */,
 				54E0D0EBC83EA99EE768B07C /* MatchModel.swift */,
 				D6233D056D0B7A10738D2F5C /* PhotoModel.swift */,
 				FB6EFBA315394EFC7F48FDC0 /* PhotoPack.swift */,
+				DA702B467FB4CD7A36A07DE4 /* PhotoPack+DatingApps.swift */,
+				7904112A6A3FC4F1A5E7F466 /* PhotoPack+Essential.swift */,
+				313CBEFE82A93219A468D01F /* PhotoPack+Lifestyle.swift */,
 				3D43BF3150F2A4D233B24EEE /* StylePreset.swift */,
 			);
 			path = Models;
@@ -565,6 +579,8 @@
 			isa = PBXGroup;
 			children = (
 				27ACDC055F37AC1A5A414E4E /* AddMatchView.swift */,
+				16A461B7AC96D2E40A200905 /* ChatSuggestionBar.swift */,
+				018C0185C8E7C67B378D5A00 /* ChatView.swift */,
 				59E6D82BF7273BF14619B5BD /* MatchDetailView.swift */,
 			);
 			path = Views;
@@ -576,7 +592,6 @@
 				F6FA522AD5C635DFA7E4F2E8 /* ViewModels */,
 				DF7B79290E28A04A6F517CB9 /* Views */,
 				CB7A4B2EC7B04F30CC5252A1 /* MatchesView.swift */,
-				4A0F220CE10BD2C5715FE293 /* MatchInboxView.swift */,
 			);
 			path = Matches;
 			sourceTree = "<group>";
@@ -601,8 +616,8 @@
 		F6FA522AD5C635DFA7E4F2E8 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				45475E83909CBE53112C0900 /* ChatViewModel.swift */,
 				B4D1A8F547E6E8631AE0F136 /* MatchesViewModel.swift */,
-				56FF599CFA48AB3386915EB3 /* MatchInboxViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -706,6 +721,10 @@
 				E97813F160D6FDD26E794D13 /* BioStrengthMeter.swift in Sources */,
 				C73EF4F981AF555D69AF5476 /* BioWriterView.swift in Sources */,
 				D2BA42C3AC9EAEA59BA1AF77 /* BioWriterViewModel.swift in Sources */,
+				3042D01002919BC525EB004C /* ChatMessage.swift in Sources */,
+				A8BC2A7C0C5851EB9C63846F /* ChatSuggestionBar.swift in Sources */,
+				B32A47DFDAB4B85C0F5ADCB4 /* ChatView.swift in Sources */,
+				BEBC155E96B18B66C58523E1 /* ChatViewModel.swift in Sources */,
 				CDC83D3245D1B24F632AE8D6 /* CloudFunctionsService.swift in Sources */,
 				7B73827B1D05F4DD26CE3FEA /* CoachService.swift in Sources */,
 				14D1B7D40556F5C4515EF9D6 /* CoachView.swift in Sources */,
@@ -720,8 +739,6 @@
 				884DF129FE5252A900D6B891 /* LaunchScreenView.swift in Sources */,
 				63C020963F8F245E45860430 /* MainTabView.swift in Sources */,
 				FCC25A57E42BF5C5CB69705C /* MatchDetailView.swift in Sources */,
-				E9A9972EB735E94CBE8A96FD /* MatchInboxView.swift in Sources */,
-				4F3B0267BB4B89A4106D9E6C /* MatchInboxViewModel.swift in Sources */,
 				07F3495938687229A4A95457 /* MatchModel.swift in Sources */,
 				FE2234BAD8CB4B2822DC4790 /* MatchesView.swift in Sources */,
 				FEF1ED44644BCFC05200D6E6 /* MatchesViewModel.swift in Sources */,
@@ -733,6 +750,9 @@
 				6FBC6BDFDAD464E54EE28835 /* PhotoAuditView.swift in Sources */,
 				0828509A141D353DE64434E9 /* PhotoAuditViewModel.swift in Sources */,
 				E89386DDCF92D398C0D2E0CA /* PhotoModel.swift in Sources */,
+				88422529836B60A6525E0137 /* PhotoPack+DatingApps.swift in Sources */,
+				0DDCBADDE8895A53DF83F560 /* PhotoPack+Essential.swift in Sources */,
+				58E4CEEA1ECB0747CE0150FD /* PhotoPack+Lifestyle.swift in Sources */,
 				FF56683B9004E4196DF3AABB /* PhotoPack.swift in Sources */,
 				8ECBA71BA1B4B198EF511FF7 /* PhotoPacksView.swift in Sources */,
 				FF9FB5A106BFD16626E6E83A /* PhotoPerformanceCard.swift in Sources */,

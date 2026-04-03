@@ -7,7 +7,7 @@ struct ToolsHubView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 headerSection
 
                 // Featured Tool
@@ -25,9 +25,9 @@ struct ToolsHubView: View {
 
                 // Tools Grid
                 LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: DesignSystem.Spacing.m),
-                    GridItem(.flexible(), spacing: DesignSystem.Spacing.m)
-                ], spacing: DesignSystem.Spacing.m) {
+                    GridItem(.flexible(), spacing: DesignSystem.Spacing.medium),
+                    GridItem(.flexible(), spacing: DesignSystem.Spacing.medium)
+                ], spacing: DesignSystem.Spacing.medium) {
                     NavigationLink {
                         PhotoPacksView().environmentObject(subscriptionManager)
                     } label: {
@@ -73,7 +73,7 @@ struct ToolsHubView: View {
                 // Stats Banner
                 statsBanner
             }
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .padding(.bottom, DesignSystem.Spacing.xxl)
         }
         .background(DesignSystem.Colors.background.ignoresSafeArea())
@@ -93,13 +93,13 @@ struct ToolsHubView: View {
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     // MARK: - Featured Card
 
     private func featuredCard(title: String, subtitle: String, icon: String, badge: String, gradient: [Color]) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             HStack {
                 Image(systemName: icon)
                     .font(.system(size: 28))
@@ -131,7 +131,7 @@ struct ToolsHubView: View {
                     .foregroundStyle(.white)
             }
         }
-        .padding(DesignSystem.Spacing.l)
+        .padding(DesignSystem.Spacing.large)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             LinearGradient(colors: gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -142,7 +142,7 @@ struct ToolsHubView: View {
     // MARK: - Tool Card
 
     private func toolCard(title: String, subtitle: String, icon: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Image(systemName: icon)
                 .font(.system(size: 24))
                 .foregroundStyle(color)
@@ -161,7 +161,7 @@ struct ToolsHubView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
     }
@@ -169,12 +169,12 @@ struct ToolsHubView: View {
     // MARK: - Stats Banner
 
     private var statsBanner: some View {
-        HStack(spacing: DesignSystem.Spacing.l) {
+        HStack(spacing: DesignSystem.Spacing.large) {
             statItem(value: "4.2x", label: "More Matches", icon: "flame.fill")
             statItem(value: "89%", label: "Score Boost", icon: "chart.line.uptrend.xyaxis")
             statItem(value: "200+", label: "Photo Styles", icon: "photo.stack.fill")
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
     }

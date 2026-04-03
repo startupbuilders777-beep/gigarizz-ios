@@ -41,7 +41,7 @@ struct GenerationTipsView: View {
     ]
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             HStack(spacing: DesignSystem.Spacing.xs) {
                 Image(systemName: "lightbulb.fill")
                     .font(.system(size: 12))
@@ -64,7 +64,7 @@ struct GenerationTipsView: View {
                 }
             }
 
-            HStack(alignment: .top, spacing: DesignSystem.Spacing.s) {
+            HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
                 Image(systemName: tips[currentTipIndex].icon)
                     .font(.system(size: 24))
                     .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -86,7 +86,7 @@ struct GenerationTipsView: View {
                 removal: .move(edge: .leading).combined(with: .opacity)
             ))
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
         .onReceive(timer) { _ in

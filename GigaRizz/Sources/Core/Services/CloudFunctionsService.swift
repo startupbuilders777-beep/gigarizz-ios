@@ -1,5 +1,5 @@
-import Foundation
 import FirebaseFirestore
+import Foundation
 
 /// Service layer for Firebase Cloud Functions - handles server-side operations
 /// for photo generation queuing, user management, and analytics aggregation.

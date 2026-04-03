@@ -12,12 +12,12 @@ struct ProfileView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     profileHeader; subscriptionCard; photoAuditSection
                     if let score = photoScore { scoreResultSection(score) }
                     quickActionsSection
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m).padding(.bottom, DesignSystem.Spacing.xxl)
+                .padding(.horizontal, DesignSystem.Spacing.medium).padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
         .navigationTitle("Profile").toolbarColorScheme(.dark, for: .navigationBar)
@@ -28,7 +28,7 @@ struct ProfileView: View {
 
     private var profileHeader: some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 ZStack {
                     Circle().fill(LinearGradient(colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent], startPoint: .topLeading, endPoint: .bottomTrailing)).frame(width: 64, height: 64)
                     Text(String((authManager.userEmail ?? "U").prefix(1)).uppercased()).font(DesignSystem.Typography.headline).foregroundStyle(.white)
@@ -42,12 +42,12 @@ struct ProfileView: View {
                 }
                 Spacer()
             }
-        }.padding(.top, DesignSystem.Spacing.m)
+        }.padding(.top, DesignSystem.Spacing.medium)
     }
 
     private var subscriptionCard: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 HStack {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                         Text("Today's Usage").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -68,7 +68,7 @@ struct ProfileView: View {
     }
 
     private var photoAuditSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Label("Photo Audit", systemImage: "chart.bar.fill").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
             GRButton(title: isAnalyzing ? "Analyzing..." : "Score My Photos", icon: "sparkle.magnifyingglass", style: .secondary, isLoading: isAnalyzing) { runPhotoAudit() }
         }
@@ -82,9 +82,9 @@ struct ProfileView: View {
     }
 
     private func scoreResultSection(_ score: PhotoScore) -> some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             GRCard {
-                VStack(spacing: DesignSystem.Spacing.s) {
+                VStack(spacing: DesignSystem.Spacing.small) {
                     Text("Your Rizz Score").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textSecondary)
                     Text(String(format: "%.1f", score.overallScore)).font(DesignSystem.Typography.scoreLarge).foregroundStyle(scoreColor(score.overallScore))
                     Text(scoreLabel(score.overallScore)).font(DesignSystem.Typography.subheadline).foregroundStyle(DesignSystem.Colors.textSecondary)
@@ -131,9 +131,9 @@ struct ProfileView: View {
     }
 
     private var quickActionsSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Quick Actions").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.s) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DesignSystem.Spacing.small) {
                 quickActionCard(icon: "wand.and.stars", title: "Generate", subtitle: "New photos")
                 quickActionCard(icon: "brain.head.profile", title: "Coach", subtitle: "Get help")
                 quickActionCard(icon: "square.and.arrow.up", title: "Share", subtitle: "Invite friends")

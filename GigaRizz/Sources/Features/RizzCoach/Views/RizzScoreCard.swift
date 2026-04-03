@@ -14,7 +14,7 @@ struct RizzScoreCard: View {
 
     var body: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 // Main Score Display
                 mainScoreView
 
@@ -28,7 +28,7 @@ struct RizzScoreCard: View {
         .onAppear {
             animateScore()
         }
-        .onChange(of: score.overallScore) { _, newValue in
+        .onChange(of: score.overallScore) { _, _ in
             animatedScore = 0
             animateScore()
         }
@@ -37,7 +37,7 @@ struct RizzScoreCard: View {
     // MARK: - Main Score
 
     private var mainScoreView: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Text("Your Rizz Score")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
@@ -115,7 +115,7 @@ struct RizzScoreCard: View {
             Text(score.trend.rawValue)
                 .font(DesignSystem.Typography.caption)
         }
-        .padding(.horizontal, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.small)
         .padding(.vertical, DesignSystem.Spacing.xs)
         .background(trendColor.opacity(0.15))
         .foregroundStyle(trendColor)
@@ -125,7 +125,7 @@ struct RizzScoreCard: View {
     // MARK: - Category Breakdown
 
     private var categoryBreakdown: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Button {
                 withAnimation(DesignSystem.Animation.quickSpring) {
                     expandedCategories.toggle()
