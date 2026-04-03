@@ -1,0 +1,51 @@
+# Snapfile — GigaRizz Screenshot Configuration
+# Usage: fastlane snapshot
+
+# devices — iPhone sizes required for App Store Connect
+devices([
+  "iPhone 16 Pro Max",        # 6.9" — primary flagship
+  "iPhone 16 Pro",             # 6.3" — secondary
+  "iPhone 16",                # 6.1" — volume play
+  "iPhone SE (3rd generation)", # 4.7" — budget/SE
+  "iPad Pro 13-inch (M5)",     # 13" iPad Pro — App Store iPad frame
+])
+
+# languages — ordered by market size for ASO
+languages([
+  "en-US",   # Primary — US market
+  "en-GB",   # UK
+  "de-DE",   # Germany
+  "fr-FR",   # France
+  "es-ES",   # Spain
+  "it-IT",   # Italy
+  "ja-JP",   # Japan
+  "ko-KR",   # South Korea
+  "pt-BR",   # Brazil
+  "zh-Hans", # Simplified Chinese
+])
+
+# screenshot_output_dir — where frames land
+output_directory("./marketing/screenshots")
+
+# output_images_folder_name (legacy) — subfolder per language
+output_images_folder_name("screenshots")
+
+# Overwrite existing screenshots
+overwrite_screenshots(true)
+
+# No built-in HTML report — use custom reporter
+verbose_output(false)
+
+# iPad-specific: don't include status bar in frames (App Store adds it)
+# We handle status bar via simctl status_bar before capture
+disable_status_bar_inset(true)
+
+# Waiting for networkId to be ready
+wait_for_device_ready_timeout(30)
+
+# Reinstall app before each language (clean state)
+reinstall_app_before_run(true)
+
+# iPad Pro 13": Dark mode only for App Store (matches GigaRizz brand)
+# iPhone: both light + dark modes
+# This is controlled per-lane in Fastfile
