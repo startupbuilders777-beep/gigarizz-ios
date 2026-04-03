@@ -10,7 +10,6 @@ disabled_rules:
   - trailing_newline
   - cyclomatic_complexity
   - for_where
-  - warning_threshold
 
 opt_in_rules:
   - empty_count
