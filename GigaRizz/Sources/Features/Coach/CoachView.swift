@@ -97,7 +97,13 @@ struct CoachView: View {
                         .background(viewModel.selectedTone == tone ? DesignSystem.Colors.flameOrange.opacity(0.15) : DesignSystem.Colors.surface)
                         .foregroundStyle(viewModel.selectedTone == tone ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
-                        .overlay(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small).strokeBorder(viewModel.selectedTone == tone ? DesignSystem.Colors.flameOrange : .clear, lineWidth: 1.5))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
+                                .strokeBorder(
+                                    viewModel.selectedTone == tone ? DesignSystem.Colors.flameOrange : .clear,
+                                    lineWidth: 1.5
+                                )
+                        )
                     }
                 }
             }
@@ -140,7 +146,9 @@ struct CoachView: View {
                             }
                             Spacer()
                             Button { Task { await viewModel.generateBio() } } label: {
-                                Label("Regenerate", systemImage: "arrow.counterclockwise").font(DesignSystem.Typography.smallButton).foregroundStyle(DesignSystem.Colors.textSecondary)
+                                Label("Regenerate", systemImage: "arrow.counterclockwise")
+                                    .font(DesignSystem.Typography.smallButton)
+                                    .foregroundStyle(DesignSystem.Colors.textSecondary)
                             }
                         }
                     }
