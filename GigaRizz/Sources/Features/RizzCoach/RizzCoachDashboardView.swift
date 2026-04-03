@@ -142,7 +142,7 @@ struct RizzCoachDashboardView: View {
                     title: "No Tips Today",
                     subtitle: "Check back tomorrow for new dating advice.",
                     ctaTitle: "Get New Tip",
-                    ctaAction: { Task { await viewModel.getNewTip() } }
+                    ctaAction: { Task { await viewModel.getNewTip() }}
                 )
             }
         }

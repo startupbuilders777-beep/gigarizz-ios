@@ -28,7 +28,7 @@ struct RizzScoreCard: View {
         .onAppear {
             animateScore()
         }
-        .onChange(of: score.overallScore) { _, _ in
+        .onChange(of: score.overallScore) { _, newValue in
             animatedScore = 0
             animateScore()
         }
