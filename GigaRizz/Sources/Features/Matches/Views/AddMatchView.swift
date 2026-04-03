@@ -12,12 +12,12 @@ struct AddMatchView: View {
             ZStack {
                 DesignSystem.Colors.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
                             Text("Name").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
                             TextField("Match name", text: $name)
                                 .textFieldStyle(.plain).font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textPrimary)
-                                .padding(DesignSystem.Spacing.m).background(DesignSystem.Colors.surface)
+                                .padding(DesignSystem.Spacing.medium).background(DesignSystem.Colors.surface)
                                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                         }
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
@@ -31,7 +31,7 @@ struct AddMatchView: View {
                                             Image(systemName: p.icon).font(.system(size: 14))
                                             Text(p.rawValue).font(DesignSystem.Typography.smallButton)
                                         }
-                                        .padding(.horizontal, DesignSystem.Spacing.s).padding(.vertical, DesignSystem.Spacing.xs)
+                                        .padding(.horizontal, DesignSystem.Spacing.small).padding(.vertical, DesignSystem.Spacing.xs)
                                         .background(platform == p ? p.color.opacity(0.15) : DesignSystem.Colors.surface)
                                         .foregroundStyle(platform == p ? p.color : DesignSystem.Colors.textSecondary)
                                         .clipShape(Capsule())
@@ -45,14 +45,14 @@ struct AddMatchView: View {
                             TextField("Interests, conversation notes...", text: $notes, axis: .vertical)
                                 .textFieldStyle(.plain).font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textPrimary)
                                 .lineLimit(3...6)
-                                .padding(DesignSystem.Spacing.m).background(DesignSystem.Colors.surface)
+                                .padding(DesignSystem.Spacing.medium).background(DesignSystem.Colors.surface)
                                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                         }
                         GRButton(title: "Add Match", icon: "heart.fill", isDisabled: name.isEmpty) {
                             viewModel.addMatch(Match(name: name, platform: platform, notes: notes)); dismiss()
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m).padding(.top, DesignSystem.Spacing.l)
+                    .padding(.horizontal, DesignSystem.Spacing.medium).padding(.top, DesignSystem.Spacing.large)
                 }
             }
             .navigationTitle("Add Match").navigationBarTitleDisplayMode(.inline)

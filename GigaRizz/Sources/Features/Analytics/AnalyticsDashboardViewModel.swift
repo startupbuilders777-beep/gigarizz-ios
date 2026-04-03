@@ -53,9 +53,8 @@ final class AnalyticsDashboardViewModel: ObservableObject {
 
     func loadAnalytics() async {
         isLoading = true
-        let userId = AuthManager.shared.userId ?? "demo"
-        do { analytics = try await CloudFunctionsService.shared.fetchUserAnalytics(userId: userId) }
-        catch {
+        let userId = AuthManager.shared.currentUserId ?? "demo"
+        do { analytics = try await CloudFunctionsService.shared.fetchUserAnalytics(userId: userId) } catch {
             analytics = CloudFunctionsService.UserAnalytics(totalGenerations: 12, totalMatches: 8, matchRate: 34.5, topStyle: "Professional", streakDays: 5, weeklyGenerations: [2, 1, 3, 0, 2, 1, 3], platformBreakdown: ["Tinder": 4, "Hinge": 3, "Bumble": 1])
         }
         isLoading = false

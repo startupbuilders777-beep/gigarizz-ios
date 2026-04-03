@@ -9,7 +9,7 @@ struct GRButton: View {
     }
 
     let title: String
-    var icon: String? = nil
+    var icon: String?
     var style: Style = .primary
     var isLoading: Bool = false
     var isDisabled: Bool = false
@@ -19,7 +19,7 @@ struct GRButton: View {
         Button(action: {
             DesignSystem.Haptics.light()
             action()
-        }) {
+        }, label: {
             HStack(spacing: DesignSystem.Spacing.xs) {
                 if isLoading {
                     ProgressView()
@@ -44,7 +44,7 @@ struct GRButton: View {
                         .strokeBorder(DesignSystem.Colors.flameOrange, lineWidth: 1.5)
                 }
             }
-        }
+        })
         .disabled(isDisabled || isLoading)
         .opacity(isDisabled ? 0.5 : 1.0)
     }
@@ -70,7 +70,7 @@ struct GRButton: View {
 
 /// Elevated card container with design system styling.
 struct GRCard<Content: View>: View {
-    var padding: CGFloat = DesignSystem.Spacing.m
+    var padding: CGFloat = DesignSystem.Spacing.medium
     @ViewBuilder let content: () -> Content
 
     var body: some View {
@@ -124,11 +124,11 @@ struct EmptyStateView: View {
     let icon: String
     let title: String
     let subtitle: String
-    var ctaTitle: String? = nil
-    var ctaAction: (() -> Void)? = nil
+    var ctaTitle: String?
+    var ctaAction: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
+        VStack(spacing: DesignSystem.Spacing.large) {
             Image(systemName: icon)
                 .font(.system(size: 56, weight: .light))
                 .foregroundStyle(

@@ -1,5 +1,5 @@
-import SwiftUI
 import PostHog
+import SwiftUI
 
 // MARK: - Before/After Share View
 
@@ -19,13 +19,13 @@ struct BeforeAfterShareView: View {
         ZStack {
             DesignSystem.Colors.deepNight.ignoresSafeArea()
 
-            VStack(spacing: DesignSystem.Spacing.l) {
+            VStack(spacing: DesignSystem.Spacing.large) {
                 headerBar
                 comparisonCard
                 shareButtons
                 Spacer()
             }
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
 
             if showCopied {
                 copiedToast
@@ -61,7 +61,7 @@ struct BeforeAfterShareView: View {
 
             Color.clear.frame(width: 36, height: 36)
         }
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     // MARK: - Before/After Comparison
@@ -127,7 +127,7 @@ struct BeforeAfterShareView: View {
                                 .padding(.vertical, 4)
                                 .background(.black.opacity(0.6))
                                 .clipShape(Capsule())
-                                .padding(DesignSystem.Spacing.s)
+                                .padding(DesignSystem.Spacing.small)
 
                             Spacer()
 
@@ -140,7 +140,7 @@ struct BeforeAfterShareView: View {
                                     DesignSystem.Colors.flameOrange.opacity(0.8)
                                 )
                                 .clipShape(Capsule())
-                                .padding(DesignSystem.Spacing.s)
+                                .padding(DesignSystem.Spacing.small)
                         }
                         Spacer()
                     }
@@ -186,8 +186,8 @@ struct BeforeAfterShareView: View {
                     .font(.system(size: 14))
                     .foregroundStyle(DesignSystem.Colors.flameOrange)
             }
-            .padding(.horizontal, DesignSystem.Spacing.m)
-            .padding(.vertical, DesignSystem.Spacing.s)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
+            .padding(.vertical, DesignSystem.Spacing.small)
             .background(DesignSystem.Colors.surface)
             .clipShape(
                 UnevenRoundedRectangle(
@@ -201,9 +201,9 @@ struct BeforeAfterShareView: View {
     // MARK: - Share Buttons
 
     private var shareButtons: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             // Primary share row
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 shareButton(
                     title: "Instagram",
                     icon: "camera.fill",
@@ -234,7 +234,7 @@ struct BeforeAfterShareView: View {
                 .font(DesignSystem.Typography.button)
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, DesignSystem.Spacing.s)
+                .padding(.vertical, DesignSystem.Spacing.small)
                 .background(DesignSystem.Colors.surface)
                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
             }
@@ -370,8 +370,8 @@ struct BeforeAfterShareView: View {
                     .font(DesignSystem.Typography.callout)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }
-            .padding(.horizontal, DesignSystem.Spacing.l)
-            .padding(.vertical, DesignSystem.Spacing.s)
+            .padding(.horizontal, DesignSystem.Spacing.large)
+            .padding(.vertical, DesignSystem.Spacing.small)
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
             .padding(.bottom, DesignSystem.Spacing.xxl)

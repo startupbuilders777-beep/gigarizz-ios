@@ -7,8 +7,6 @@ struct GenerationResultView: View {
     let style: String
     @State private var selectedIndex = 0
     @State private var showSaveConfirmation = false
-    @State private var showFullScreenPreview = false
-    @State private var previewStartingIndex = 0
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -17,7 +15,7 @@ struct GenerationResultView: View {
                 DesignSystem.Colors.background
                     .ignoresSafeArea()
 
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     // MARK: - Header
                     VStack(spacing: DesignSystem.Spacing.xs) {
                         Text("Your Photos Are Ready! 🔥")
@@ -28,7 +26,7 @@ struct GenerationResultView: View {
                             .font(DesignSystem.Typography.subheadline)
                             .foregroundStyle(DesignSystem.Colors.textSecondary)
                     }
-                    .padding(.top, DesignSystem.Spacing.m)
+                    .padding(.top, DesignSystem.Spacing.medium)
 
                     // MARK: - Photo Carousel
                     TabView(selection: $selectedIndex) {
@@ -57,7 +55,7 @@ struct GenerationResultView: View {
                     Spacer()
 
                     // MARK: - Action Buttons
-                    VStack(spacing: DesignSystem.Spacing.s) {
+                    VStack(spacing: DesignSystem.Spacing.small) {
                         GRButton(
                             title: "Save All to Photos",
                             icon: "square.and.arrow.down"
@@ -65,7 +63,7 @@ struct GenerationResultView: View {
                             saveAllPhotos()
                         }
 
-                        HStack(spacing: DesignSystem.Spacing.s) {
+                        HStack(spacing: DesignSystem.Spacing.small) {
                             GRButton(title: "Share", icon: "square.and.arrow.up", style: .outline) {
                                 DesignSystem.Haptics.light()
                             }
@@ -75,8 +73,8 @@ struct GenerationResultView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
-                    .padding(.bottom, DesignSystem.Spacing.l)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .padding(.bottom, DesignSystem.Spacing.large)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -95,22 +93,15 @@ struct GenerationResultView: View {
                     saveConfirmationOverlay
                 }
             }
-            .fullScreenCover(isPresented: $showFullScreenPreview) {
-                FullScreenPhotoPreviewView(
-                    photos: generatedPhotos,
-                    startingIndex: $previewStartingIndex,
-                    onDismiss: { showFullScreenPreview = false }
-                )
-            }
         }
     }
 
     // MARK: - Photo Card
 
     private func generatedPhotoCard(photo: GeneratedPhoto, index: Int) -> some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
+            // Placeholder — in production this would load from photo.imageURL
             ZStack {
-                // Gradient background
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                     .fill(
                         LinearGradient(
@@ -120,8 +111,7 @@ struct GenerationResultView: View {
                         )
                     )
 
-                // Photo content
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     Image(systemName: "person.fill")
                         .font(.system(size: 80, weight: .ultraLight))
                         .foregroundStyle(.white.opacity(0.5))
@@ -134,31 +124,11 @@ struct GenerationResultView: View {
                         .font(DesignSystem.Typography.scoreLarge)
                         .foregroundStyle(.white)
                 }
-
-                // Tap to expand indicator
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Image(systemName: "arrow.up.left.and.arrow.down.right")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.6))
-                            .padding(DesignSystem.Spacing.s)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                            .padding(DesignSystem.Spacing.m)
-                    }
-                }
             }
             .frame(height: 380)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
-            .padding(.horizontal, DesignSystem.Spacing.l)
+            .padding(.horizontal, DesignSystem.Spacing.large)
             .cardShadow()
-            .onTapGesture {
-                DesignSystem.Haptics.light()
-                previewStartingIndex = index
-                showFullScreenPreview = true
-            }
         }
     }
 
@@ -167,7 +137,7 @@ struct GenerationResultView: View {
             [DesignSystem.Colors.flameOrange, .orange],
             [.purple, .blue],
             [.teal, .cyan],
-            [.pink, .red],
+            [.pink, .red]
         ]
         return gradients[index % gradients.count]
     }
@@ -191,7 +161,7 @@ struct GenerationResultView: View {
         VStack {
             Spacer()
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(DesignSystem.Colors.success)
                     .font(.system(size: 20))
@@ -200,7 +170,7 @@ struct GenerationResultView: View {
                     .font(DesignSystem.Typography.callout)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
             }
-            .padding(DesignSystem.Spacing.m)
+            .padding(DesignSystem.Spacing.medium)
             .background(DesignSystem.Colors.surface)
             .clipShape(Capsule())
             .cardShadow()
@@ -217,7 +187,7 @@ struct GenerationResultView: View {
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Confident"),
-            GeneratedPhoto(userId: "demo", style: "Confident"),
+            GeneratedPhoto(userId: "demo", style: "Confident")
         ],
         style: "Confident"
     )

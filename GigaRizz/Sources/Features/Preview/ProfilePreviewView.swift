@@ -11,7 +11,7 @@ struct ProfilePreviewView: View {
     private let demoPhotos = [
         "Generated Photo 1",
         "Generated Photo 2",
-        "Generated Photo 3",
+        "Generated Photo 3"
     ]
 
     private let demoBio = "Adventure seeker & coffee snob ☕️\nLet's explore the city together 🌆\nSwipe right if you like bad puns"
@@ -20,12 +20,12 @@ struct ProfilePreviewView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     platformPicker
                     phonePreviewCard
                     tipsSection
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -46,8 +46,8 @@ struct ProfilePreviewView: View {
                         Image(systemName: platform.icon).font(.system(size: 14))
                         Text(platform.rawValue).font(DesignSystem.Typography.smallButton)
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
-                    .padding(.vertical, DesignSystem.Spacing.s)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .padding(.vertical, DesignSystem.Spacing.small)
                     .background(selectedPlatform == platform ? platform.color.opacity(0.15) : DesignSystem.Colors.surface)
                     .foregroundStyle(selectedPlatform == platform ? platform.color : DesignSystem.Colors.textSecondary)
                     .clipShape(Capsule())
@@ -55,7 +55,7 @@ struct ProfilePreviewView: View {
                 }
             }
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     // MARK: - Phone Preview
@@ -105,8 +105,8 @@ struct ProfilePreviewView: View {
             Spacer()
             Image(systemName: "slider.horizontal.3").foregroundStyle(DesignSystem.Colors.textSecondary)
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.background)
     }
 
@@ -122,7 +122,7 @@ struct ProfilePreviewView: View {
                     )
                 )
 
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "person.fill")
                     .font(.system(size: 60))
                     .foregroundStyle(selectedPlatform.color.opacity(0.5))
@@ -140,7 +140,7 @@ struct ProfilePreviewView: View {
                             .frame(maxWidth: .infinity, maxHeight: 3)
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.s)
+                .padding(.horizontal, DesignSystem.Spacing.small)
                 .padding(.top, DesignSystem.Spacing.xs)
                 Spacer()
             }
@@ -153,10 +153,10 @@ struct ProfilePreviewView: View {
                         if dragOffset.width > 40 {
                             Spacer()
                             likeLabel
-                                .padding(.trailing, DesignSystem.Spacing.l)
+                                .padding(.trailing, DesignSystem.Spacing.large)
                         } else {
                             nopeLabel
-                                .padding(.leading, DesignSystem.Spacing.l)
+                                .padding(.leading, DesignSystem.Spacing.large)
                             Spacer()
                         }
                     }
@@ -192,7 +192,7 @@ struct ProfilePreviewView: View {
         Text("LIKE")
             .font(.system(size: 32, weight: .heavy))
             .foregroundStyle(DesignSystem.Colors.success)
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .padding(.vertical, DesignSystem.Spacing.xs)
             .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(DesignSystem.Colors.success, lineWidth: 3))
             .rotationEffect(.degrees(-15))
@@ -202,7 +202,7 @@ struct ProfilePreviewView: View {
         Text("NOPE")
             .font(.system(size: 32, weight: .heavy))
             .foregroundStyle(DesignSystem.Colors.error)
-            .padding(.horizontal, DesignSystem.Spacing.m)
+            .padding(.horizontal, DesignSystem.Spacing.medium)
             .padding(.vertical, DesignSystem.Spacing.xs)
             .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(DesignSystem.Colors.error, lineWidth: 3))
             .rotationEffect(.degrees(15))
@@ -228,7 +228,7 @@ struct ProfilePreviewView: View {
                     Text("A life goal of mine").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.hinge)
                     Text("To visit every coffee shop in the world ☕️").font(DesignSystem.Typography.body).foregroundStyle(DesignSystem.Colors.textPrimary)
                 }
-                .padding(DesignSystem.Spacing.s)
+                .padding(DesignSystem.Spacing.small)
                 .background(DesignSystem.Colors.surface)
                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
             } else {
@@ -238,13 +238,13 @@ struct ProfilePreviewView: View {
                     .lineSpacing(3)
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.background)
     }
 
     private var actionButtons: some View {
-        HStack(spacing: DesignSystem.Spacing.l) {
+        HStack(spacing: DesignSystem.Spacing.large) {
             switch selectedPlatform {
             case .tinder:
                 circleButton(icon: "xmark", color: DesignSystem.Colors.error, size: 44)
@@ -265,7 +265,7 @@ struct ProfilePreviewView: View {
             }
         }
         .padding(.horizontal, DesignSystem.Spacing.xl)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.background)
     }
 
@@ -287,12 +287,12 @@ struct ProfilePreviewView: View {
     // MARK: - Tips Section
 
     private var tipsSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Profile Tips for \(selectedPlatform.rawValue)").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
 
             ForEach(tipsForPlatform, id: \.self) { tip in
                 GRCard {
-                    HStack(alignment: .top, spacing: DesignSystem.Spacing.s) {
+                    HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "lightbulb.fill").font(.system(size: 14)).foregroundStyle(DesignSystem.Colors.goldAccent).padding(.top, 2)
                         Text(tip).font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary).lineSpacing(3)
                     }
@@ -308,27 +308,27 @@ struct ProfilePreviewView: View {
                 "Lead with your best AI-generated photo — first impressions are everything on Tinder.",
                 "Use 4-6 photos showing different sides of your personality.",
                 "Outdoor/adventure photos get 19% more right swipes.",
-                "Avoid group photos as your first pic — they want to see YOU.",
+                "Avoid group photos as your first pic — they want to see YOU."
             ]
         case .hinge:
             return [
                 "Hinge is about prompts — pair great photos with witty, specific answers.",
                 "Photos with genuine smiles get 2x more likes on Hinge.",
                 "Use the voice prompt feature to stand out — very few people do.",
-                "Show a hobby or passion in at least one photo.",
+                "Show a hobby or passion in at least one photo."
             ]
         case .bumble:
             return [
                 "Women make the first move on Bumble — make your photos approachable.",
                 "Clear, well-lit headshots work best for your primary photo.",
                 "Fill out your entire profile — complete profiles get 4x more matches.",
-                "Bio badges (interests, lifestyle) help with Bumble's algorithm.",
+                "Bio badges (interests, lifestyle) help with Bumble's algorithm."
             ]
         case .raya, .general, .other:
             return [
                 "Quality over quantity — 3-5 strong photos beat 9 mediocre ones.",
                 "Mix close-ups and full-body shots for a well-rounded profile.",
-                "Natural lighting always beats harsh flash or indoor lighting.",
+                "Natural lighting always beats harsh flash or indoor lighting."
             ]
         }
     }

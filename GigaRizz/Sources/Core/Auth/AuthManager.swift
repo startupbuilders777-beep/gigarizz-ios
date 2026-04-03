@@ -1,6 +1,6 @@
-import Foundation
-import FirebaseAuth
 import Combine
+import FirebaseAuth
+import Foundation
 
 /// Manages Firebase Authentication state and user identity.
 @MainActor
@@ -16,6 +16,12 @@ final class AuthManager: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
+    // MARK: - Computed Properties
+
+    var currentUserId: String? {
+        currentUser?.uid
+    }
+
     // MARK: - Private Properties
 
     private nonisolated(unsafe) var authStateListener: AuthStateDidChangeListenerHandle?
@@ -23,6 +29,13 @@ final class AuthManager: ObservableObject {
     // MARK: - Init
 
     init() {}
+
+    // MARK: - Auth State
+
+    /// Current user ID (convenience accessor)
+    var currentUserId: String? {
+        currentUser?.uid
+    }
 
     // MARK: - Auth State
 

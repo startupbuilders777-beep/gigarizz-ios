@@ -92,8 +92,7 @@ final class RateLimiter: ObservableObject {
         let limit = isPro ? AIAPIConfig.proGenerationsPerDay : AIAPIConfig.freeGenerationsPerDay
         let used = todayCount(for: "photo_generation")
         if used >= limit {
-            if isPro { return (false, "You\u{2019}ve used all \(limit) pro generations today. Resets at midnight.") }
-            else { return (false, "Free tier limit reached (\(limit)/day). Upgrade to Pro for \(AIAPIConfig.proGenerationsPerDay) generations/day!") }
+            if isPro { return (false, "You\u{2019}ve used all \(limit) pro generations today. Resets at midnight.") } else { return (false, "Free tier limit reached (\(limit)/day). Upgrade to Pro for \(AIAPIConfig.proGenerationsPerDay) generations/day!") }
         }
         if let cooldown = cooldownRemaining(for: "photo_generation") {
             return (false, "Please wait \(Int(cooldown))s before generating again.")

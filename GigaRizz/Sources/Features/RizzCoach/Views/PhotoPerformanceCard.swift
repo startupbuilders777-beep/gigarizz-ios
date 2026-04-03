@@ -9,9 +9,9 @@ struct PhotoPerformanceCard: View {
 
     var body: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 // Main row
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.medium) {
                     // Rank badge
                     ZStack {
                         Circle()
@@ -36,7 +36,7 @@ struct PhotoPerformanceCard: View {
                         Text(rankLabel)
                             .font(DesignSystem.Typography.callout)
                             .foregroundStyle(DesignSystem.Colors.textPrimary)
-                        HStack(spacing: DesignSystem.Spacing.s) {
+                        HStack(spacing: DesignSystem.Spacing.small) {
                             Label("\(Int(performance.swipeRate * 100))%", systemImage: "arrow.right.circle")
                                 .font(DesignSystem.Typography.caption)
                                 .foregroundStyle(swipeRateColor)
@@ -117,7 +117,7 @@ struct PhotoPerformanceSection: View {
     let performances: [PhotoPerformance]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Label("Photo Performance Ranking", systemImage: "photo.stack.fill")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
