@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Photo Comparison View
 
@@ -320,7 +320,7 @@ struct PhotoComparisonView: View {
             [DesignSystem.Colors.flameOrange, .orange],
             [.purple, .blue],
             [.teal, .cyan],
-            [.pink, .red],
+            [.pink, .red]
         ]
         return gradients[index % gradients.count]
     }
