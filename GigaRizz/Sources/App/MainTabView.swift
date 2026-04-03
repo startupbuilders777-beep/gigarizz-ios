@@ -8,12 +8,12 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             NavigationStack { GenerateView().environmentObject(AIGenerationService.shared) }
                 .tabItem { Label("Generate", systemImage: "wand.and.stars") }.tag(0)
+            NavigationStack { ToolsHubView() }
+                .tabItem { Label("Tools", systemImage: "sparkles.rectangle.stack") }.tag(1)
             NavigationStack { ProfileView() }
-                .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }.tag(1)
+                .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }.tag(2)
             NavigationStack { AnalyticsDashboardView() }
-                .tabItem { Label("Analytics", systemImage: "chart.bar.fill") }.tag(2)
-            NavigationStack { CoachView() }
-                .tabItem { Label("Coach", systemImage: "brain.head.profile") }.tag(3)
+                .tabItem { Label("Analytics", systemImage: "chart.bar.fill") }.tag(3)
             NavigationStack { MatchesView() }
                 .tabItem { Label("Matches", systemImage: "heart.text.square.fill") }.tag(4)
         }

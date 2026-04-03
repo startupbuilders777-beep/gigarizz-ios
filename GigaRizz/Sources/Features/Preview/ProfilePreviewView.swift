@@ -95,7 +95,10 @@ struct ProfilePreviewView: View {
             case .bumble:
                 Image(systemName: "hexagon.fill").foregroundStyle(DesignSystem.Colors.bumble)
                 Text("bumble").font(.system(size: 22, weight: .bold)).foregroundStyle(DesignSystem.Colors.bumble)
-            case .other:
+            case .raya:
+                Image(systemName: "star.fill").foregroundStyle(Color(hex: "8B5CF6"))
+                Text("raya").font(.system(size: 22, weight: .bold)).foregroundStyle(Color(hex: "8B5CF6"))
+            case .general, .other:
                 Image(systemName: "heart.fill").foregroundStyle(DesignSystem.Colors.flameOrange)
                 Text("dating app").font(.system(size: 22, weight: .bold)).foregroundStyle(DesignSystem.Colors.textPrimary)
             }
@@ -256,7 +259,7 @@ struct ProfilePreviewView: View {
                 circleButton(icon: "xmark", color: DesignSystem.Colors.error, size: 44)
                 circleButton(icon: "star.fill", color: DesignSystem.Colors.bumble, size: 36)
                 circleButton(icon: "checkmark", color: DesignSystem.Colors.success, size: 44)
-            case .other:
+            case .raya, .general, .other:
                 circleButton(icon: "xmark", color: DesignSystem.Colors.error, size: 44)
                 circleButton(icon: "heart.fill", color: DesignSystem.Colors.flameOrange, size: 44)
             }
@@ -321,7 +324,7 @@ struct ProfilePreviewView: View {
                 "Fill out your entire profile — complete profiles get 4x more matches.",
                 "Bio badges (interests, lifestyle) help with Bumble's algorithm.",
             ]
-        case .other:
+        case .raya, .general, .other:
             return [
                 "Quality over quantity — 3-5 strong photos beat 9 mediocre ones.",
                 "Mix close-ups and full-body shots for a well-rounded profile.",
