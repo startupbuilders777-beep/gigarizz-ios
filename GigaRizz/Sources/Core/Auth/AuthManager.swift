@@ -1,5 +1,6 @@
 import Combine
 import FirebaseAuth
+import FirebaseCore
 import Foundation
 
 /// Manages Firebase Authentication state and user identity.
