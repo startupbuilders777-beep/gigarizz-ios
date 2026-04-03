@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import RevenueCat
-import Combine
 
 // MARK: - Subscription Tier
 
@@ -97,6 +97,8 @@ final class SubscriptionManager: NSObject, ObservableObject {
 
     override init() {
         super.init()
+        // Guard against unconfigured RevenueCat (e.g. during unit tests)
+        guard Purchases.isConfigured else { return }
         purchases.delegate = self
         fetchEntitlements()
     }
