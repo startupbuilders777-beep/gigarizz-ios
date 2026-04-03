@@ -107,6 +107,10 @@ struct SettingsView: View {
 
     private var supportSection: some View {
         Section {
+            NavigationLink { NotificationSettingsView() } label: {
+                Label("Notifications", systemImage: "bell.fill").foregroundStyle(DesignSystem.Colors.textPrimary)
+            }.listRowBackground(DesignSystem.Colors.surface)
+
             Button {
                 showRating = true
             } label: {
