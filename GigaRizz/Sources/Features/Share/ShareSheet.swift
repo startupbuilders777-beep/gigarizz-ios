@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import LinkPresentation
 
 // MARK: - Share Sheet
 
@@ -42,6 +43,7 @@ extension UIActivity.ActivityType {
 
     /// Custom identifier for tracking
     var isSocialMedia: Bool {
+        let rawValueString = rawValue
         switch self {
         case .postToFacebook, .postToTwitter, .postToWeibo, .postToTencentWeibo:
             return true
@@ -49,16 +51,14 @@ extension UIActivity.ActivityType {
             return false
         default:
             // Check for Instagram, TikTok, Snapchat
-            if let rawValue = rawValue {
-                return rawValue.contains("instagram") ||
-                       rawValue.contains("tiktok") ||
-                       rawValue.contains("snapchat")
-            }
-            return false
+            return rawValueString.contains("instagram") ||
+                   rawValueString.contains("tiktok") ||
+                   rawValueString.contains("snapchat")
         }
     }
 
     var displayName: String {
+        let rawValueString = rawValue
         switch self {
         case .postToFacebook: return "Facebook"
         case .postToTwitter: return "Twitter"
@@ -67,12 +67,10 @@ extension UIActivity.ActivityType {
         case .copyToPasteboard: return "Copy"
         case .postToWeibo: return "Weibo"
         default:
-            if let rawValue = rawValue {
-                if rawValue.contains("instagram") { return "Instagram" }
-                if rawValue.contains("tiktok") { return "TikTok" }
-                if rawValue.contains("snapchat") { return "Snapchat" }
-                if rawValue.contains("whatsapp") { return "WhatsApp" }
-            }
+            if rawValueString.contains("instagram") { return "Instagram" }
+            if rawValueString.contains("tiktok") { return "TikTok" }
+            if rawValueString.contains("snapchat") { return "Snapchat" }
+            if rawValueString.contains("whatsapp") { return "WhatsApp" }
             return "Other"
         }
     }
@@ -90,7 +88,7 @@ class ShareItemProvider: UIActivityItemProvider {
         self.image = image
         self.caption = caption
         self.deepLinkURL = deepLinkURL
-        super.init(activityItem: image, placeholderItem: image)
+        super.init(placeholderItem: image)
     }
 
     override func activityViewController(
@@ -113,7 +111,6 @@ class ShareItemProvider: UIActivityItemProvider {
         _ activityViewController: UIActivityViewController
     ) -> LPLinkMetadata? {
         let metadata = LPLinkMetadata()
-        metadata.imageProvider = NSItemProvider(contentsOf: URL(fileURLWithPath: ""))
         metadata.title = caption ?? "My AI-generated dating photo"
         if let url = deepLinkURL {
             metadata.originalURL = url

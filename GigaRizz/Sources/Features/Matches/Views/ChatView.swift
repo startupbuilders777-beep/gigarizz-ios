@@ -80,7 +80,7 @@ struct ChatView: View {
             ScrollView {
                 LazyVStack(spacing: DesignSystem.Spacing.medium) {
                     ForEach(viewModel.messages) { message in
-                        MessageBubble(message: message, matchName: match.name)
+                        ChatMessageBubble(message: message, matchName: match.name)
                             .id(message.id)
                     }
                 }
@@ -137,10 +137,10 @@ struct ChatView: View {
     }
 }
 
-// MARK: - Message Bubble
+// MARK: - Chat Message Bubble
 
 /// Individual message bubble in the conversation.
-struct MessageBubble: View {
+struct ChatMessageBubble: View {
     let message: ChatMessage
     let matchName: String
 
@@ -200,11 +200,11 @@ struct MessageBubble: View {
 
 #Preview("Message Bubbles") {
     VStack(spacing: 16) {
-        MessageBubble(
+        ChatMessageBubble(
             message: ChatMessage(content: "Hey! How's your day going?", isFromUser: false),
             matchName: "Sarah"
         )
-        MessageBubble(
+        ChatMessageBubble(
             message: ChatMessage(content: "Pretty good! Just got back from a hike", isFromUser: true),
             matchName: "Sarah"
         )

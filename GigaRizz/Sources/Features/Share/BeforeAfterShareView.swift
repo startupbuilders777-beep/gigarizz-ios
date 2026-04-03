@@ -33,7 +33,7 @@ struct BeforeAfterShareView: View {
         }
         .sheet(isPresented: $showShareSheet) {
             if let image = renderedImage {
-                ShareSheet(activityItems: [image, shareCaption])
+                ShareSheet(items: [image, shareCaption])
             }
         }
     }
@@ -378,16 +378,4 @@ struct BeforeAfterShareView: View {
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
-}
-
-// MARK: - ShareSheet UIKit bridge
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

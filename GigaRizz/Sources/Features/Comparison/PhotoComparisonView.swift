@@ -46,15 +46,15 @@ struct PhotoComparisonView: View {
             ZStack {
                 DesignSystem.Colors.background.ignoresSafeArea()
 
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     headerView
                     if sourcePhotos.count > 1 || generatedPhotos.count > 1 { pairingSelector }
                     comparisonDisplay
                     modePicker
                     actionButtons
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
-                .padding(.bottom, DesignSystem.Spacing.l)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                .padding(.bottom, DesignSystem.Spacing.large)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -73,7 +73,7 @@ struct PhotoComparisonView: View {
             }
             .sheet(isPresented: $showShareSheet) {
                 if let comparisonImage = createComparisonImage() {
-                    ShareSheet(activityItems: [comparisonImage])
+                    ShareSheet(items: [comparisonImage])
                 }
             }
             .overlay {
@@ -94,13 +94,13 @@ struct PhotoComparisonView: View {
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
         }
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     // MARK: - Pairing Selector
 
     private var pairingSelector: some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                 Text("Original").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
                 HStack(spacing: DesignSystem.Spacing.xs) {
@@ -129,7 +129,7 @@ struct PhotoComparisonView: View {
                 }
             }
         }
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.vertical, DesignSystem.Spacing.small)
     }
 
     private func thumbnailButton(image: UIImage, isSelected: Bool, onTap: @escaping () -> Void) -> some View {
@@ -180,7 +180,7 @@ struct PhotoComparisonView: View {
             }
         }
         .gesture(DragGesture().onChanged { value in
-            let geometryWidth = UIScreen.main.bounds.width - DesignSystem.Spacing.m * 2
+            let geometryWidth = UIScreen.main.bounds.width - DesignSystem.Spacing.medium * 2
             sliderPosition = min(max(value.location.x / geometryWidth, 0.05), 0.95)
         })
         .contentShape(Rectangle())
@@ -245,7 +245,7 @@ struct PhotoComparisonView: View {
         ZStack {
             RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                 .fill(LinearGradient(colors: gradientForIndex(selectedGeneratedIndex), startPoint: .topLeading, endPoint: .bottomTrailing))
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Image(systemName: "sparkles").font(.system(size: 48, weight: .light)).foregroundStyle(.white.opacity(0.8))
                 Text("AI Enhanced").font(DesignSystem.Typography.callout).foregroundStyle(.white.opacity(0.9))
                 Text(styleName).font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.goldAccent)
@@ -264,7 +264,7 @@ struct PhotoComparisonView: View {
     // MARK: - Mode Picker
 
     private var modePicker: some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             ForEach(ComparisonMode.allCases) { mode in
                 Button {
                     withAnimation(DesignSystem.Animation.quickSpring) {
@@ -276,20 +276,20 @@ struct PhotoComparisonView: View {
                         Image(systemName: mode.icon).font(.system(size: 14))
                         Text(mode.rawValue).font(DesignSystem.Typography.smallButton)
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.s).padding(.vertical, DesignSystem.Spacing.xs)
+                    .padding(.horizontal, DesignSystem.Spacing.small).padding(.vertical, DesignSystem.Spacing.xs)
                     .background(comparisonMode == mode ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surfaceSecondary)
                     .foregroundStyle(comparisonMode == mode ? .white : DesignSystem.Colors.textSecondary)
                     .clipShape(Capsule())
                 }
             }
         }
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.vertical, DesignSystem.Spacing.small)
     }
 
     // MARK: - Action Buttons
 
     private var actionButtons: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             GRButton(title: "Save Comparison", icon: "square.and.arrow.down") { saveComparisonToPhotos() }
             GRButton(title: "Share", icon: "square.and.arrow.up", style: .outline) {
                 DesignSystem.Haptics.light()
@@ -299,7 +299,7 @@ struct PhotoComparisonView: View {
     }
 
     private var saveConfirmationOverlay: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Image(systemName: "checkmark.circle.fill").font(.system(size: 48)).foregroundStyle(DesignSystem.Colors.success)
             Text("Saved to Photos!").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
         }
@@ -367,18 +367,6 @@ struct PhotoComparisonView: View {
             }
         }
     }
-}
-
-// MARK: - ShareSheet UIKit bridge
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {

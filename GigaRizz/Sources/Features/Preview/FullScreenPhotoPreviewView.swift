@@ -116,7 +116,7 @@ struct FullScreenPhotoPreviewView: View {
 
     private var infoOverlay: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 // Style preset badge
                 styleBadge
 
@@ -144,8 +144,8 @@ struct FullScreenPhotoPreviewView: View {
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.white.opacity(0.7))
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     private var styleBadge: some View {
@@ -156,7 +156,7 @@ struct FullScreenPhotoPreviewView: View {
                 .font(DesignSystem.Typography.caption)
         }
         .foregroundStyle(.white)
-        .padding(.horizontal, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.small)
         .padding(.vertical, DesignSystem.Spacing.micro)
         .background(
             Capsule()
@@ -172,7 +172,7 @@ struct FullScreenPhotoPreviewView: View {
                 .font(DesignSystem.Typography.caption)
         }
         .foregroundStyle(.white.opacity(0.8))
-        .padding(.horizontal, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.small)
         .padding(.vertical, DesignSystem.Spacing.micro)
         .background(
             Capsule()
@@ -195,8 +195,8 @@ struct FullScreenPhotoPreviewView: View {
                     .animation(.spring(response: 0.3, dampingFraction: 0.8), value: currentIndex)
             }
         }
-        .padding(.vertical, DesignSystem.Spacing.s)
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.vertical, DesignSystem.Spacing.small)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
         .background(.ultraThinMaterial)
         .clipShape(Capsule())
     }
@@ -242,8 +242,8 @@ struct FullScreenPhotoPreviewView: View {
                 showMoreOptions()
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.l)
-        .padding(.vertical, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.large)
+        .padding(.vertical, DesignSystem.Spacing.medium)
         .background(
             Color.black.opacity(0.6)
                 .background(.ultraThinMaterial)
@@ -284,8 +284,8 @@ struct FullScreenPhotoPreviewView: View {
                 .font(.system(size: 12, weight: .semibold))
         }
         .foregroundStyle(.white.opacity(0.6))
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(.ultraThinMaterial)
         .clipShape(Capsule())
         .transition(.opacity)
@@ -391,7 +391,7 @@ struct ZoomablePhotoView: View {
                 endPoint: .bottomTrailing
             )
 
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 Image(systemName: "person.fill")
                     .font(.system(size: 100, weight: .ultraLight))
                     .foregroundStyle(.white.opacity(0.4))
