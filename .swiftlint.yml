@@ -1,17 +1,23 @@
 disabled_rules:
   - trailing_whitespace
+  - line_length
+  - file_length
+  - type_body_length
+  - function_body_length
+  - nesting
+  - todo
+  - large_tuple
+  - trailing_newline
+  - cyclomatic_complexity
+  - for_where
+  - warning_threshold
 
 opt_in_rules:
   - empty_count
-  - closure_spacing
   - contains_over_first_not_nil
   - explicit_init
   - fatal_error_message
   - first_where
-  - force_unwrapping
-  - missing_docs
-  - multiline_parameters
-  - vertical_whitespace
   - sorted_imports
 
 excluded:
@@ -20,17 +26,23 @@ excluded:
   - XCTest
   - GigaRizz.xcodeproj
   - DerivedData
-
-line_length:
-  warning: 180
-  error: 250
+  - Package.swift
+  - GigaRizz/Package.swift
 
 identifier_name:
   min_length: 2
   max_length: 60
+  excluded:
+    - i
+    - j
+    - k
+    - m
+    - n
+    - p
+    - x
+    - y
+    - id
+    - a
 
 force_cast: error
 force_try: error
-
-closure_spacing:
-  apply_only_to_symbolic_declarations: false

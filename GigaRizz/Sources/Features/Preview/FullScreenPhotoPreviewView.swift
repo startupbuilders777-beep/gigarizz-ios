@@ -46,7 +46,7 @@ struct FullScreenPhotoPreviewView: View {
                             geometry: geometry
                         )
                         .tag(index)
-                        .onChange(of: currentIndex) { _, newIndex in
+                        .onChange(of: currentIndex) { _, _ in
                             // Reset zoom when page changes
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                 scale = 1.0
@@ -471,7 +471,7 @@ struct ZoomablePhotoView: View {
                     )
                 }
             }
-            .onEnded { value in
+            .onEnded { _ in
                 if scale > 1.0 {
                     lastOffset = offset
                 }
@@ -484,7 +484,7 @@ struct ZoomablePhotoView: View {
         photos: [
             GeneratedPhoto(userId: "demo", style: "Confident"),
             GeneratedPhoto(userId: "demo", style: "Mysterious"),
-            GeneratedPhoto(userId: "demo", style: "Playful"),
+            GeneratedPhoto(userId: "demo", style: "Playful")
         ],
         startingIndex: .constant(0),
         onDismiss: {}
