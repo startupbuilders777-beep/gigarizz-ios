@@ -162,6 +162,7 @@ struct FullScreenPhotoPreviewView: View {
             Capsule()
                 .fill(DesignSystem.Colors.flameOrange.opacity(0.8))
         )
+        .accessibilityLabel("\(photos[currentIndex].style) style")
     }
 
     private var aspectRatioBadge: some View {
@@ -178,6 +179,7 @@ struct FullScreenPhotoPreviewView: View {
             Capsule()
                 .fill(.ultraThinMaterial)
         )
+        .accessibilityLabel("Photo aspect ratio 4 to 5")
     }
 
     // MARK: - Page Indicator
@@ -185,20 +187,24 @@ struct FullScreenPhotoPreviewView: View {
     private var pageIndicatorDots: some View {
         HStack(spacing: DesignSystem.Spacing.xs) {
             ForEach(0..<photos.count, id: \.self) { index in
-                Circle()
-                    .fill(
-                        index == currentIndex
-                            ? DesignSystem.Colors.flameOrange
-                            : .white.opacity(0.4)
-                    )
-                    .frame(width: 6, height: 6)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.8), value: currentIndex)
+                pageIndicatorDot(for: index)
             }
         }
         .padding(.vertical, DesignSystem.Spacing.small)
         .padding(.horizontal, DesignSystem.Spacing.medium)
         .background(.ultraThinMaterial)
         .clipShape(Capsule())
+        .accessibilityLabel("Photo \(currentIndex + 1) of \(photos.count)")
+        .accessibilityHint("Swipe left or right to change photos")
+    }
+
+    @ViewBuilder
+    private func pageIndicatorDot(for index: Int) -> some View {
+        Circle()
+            .fill(index == currentIndex ? DesignSystem.Colors.flameOrange : Color.white.opacity(0.4))
+            .frame(width: 6, height: 6)
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: currentIndex)
+            .accessibilityLabel("Photo \(index + 1), \(index == currentIndex ? "current" : "not current")")
     }
 
     // MARK: - Action Bar
@@ -271,7 +277,31 @@ struct FullScreenPhotoPreviewView: View {
             }
             .frame(width: 60)
         }
-        .accessibilityLabel("\(label) photo")
+        .accessibilityLabel(accessibilityLabelForAction(label, isActive: isActive, isDestructive: isDestructive))
+        .accessibilityHint(accessibilityHintForAction(label))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private func accessibilityLabelForAction(_ label: String, isActive: Bool, isDestructive: Bool) -> String {
+        switch label {
+        case "Save": return "Save photo"
+        case "Share": return "Share photo"
+        case "Favorite": return isActive ? "Remove from favorites" : "Add to favorites"
+        case "Delete": return "Delete photo"
+        case "More": return "More options"
+        default: return "\(label) photo"
+        }
+    }
+
+    private func accessibilityHintForAction(_ label: String) -> String {
+        switch label {
+        case "Save": return "Double tap to save to your photo library"
+        case "Share": return "Double tap to share this photo"
+        case "Favorite": return "Double tap to toggle favorite"
+        case "Delete": return "Double tap to delete this photo"
+        case "More": return "Double tap to see more options"
+        default: return ""
+        }
     }
 
     // MARK: - Swipe Hint
@@ -289,6 +319,7 @@ struct FullScreenPhotoPreviewView: View {
         .background(.ultraThinMaterial)
         .clipShape(Capsule())
         .transition(.opacity)
+        .accessibilityHidden(true)
     }
 
     // MARK: - Gestures
