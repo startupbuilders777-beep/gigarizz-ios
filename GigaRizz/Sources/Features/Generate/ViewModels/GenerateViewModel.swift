@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Generate View Model
 

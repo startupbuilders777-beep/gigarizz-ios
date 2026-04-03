@@ -97,8 +97,8 @@ struct PhotoPickerView: View {
                 .scaleEffect(viewModel.selectedPhotos.isEmpty ? 0.8 : 1.0)
                 .animation(DesignSystem.Animation.quickSpring, value: viewModel.selectedCount)
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
     }
 
     // MARK: - Selection Badge
@@ -112,7 +112,7 @@ struct PhotoPickerView: View {
                 .font(DesignSystem.Typography.caption)
         }
         .foregroundStyle(DesignSystem.Colors.flameOrange)
-        .padding(.horizontal, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.small)
         .padding(.vertical, DesignSystem.Spacing.micro)
         .background(DesignSystem.Colors.flameOrange.opacity(0.15))
         .clipShape(Capsule())
@@ -136,7 +136,7 @@ struct PhotoPickerView: View {
 
     private var photoGridView: some View {
         ScrollView {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 // Add more photos button (if under max)
                 if viewModel.selectedCount < viewModel.maximumSelection {
                     addPhotosButton
@@ -145,11 +145,11 @@ struct PhotoPickerView: View {
                 // Photo grid
                 LazyVGrid(
                     columns: [
-                        GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-                        GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-                        GridItem(.flexible(), spacing: DesignSystem.Spacing.s)
+                        GridItem(.flexible(), spacing: DesignSystem.Spacing.small),
+                        GridItem(.flexible(), spacing: DesignSystem.Spacing.small),
+                        GridItem(.flexible(), spacing: DesignSystem.Spacing.small)
                     ],
-                    spacing: DesignSystem.Spacing.s
+                    spacing: DesignSystem.Spacing.small
                 ) {
                     ForEach(viewModel.selectedPhotos) { photo in
                         PhotoGridItem(
@@ -164,14 +164,14 @@ struct PhotoPickerView: View {
                         )
                     }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
 
                 // Quality hints section
                 if !viewModel.selectedPhotos.isEmpty {
                     qualityHintsSection
                 }
             }
-            .padding(.top, DesignSystem.Spacing.m)
+            .padding(.top, DesignSystem.Spacing.medium)
         }
     }
 
@@ -195,18 +195,18 @@ struct PhotoPickerView: View {
             }
             .foregroundStyle(DesignSystem.Colors.flameOrange)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, DesignSystem.Spacing.s)
+            .padding(.vertical, DesignSystem.Spacing.small)
             .background(DesignSystem.Colors.surfaceSecondary)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
         .sensoryFeedback(.impact(weight: .light), trigger: viewModel.showPicker)
     }
 
     // MARK: - Quality Hints Section
 
     private var qualityHintsSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Photo Quality Tips")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -217,15 +217,15 @@ struct PhotoPickerView: View {
                 qualityHintRow(icon: "aqi.medium", text: "Sharp, in-focus photos preferred")
             }
         }
-        .padding(DesignSystem.Spacing.m)
+        .padding(DesignSystem.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
-        .padding(.horizontal, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
     }
 
     private func qualityHintRow(icon: String, text: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             Image(systemName: icon)
                 .font(DesignSystem.Typography.footnote)
                 .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -240,7 +240,7 @@ struct PhotoPickerView: View {
     // MARK: - Continue Button
 
     private var continueButtonView: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             GRButton(
                 title: viewModel.continueButtonTitle,
                 icon: viewModel.canContinue ? "arrow.right" : nil,
@@ -259,8 +259,8 @@ struct PhotoPickerView: View {
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.m)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.medium)
         .background(
             DesignSystem.Colors.background
                 .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5)

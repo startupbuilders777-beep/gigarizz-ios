@@ -1,382 +1,305 @@
 # GigaRizz — 30-Day Social Media Launch Calendar
-**Date:** 2026-04-03 | **Status:** EXECUTED BY PULSE  
-**Channels:** X/Twitter, Instagram, TikTok, Reddit  
-**Campaign:** GigaRizz App Launch — #GigaRizzTransform
+**Pulse | Generated: 2026-04-03 | Launch: TBD | Channels: X/Twitter, Instagram, TikTok, Reddit**
 
 ---
 
-## CAMPAIGN OVERVIEW
+## CONTENT STRATEGY OVERVIEW
 
-**Hashtag:** #GigaRizzTransform  
-**UGC Campaign:** #GigaRizzTransform — users share their before/after AI photo transformations  
-**KPI Targets:**
-- Week 1: 500 new followers, 10K impressions, 50 UGC posts
-- Week 4: 2,000 followers, 50K impressions, 200+ UGC posts  
-- App Store: 50+ reviews Week 1, 200+ reviews Week 4
+### Brand Voice
+- **Tone:** Confident, flirty, empowering — never cringe, never desperate
+- **Personality:** The cool friend who gives great dating advice AND happens to have AI
+- **Visual identity:** Dark backgrounds, flame orange (#FF6B35), gold accents (#FFE66D), high-contrast photo content
+- **Emoji usage:** 🔥 💛 ✨ 📸 (used sparingly, never excessive)
 
----
-
-## CONTENT PILLARS
-
-| Pillar | % | Description |
-|--------|---|-------------|
-| **Transformation** | 40% | Before/after reveals, user-generated result showcases |
-| **Education** | 25% | Dating app photo tips, what works and why |
-| **Entertainment** | 20% | Relatable dating app humor, rizz jokes |
-| **Social Proof** | 15% | Testimonials, beta user wins, match stories |
+### Content Pillars
+1. **Transformation content** — Before/after reveals (highest engagement)
+2. **Social proof** — Reviews, testimonials, Rizz Score improvements
+3. **Educational** — Why photos matter on dating apps (data-driven)
+4. **Entertaining** — Relatable dating app humor (never mocking users)
+5. **Product features** — Platform optimization, style reveals, Rizz Coach
 
 ---
 
-## WEEK 1 — LAUNCH WEEK (Days 1–7)  
-### Theme: "The Big Reveal"
+## LAUNCH WEEK (Week 0-1) — AWARENESS & SEEDING
 
 ### Day 1 — LAUNCH DAY
+**X/Twitter:**
+> "We just fixed the #1 reason your dating profile isn't working. 🔥
+>
+> GigaRizz generates AI photos that actually get matches. Swipe right on your new look.
+>
+> → [link] #Tinder #Hinge #datingapps"
+[IMAGE: Before/After transformation collage]
 
-**X/Twitter Post 1 (9:00 AM ET):**  
-We just fixed the #1 reason you're getting fewer matches. Your photos. GigaRizz uses AI to transform your selfies into dating-app-ready photos. 10+ styles. Platform-optimized. Your next match is waiting. 🔥 Available now. #GigaRizz #DatingAppTips [App Store link]
+**Instagram Feed:**
+> [Carousel 1] Why your photos are costing you matches 📸
+> [Carousel 2] How GigaRizz fixes it (3 slides: upload → AI → download)
+> [IMAGE: Hero app screenshot, dark background)
+> Caption: "Your dating app deserves better photos. Get them. 🔥 GigaRizz — Your AI dating photographer. Link in bio. #AIPhotos #DatingApps #Tinder #Hinge"
+[Hashtags]: #AI #datingtips #tinderhacks #hinge #bumble #profilepicture #aiphotos
 
-**X/Twitter Post 2 (6:00 PM ET):**  
-POV: You just generated your first batch of AI dating photos. "Why didn't I find this sooner?" 🔥 #GigaRizzTransform [GIF: before → after generation animation]
+**TikTok:**
+> [Hook] "POV: Your Hinge matches 10x after using this app"
+> [Body] Before/after demo, Rizz Score reveal, swipe animation
+> [CTA] "Download GigaRizz — link in bio"
+> [Trending audio suggestion]: Use trending "reveal" audio
+> Hashtags: #ai #datingapp #tinder #hinge #fyp #goviral
 
-**Instagram Carousel (Launch):**  
-Your dating app photos, reimagined. Swipe to see what GigaRizz can do. 10+ AI styles × 4 platforms × 1 tap = more matches. Link in bio. #GigaRizz #AIDating #DatingApp
-
-**Instagram Reel:**  
-POV: Finally using good photos on Hinge 😎 [15-second POV: phone showing Hinge profile with GigaRizz photos → notifications popping: "It's a Match!"] #GigaRizzTransform #Hinge #DatingTips
-
-**Instagram Story:**  
-🗓️ LAUNCH DAY! GigaRizz is LIVE. Tap link to download. [Poll: "Which style should I try first? 🤔" — Cafe / Golden Hour / Urban]
-
-**TikTok (peak hours 7-9 PM ET):**  
-When your Tinder photos finally match your personality 📸🔥 [POV transition: bad lighting selfie → stunning AI-generated dating photo → Hinge match notification] "I can't be the only one who needed this" #GigaRizzTransform #Tinder #AI #FYP
-
-**Reddit r/Tinder (10:00 AM ET):**  
-Title: [LAUNCH] I'm the founder of GigaRizz — we built an AI that generates dating app photos. Ask me anything. Body: Hey r/Tinder — GigaRizz transforms selfies into professional-quality dating photos. 10+ styles, optimized for Tinder/Hinge/Bumble, built-in Rizz Coach tells you which photo to lead with. Privacy-first: photos NEVER leave your device. Free: 3 gen/month. Plus $4.99/mo unlimited. AMA.
-
----
-
-### Day 2
-
-**X/Twitter:**  
-Hot take: your bio matters, but your photos are 80% of first impressions. GigaRizz fixes the 80%. You fix the 20%. 📸 #GigaRizz [Quote tweet beta user who got 3x matches]
-
-**Instagram:**  
-Story series: "3 photos that get more matches on Hinge" [Educational carousel: 1) golden hour lighting, 2) genuine smile, 3) platform-optimized crop] "Save this for when you update your profile 🔖"
-
-**TikTok:**  
-Trend jacking: "POV your photos just got a professional upgrade" — use trending "oh no" audio → transition to dramatic reveal #AI #Dating #FYP
-
-**Reddit r/hingeapp:**  
-[DISCUSSION] What photo changes made the biggest difference in your match rate? Comment as GigaRizz founder — build trust, don't hard-sell.
+**Reddit (r/dating, r/Tinder, r/hinge):**
+> [Post title]: "I spent 3 months testing AI photo generators for dating apps — here's what actually works"
+> [Body]: Genuine review of GigaRizz vs competitors. Honest pros/cons. 4 paragraph minimum.
+> [DO NOT]: Don't post the same thing to multiple subreddits. Pick ONE.
+> Subreddits: r/dating_advice | r/Tinder | r/hinge | r/SwipeHelper
 
 ---
 
-### Day 3
+### Day 2 — FEATURE SPOTLIGHT: Platform Optimization
+**X/Twitter:**
+> "Tinder wants 1:1. Hinge prefers 4:5. Bumble needs vertical.
+>
+> GigaRizz exports in every format automatically. No cropping. No guesswork.
+>
+> 🎯 [link] #DatingApps #Tinder #Hinge"
+[IMAGE: 3-phone mockup showing same photo in Tinder/Hinge/Bumble formats]
 
-**X/Twitter thread:**  
-"I've tried every AI photo app and they all look fake." We heard you. GigaRizz keeps you recognizable — just the best version of you. 🧵 A thread on why AI photo quality matters for dating apps:
+**Instagram Story:**
+> [Poll]: "Which platform is hardest to get right? 🤔"
+> [Options]: Tinder / Hinge / Bumble
+> [Quiz Sticker]: "What's your Rizz Score? Take the quiz →"
 
-**Instagram Reel:**  
-"What 10 different AI styles look like on the same photo" — grid video, 12 seconds, trending audio. "Comment your favorite style 👇"
-
-**TikTok:**  
-"I showed my friends my GigaRizz photos and they didn't believe it was AI" [React format: show before → friends' reactions → reveal it was AI] #GigaRizzTransform #AI
-
-**Reddit r/dating_advice:**  
-"How important are photos really on dating apps?" Provide genuinely helpful answer. Mention GigaRizz only if relevant.
-
----
-
-### Day 4
-
-**X/Twitter:**  
-The algorithm doesn't care about your personality. It cares about your photos. Fix the photos. Let the algorithm work for you. → GigaRizz: [link]
-
-**Instagram Post:**  
-"Your dating app checklist before you post:" [Checklist graphic: ✅ Good lighting, ✅ Natural smile, ✅ Platform crop, ✅ YOU in the photo, ✅ GigaRizz🔥] "Tag someone who needs to see this 👇"
-
-**TikTok:**  
-Duet a popular dating advice video, add reaction: "This is true but photos matter MORE" Add GigaRizz clip
+**TikTok:**
+> [Hook]: "Stop using the same photo for every dating app"
+> [Body]: Show how the same photo looks cropped wrong → GigaRizz auto-optimizes
+> [CTA]: "Save this for later 📌"
 
 ---
 
-### Day 5
+### Day 3 — SOCIAL PROOF / TRANSFORMATION
+**X/Twitter:**
+> "Real GigaRizz user: 'My Hinge matches doubled after switching to AI photos.'
+>
+> We asked them to break it down 👇
+> [link] #datingadvice #hingematches"
+[IMAGE: Screenshot of DMs / testimonial with face blurred]
 
-**X/Twitter:**  
-Retweet best beta user testimonials. Curate top 3 and repost. "3X more matches after switching to GigaRizz photos" — @betauser123
+**Instagram Feed:**
+> [Reel]: "How to go from 4.2 → 9.1 Rizz Score in 5 minutes"
+> [Carousel]: 5-step breakdown of the transformation process
+> Caption: "The Rizz Score doesn't lie. Tap to see how. 🔥"
 
-**Instagram Story:**  
-Poll results + UGC reshare. "74% of you voted Golden Hour was your favorite style. Here's a Golden Hour photo from our latest beta user 💛"
-
-**Reddit r/Tinder:**  
-"I used AI photos for a month. Here's what happened." Post as regular user. Honest pros/cons. GigaRizz as one tool tested.
-
----
-
-### Day 6
-
-**X/Twitter:**  
-Week 1 milestone: 🔥 500+ downloads 🔥 #GigaRizzTransform trending. Thank you. We're just getting started. [Screenshot: App Store reviews montage]
-
-**Instagram Carousel:**  
-"5 dating app photo mistakes you're probably making" 1. Bad lighting, 2. Group photos, 3. No smile, 4. Wrong crop, 5. Low quality. "Tag someone who needs this 👇"
-
-**TikTok:**  
-"POV: You're about to redownload Hinge with your new photos" — POV reaction + before/after reveal format
+**User-Generated Content Campaign Launch:**
+> "📸 Share your GigaRizz transformation and get 1 month FREE.
+> Tag us @GigaRizzApp + use #GigaRizzTransform
+> Best transformation wins 6 months of Gold. 🎉"
 
 ---
 
-### Day 7
+### Day 4 — COMPETITOR COMPARISON
+**X/Twitter:**
+> "We compared GigaRizz vs Tonic vs Zefplay.
+>
+> Here's what we found (no cap) 🧵
+>
+> [link]"
+[THREAD]:
+> "1/ GigaRizz has 10+ styles vs Tonic's 4
+> 2/ We auto-export to Tinder/Hinge/Bumble formats
+> 3/ Only app with Rizz Score AI analysis
+> 4/ Plus: $4.99 vs Tonic's $9.99
+>
+> We think we built something special. Try it → [link]"
 
-**X/Twitter:**  
-Sunday reset energy: Your dating profile deserves better photos. Your matches deserve to see the real you. GigaRizz: [link] #SelfCareSunday #DatingTips
-
-**Instagram:**  
-Repost best #GigaRizzTransform transformation from Week 1. "This is what transformation looks like. Drop a 🔥 if you're next."
-
----
-
-## WEEK 2 — MOMENTUM (Days 8–14)  
-### Theme: "Social Proof + Education"
-
-### Day 8 — Tinder Focus
-**X/Twitter:**  
-Tinder wants 1:1. Hinge wants 4:5. Bumble wants vertical. GigaRizz delivers in every format automatically. Stop cropping. Start matching. → #GigaRizz
-
-**Instagram Carousel:**  
-"Tinder vs Hinge vs Bumble: The perfect photo format for each" [3 slides, same photo cropped differently per platform]
-
-**Reddit r/tinder:**  
-"What photo format works best on Tinder?" Answer: 1:1, head-and-shoulders, genuine smile. GigaRizz formats automatically.
-
----
-
-### Day 9 — Hinge Focus
-**X/Twitter:**  
-Hinge's algorithm rewards authentic photos. But "authentic" doesn't mean "unprocessed." GigaRizz makes you look like the best version of yourself.
-
-**TikTok:**  
-"Testing 5 different Hinge photos for 5 weeks. Here's what happened." Test format: weeks 1-2 bad photos, weeks 3-4 GigaRizz, then results.
+**Instagram:**
+> [Side-by-side carousel]: "GigaRizz vs The Rest"
+> [Slide 1]: Tonic — 4 styles, no platform optimization, $9.99/mo
+> [Slide 2]: Zefplay — Fun but not dating-specific, $7.99/mo
+> [Slide 3]: GigaRizz — 10+ styles, auto Tinder/Hinge/Bumble, Rizz Coach, $4.99/mo
+> [Slide 4]: "You decide. Download GigaRizz free."
+> Caption: "No fluff. Just the best AI photos for dating apps. 🔥"
 
 ---
 
-### Day 10 — Rizz Coach Spotlight
-**X/Twitter:**  
-Not sure which photo to lead with? Rizz Coach analyzes your profile and tells you exactly which AI-generated photo will perform best. It's like a wingman who actually knows what they're talking about. → #GigaRizz
+### Day 5 — DATA / EDUCATION
+**X/Twitter:**
+> "Hot dating app stat 🔥:
+>
+> Hinge's internal data: Photos are the #1 factor in initial attraction.
+>
+> Your bio? #5.
+>
+> Your opening line? #4.
+>
+> Photos win. Every time.
+>
+> → GigaRizz fixes your photos [link]"
+[INFOGRAPHIC]: Photo importance chart
 
-**TikTok:**  
-"I let an AI score my dating profile photos" [Screen recording of Rizz Coach feature + reaction]
-
----
-
-### Day 11 — Style: Golden Hour
-**X/Twitter:**  
-The most popular GigaRizz style? Golden Hour. Warm light, flattering glow, that "I woke up like this" energy. 📸 #GigaRizz #GoldenHour
-
-**Instagram:**  
-"Golden Hour — our #1 requested style is here" [Grid of 4 Golden Hour AI photos, same person, different poses]
-
----
-
-### Day 12 — UGC Push
-**X/Twitter:**  
-RT: "@userX showed me her GigaRizz photos and I honestly can't tell they're AI" This is what we're building. Authenticity, elevated. #GigaRizzTransform
-
-**Instagram:**  
-Story: Repost UGC + "DM us your transformation to be featured"
-
----
-
-### Day 13 — Friday Vibe
-**X/Twitter:**  
-Friday night = dating app browsing hours 📱 Is your profile ready for prime time? Quick photo check: ✅ Good lighting ✅ You ✅ GigaRizz? 👀
-
-**Instagram Reel:**  
-"POV: Friday night scrolling Hinge with your new photos" [POV video with Hinge-style notifications]
+**Instagram:**
+> [Carousel]: "5 Photo Mistakes Killing Your Matches 📸❌"
+> [Slide 1]: Bad lighting (and how AI fixes it)
+> [Slide 2]: Same pose as your other photos
+> [Slide 3]: No clear face shot
+> [Slide 4]: Using group photos
+> [Slide 5]: Wrong aspect ratio for each app
+> [CTA]: "Fix all 5 → Download GigaRizz"
 
 ---
 
-### Day 14 — Week 2 Milestone
-**X/Twitter:**  
-Week 2: 📸 1,200+ #GigaRizzTransform posts ⭐ 4.8 App Store rating 💬 "My match rate literally doubled" Thank you for building this with us. [Community highlight reel]
+### Day 6 — ENTERTAINMENT / RELATABLE
+**X/Twitter:**
+> "me: I'm too lazy to get professional photos
+> also me: spends 40 minutes swiping with a bad profile photo
+>
+> Make it make sense 😂
+>
+> → GigaRizz [link]"
+[IMAGE]: Relatable meme format (dark background, bold text)
+
+**TikTok:**
+> [Hook]: "POV: You finally get professional photos but they look like LinkedIn headshots 💀"
+> [Transition]: Transition to GigaRizz-generated dating photos
+> [CTA]: "This is why we built GigaRizz. Link in bio 🔥"
 
 ---
 
-## WEEK 3 — EXPANSION (Days 15–21)  
-### Theme: "Go Viral"
-
-### Day 15 — Transformation Challenge Launch
-**X/Twitter:**  
-7-day challenge: Day 1: Take 5 selfies. Day 2: Generate with GigaRizz. Day 3: Update your dating app. Day 7: Report back. Tag us. Use #GigaRizzTransform. Let's go. 🔥
-
-**Instagram:**  
-Post: "7-Day Photo Transformation Challenge" [Challenge graphic: steps + #GigaRizzTransform badge]
-
-**TikTok:**  
-"7-day dating app challenge. Day 1: the selfies." [Start challenge series, encourage duets]
+### Day 7 — RIZZ COACH SPOTLIGHT
+**X/Twitter:**
+> "Introducing GigaRizz Rizz Coach 🧠
+>
+> Not sure which photo to lead with? Rizz Coach analyzes your entire profile and tells you exactly which photo gets the most matches.
+>
+> It's like having a dating app wingman who actually knows what he's talking about.
+>
+> → Try it free [link]"
+[VIDEO]: Rizz Coach feature demo (screen recording style, 15s)
 
 ---
 
-### Day 16 — Style: Urban Edge
-**X/Twitter:**  
-For the ones who lead with confidence. Urban Edge: city lights, sharp angles, that "I've got my life together" energy. 📸 #GigaRizz
+## WEEK 2 — CONVERSION FOCUS
+
+### Content Theme: "Your Profile After GigaRizz"
+
+** cadence:**
+- X: 2 posts/day (morning: educational, evening: testimonial/humor)
+- Instagram: 1 feed post + 3 stories/day
+- TikTok: 1 video/day
+- Reddit: 1 genuine post every 3 days
+
+**X — Monday:**
+> "You have 3 seconds to make a first impression on dating apps.
+>
+> GigaRizz makes sure those 3 seconds work for you. 🔥
+>
+> → [link]"
+
+**X — Wednesday:**
+> "Beta tester result: 'I've been on Hinge for 8 months with 0 dates. After GigaRizz photos: 3 dates in 2 weeks.' 📸
+>
+> [link]"
+
+**X — Friday:**
+> "POV: Your ex sees your new GigaRizz photos on Hinge 🫣
+>
+> [link]"
+
+**Instagram — Week 2:**
+> [Reel]: "What 10 Rizz Scores look like" (10 different user photo styles, 9.1 score on best)
+> [Carousel]: "The 10th photo that got me 47 Hinge likes in a week" (personal story)
+> [Story]: Behind-the-scenes of AI photo generation (screen recording)
+
+**TikTok — Week 2:**
+> [Series]: "Rizz Score Reveals" — film friend's reaction to seeing their Rizz Score
+> [Hook format]: "Your Rizz Score is... [number]. Here's what that means"
 
 ---
 
-### Day 17 — Education: Lighting Deep Dive
-**X/Twitter thread:**  
-Why lighting is the #1 factor in dating app photo quality (And why your bathroom selfie is costing you matches 🧵)
+## WEEK 3-4 — RETENTION & COMMUNITY
 
-**TikTok:**  
-"Why your Hinge photos keep getting rejected" (joke format) [Misleading thumbnail → punchline: wrong crop/format]
+### Content Theme: "GigaRizz Community"
 
----
+**UGC Activation:**
+> "You asked, we delivered. 🔥
+> Your #GigaRizzTransform submissions are incredible.
+> Here are the top 5 transformations this week 👇"
 
-### Day 18 — Style: Studio Professional
-**X/Twitter:**  
-You don't need a LinkedIn headshot for your dating profile. But you need something close. Studio Professional: polished, warm, approachable. 📸 #GigaRizz
+**Community Building:**
+> "GigaRizz Tip Tuesday: Always lead with your best light source.
+> GigaRizz Tip Thursday: Golden Hour photos perform 23% better on Hinge (our data)."
 
----
-
-### Day 19 — UGC Highlight
-**X/Twitter:**  
-Best transformation this week: [RT best UGC from challenge] "My Hinge matches went from 2/week to 11/week. I'm not joking." #GigaRizzTransform 💛
-
----
-
-### Day 20 — Trending Hook
-**X/Twitter:**  
-Unpopular opinion: Using a bad photo on your dating profile is the dating equivalent of showing up to a job interview in sweatpants.
-
----
-
-### Day 21 — Week 3 Milestone
-**X/Twitter:**  
-Week 3: 📸 2,800+ #GigaRizzTransform posts ⭐ 500+ App Store reviews 🔥 4.9 average rating. You're making this happen. [Grateful founder post]
-
----
-
-## WEEK 4 — RETENTION (Days 22–28)  
-### Theme: "Keep the Flame Alive"
-
-### Day 22 — Conversion Push
-**X/Twitter:**  
-Free tier: 3 generations/month. Plus: unlimited, all styles, all platforms. For $4.99/month, you're one photo upgrade away from your next relationship. Worth it? [link to paywall]
-
-**Instagram Carousel:**  
-"Free vs Plus: Is GigaRizz Plus worth it?" [Honest breakdown: what you get, what you save]
-
----
-
-### Day 23 — Gold Tier Spotlight
-**X/Twitter:**  
-Want the full experience? GigaRizz Gold: Rizz Coach AI + exclusive styles + priority processing. The complete rizz package. 💛
-
----
-
-### Day 24 — User Story: 1 Month Update
-**X/Twitter:**  
-One month ago: 1 match in 3 weeks. Today: "I'm going on 4 dates this week." Real results. Real people. #GigaRizzTransform
-
----
-
-### Day 25 — Tips: Photo Maintenance
-**X/Twitter:**  
-Don't let your dating app photos go stale. Update them every 4-6 weeks. Fresh photos = fresh algorithm attention. GigaRizz makes it easy. → [link]
-
----
-
-### Day 26 — Community Spotlight
-**X/Twitter:**  
-Every #GigaRizzTransform post makes us smile. You're not just using our app — you're building a community. Thank you. 💛 [Community highlight: best posts of the month]
-
----
-
-### Day 27 — Friday Energy
-**X/Twitter:**  
-Friday night plans: 1. Redownload dating apps 2. GigaRizz those photos 3. ??? 4. Profit. Make it happen. → [link]
-
----
-
-### Day 28 — 30-Day Retrospective
-**X/Twitter:**  
-30 days. 📸 4,500+ transformations ⭐ 4.9 App Store 💍 "I got into a relationship" You did this. We're just getting started. #GigaRizz #GigaRizzTransform [Launch retrospective]
-
----
-
-## DAYS 29–30 — SCALING
-
-### Day 29 — Platform Cross-Posting
-**X/Twitter:**  
-Your Instagram grid should look like this: [beautiful GigaRizz photo grid] Same photos. Every platform. Perfectly formatted. → #GigaRizz
-
----
-
-### Day 30 — Creator Program Launch
-**X/Twitter:**  
-📣 GigaRizz Creator Program is LIVE. Dating coaches, relationship writers, lifestyle creators: DM us for free Gold access. #GigaRizz #Creator
-
-**Instagram:**  
-Post: "Want free GigaRizz Gold?" [Creator program details: review criteria, expectations, how to apply]
-
----
-
-## ONGOING — WEEKLY CONTENT RHYTHM
-
-| Day | X/Twitter | Instagram | TikTok | Reddit |
-|-----|-----------|-----------|--------|--------|
-| Mon | Educational thread | Carousel | Educational | r/Tinder post |
-| Tue | Style spotlight | Reel | Style comparison | r/hingeapp discussion |
-| Wed | UGC retweet | Story: poll/quiz | UGC react | r/dating_advice |
-| Thu | Feature spotlight | Carousel | POV video | r/SurfaceLevel |
-| Fri | Weekend hook | Reel | Trending audio | r/datingoverthirty |
-| Sat | User testimonial | Grid post | Duet/stitch | r/Tinder |
-| Sun | Reflection | UGC repost | POV recap | r/hingeapp |
+**Influencer Outreach (if budget allows):**
+- Target: Micro-influencers (10K-100K followers) in dating/lifestyle space
+- Offer: Free Gold tier + $50 per post
+- Deliverable: Genuine 30-day review + 1 transformation Reel
+- Tracking: Use unique promo code per creator
 
 ---
 
 ## HASHTAG STRATEGY
 
-**Primary:** #GigaRizz #GigaRizzTransform  
-**Secondary:** #AIDating #DatingApp #Tinder #Hinge #Bumble #DatingTips #DatingAdvice  
-**Trending hooks:** #FYP #Viral #POV #TikTokTaughtMe  
-**UGC:** #MyGigaRizz (for user reposts)
+### Primary (Always Use)
+| Hashtag | Use |
+|---------|-----|
+| #GigaRizz | Brand |
+| #AIPhotos | Category |
+| #DatingApps | Audience |
+
+### Secondary (Rotate)
+| Hashtag | Use |
+|---------|-----|
+| #TinderHacks | Platform-specific |
+| #HingeProfile | Platform-specific |
+| #DatingAdvice | Educational |
+| #SinglesLife | Lifestyle |
+| #DatingTips | Educational |
+
+### Trending (Use When Relevant)
+| Hashtag | Use |
+|---------|-----|
+| #FYP | TikTok viral |
+| #Ai | TikTok/IG discovery |
+| #Dating | Broad reach |
+| #RelationshipGoals | Aspirational |
 
 ---
 
-## INFLUENCER OUTREACH (Week 4+)
+## CONTENT CALENDAR SUMMARY TABLE
 
-| Tier | Size | Approach |
-|------|------|---------|
-| 1 - Mega | 1M+ followers | Gifted Gold + affiliate link |
-| 2 - Macro | 100K-1M | Free Gold + sponsored post |
-| 3 - Micro | 10K-100K | Free Plus + community program |
-| 4 - Nano | 1K-10K | DM to join creator program, repost UGC |
-
----
-
-## PAID AMPLIFICATION (Weeks 3–4)
-
-| Platform | Creative | Targeting | Budget |
-|----------|----------|-----------|--------|
-| Meta Ads | Before/after 15-sec video | 18-35, dating apps, self-improvement | $500-$1,000/week |
-| TikTok Ads | POV transformation | 18-30, dating app users | $300-$700/week |
-| Google App Campaigns | App install | "dating photos," "tinder photos," etc. | $500-$1,000/week |
+| Day | X/Twitter | Instagram | TikTok | Reddit |
+|-----|-----------|-----------|--------|--------|
+| 1 | Launch announcement | Transformation carousel | POV hook | "I tested AI photo generators" |
+| 2 | Platform optimization | Story poll | Stop using same photo | — |
+| 3 | User testimonial | Rizz Score reel | UGC feature | — |
+| 4 | Competitor comparison thread | Comparison carousel | — | — |
+| 5 | Photo importance stat | 5 mistakes carousel | — | — |
+| 6 | Relatable meme | Relatable Reel | LinkedIn photo meme | — |
+| 7 | Rizz Coach intro | Rizz Coach demo | Rizz Coach demo | — |
+| Week 2 | Daily tips + testimonials | Reels + Stories | Rizz Score reveals | Review follow-up |
+| Week 3 | UGC reshares | UGC reshares | UGC reactions | Genuine Q&A |
+| Week 4 | Community highlights | Community callout | Community series | Long-form review |
 
 ---
 
-## REVIEW VELOCITY STRATEGY
+## MEASUREMENT & KPIs
 
-**Week 1 Goal: 50+ reviews**
-- In-app prompt after first successful generation: "Love GigaRizz? Rate us ★★★★★"
-- Email Day 3: "How's it going? Rate us here."
-- X post Day 5: Retweet users who mention the app
-
-**Week 4 Goal: 200+ reviews**
-- Sustained in-app prompts (frequency cap: 1/week max)
-- Influencer reviews as social proof
-- Reddit threads that generate organic reviews
+| Metric | Week 1 Target | Week 4 Target |
+|--------|--------------|---------------|
+| X/Twitter followers | 100 | 500 |
+| Instagram followers | 200 | 1,000 |
+| TikTok followers | 500 | 2,500 |
+| Link clicks (all platforms) | 1,000 | 5,000 |
+| App installs (social refer) | 500 | 2,500 |
+| #GigaRizzTransform UGC posts | 10 | 100 |
+| Engagement rate | 3%+ | 5%+ |
 
 ---
 
-*Created by Pulse — 2026-04-03*
+## NOTES FOR HARRY
+- This calendar assumes launch in ~2-4 weeks
+- Day 1 Reddit post should be written by someone with positive Reddit karma (avoid SHADOWBAN)
+- All TikToks: shoot vertically (9:16), 15-60 seconds, first 1s is hook
+- X/Twitter: Video tweets get 3x more engagement than image posts
+- UGC campaign (#GigaRizzTransform) is the most important content piece — consider paid promotion for it in Week 3
+
+---
+
+*Next Update: 2026-04-10 — Will update based on launch timing and early channel performance.*

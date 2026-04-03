@@ -9,9 +9,9 @@ struct ResponseTimeTrackerView: View {
 
     var body: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 // Header
-                HStack(spacing: DesignSystem.Spacing.s) {
+                HStack(spacing: DesignSystem.Spacing.small) {
                     ZStack {
                         Circle()
                         .fill(responseTimeColor.opacity(0.2))
@@ -32,7 +32,7 @@ struct ResponseTimeTrackerView: View {
                 }
 
                 // Average display
-                HStack(spacing: DesignSystem.Spacing.m) {
+                HStack(spacing: DesignSystem.Spacing.medium) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                         Text("Average Response")
                             .font(DesignSystem.Typography.caption)
@@ -69,7 +69,7 @@ struct ResponseTimeTrackerView: View {
                 }
 
                 // Stats breakdown
-                HStack(spacing: DesignSystem.Spacing.l) {
+                HStack(spacing: DesignSystem.Spacing.large) {
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                         Text("Fastest")
                             .font(DesignSystem.Typography.caption)
@@ -91,7 +91,7 @@ struct ResponseTimeTrackerView: View {
 
                 // Nudge message (if present)
                 if let nudge = stats.nudgeMessage {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "bell.badge.fill")
                             .font(.system(size: 16))
                             .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -101,7 +101,7 @@ struct ResponseTimeTrackerView: View {
                         Spacer()
                     }
                     .padding(.vertical, DesignSystem.Spacing.xs)
-                    .padding(.horizontal, DesignSystem.Spacing.s)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
                     .background(DesignSystem.Colors.flameOrange.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
                 }

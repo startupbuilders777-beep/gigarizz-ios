@@ -41,14 +41,14 @@ struct PaywallView: View {
             ZStack {
                 DesignSystem.Colors.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         heroSection
                         featuresSection
                         planSelection
                         ctaSection
                         footerSection
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                     .padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
@@ -65,8 +65,8 @@ struct PaywallView: View {
     }
 
     private var heroSection: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
-            HStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 VStack(spacing: DesignSystem.Spacing.xs) {
                     ZStack {
                         RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
@@ -93,7 +93,7 @@ struct PaywallView: View {
                     .overlay(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium).strokeBorder(DesignSystem.Colors.flameOrange, lineWidth: 2))
                     Text("After").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.flameOrange)
                 }
-            }.padding(.top, DesignSystem.Spacing.l)
+            }.padding(.top, DesignSystem.Spacing.large)
             VStack(spacing: DesignSystem.Spacing.xs) {
                 Text("Unlock Your Full Rizz").font(DesignSystem.Typography.headline).foregroundStyle(DesignSystem.Colors.textPrimary)
                 Text("10x your matches with AI-powered dating photos").font(DesignSystem.Typography.subheadline).foregroundStyle(DesignSystem.Colors.textSecondary).multilineTextAlignment(.center)
@@ -102,7 +102,7 @@ struct PaywallView: View {
     }
 
     private var featuresSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             featureRow(icon: "wand.and.stars", title: "Unlimited AI Photos", subtitle: "Generate as many dating photos as you want")
             featureRow(icon: "paintpalette.fill", title: "All 10 Style Presets", subtitle: "Confident, Adventurous, Golden Hour, and more")
             featureRow(icon: "arrow.down.circle.fill", title: "HD Downloads", subtitle: "Full resolution photos with no watermark")
@@ -112,7 +112,7 @@ struct PaywallView: View {
     }
 
     private func featureRow(icon: String, title: String, subtitle: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: icon).font(.system(size: 20)).foregroundStyle(DesignSystem.Colors.flameOrange).frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -121,16 +121,16 @@ struct PaywallView: View {
             Spacer()
             Image(systemName: "checkmark.circle.fill").foregroundStyle(DesignSystem.Colors.success)
         }
-        .padding(.horizontal, DesignSystem.Spacing.m)
-        .padding(.vertical, DesignSystem.Spacing.s)
+        .padding(.horizontal, DesignSystem.Spacing.medium)
+        .padding(.vertical, DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
     }
 
     private var planSelection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Text("Choose Your Plan").font(DesignSystem.Typography.title).foregroundStyle(DesignSystem.Colors.textPrimary)
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 ForEach(PlanOption.allCases, id: \.self) { plan in planCard(plan) }
             }
         }
@@ -152,7 +152,7 @@ struct PaywallView: View {
                 Text(plan.price).font(DesignSystem.Typography.headline).foregroundStyle(selectedPlan == plan ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textPrimary)
                 Text(plan.period).font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
             }
-            .frame(maxWidth: .infinity).padding(.vertical, DesignSystem.Spacing.m)
+            .frame(maxWidth: .infinity).padding(.vertical, DesignSystem.Spacing.medium)
             .background(selectedPlan == plan ? DesignSystem.Colors.flameOrange.opacity(0.1) : DesignSystem.Colors.surface)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
             .overlay(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium).strokeBorder(selectedPlan == plan ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.divider, lineWidth: selectedPlan == plan ? 2 : 1))
@@ -160,7 +160,7 @@ struct PaywallView: View {
     }
 
     private var ctaSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             GRButton(title: "Start 3-Day Free Trial", icon: "flame.fill") {
                 DesignSystem.Haptics.medium()
                 PostHogManager.shared.trackPaywallViewed(trigger: "paywall_cta")
@@ -170,14 +170,14 @@ struct PaywallView: View {
     }
 
     private var footerSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Button {
                 isRestoring = true
                 Task { await subscriptionManager.restorePurchases(); isRestoring = false }
             } label: {
                 Text(isRestoring ? "Restoring..." : "Restore Purchases").font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary)
             }.disabled(isRestoring)
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 Button { } label: { Text("Terms of Service").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary) }
                 Button { } label: { Text("Privacy Policy").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary) }
             }

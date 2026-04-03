@@ -4,8 +4,8 @@ import SwiftUI
 
 struct PhotoPacksView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    @State private var selectedPlatform: DatingPlatform? = nil
-    @State private var selectedPack: PhotoPack? = nil
+    @State private var selectedPlatform: DatingPlatform? 
+    @State private var selectedPack: PhotoPack? 
     @State private var showPackDetail = false
     @State private var showPaywall = false
 
@@ -19,12 +19,12 @@ struct PhotoPacksView: View {
             DesignSystem.Colors.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
                     platformFilter
                     packsGrid
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -56,7 +56,7 @@ struct PhotoPacksView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.s)
+        .padding(.top, DesignSystem.Spacing.small)
     }
 
     // MARK: - Platform Filter
@@ -86,7 +86,7 @@ struct PhotoPacksView: View {
                     .font(DesignSystem.Typography.smallButton)
             }
             .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
-            .padding(.horizontal, DesignSystem.Spacing.s)
+            .padding(.horizontal, DesignSystem.Spacing.small)
             .padding(.vertical, DesignSystem.Spacing.xs)
             .background(
                 isSelected
@@ -100,7 +100,7 @@ struct PhotoPacksView: View {
     // MARK: - Packs Grid
 
     private var packsGrid: some View {
-        LazyVStack(spacing: DesignSystem.Spacing.m) {
+        LazyVStack(spacing: DesignSystem.Spacing.medium) {
             ForEach(filteredPacks) { pack in
                 PackCard(pack: pack, isLocked: shouldLock(pack)) {
                     if shouldLock(pack) {
@@ -175,18 +175,18 @@ struct PackCard: View {
                                 .background(Capsule().fill(.white.opacity(0.2)))
                         }
                     }
-                    .padding(DesignSystem.Spacing.m)
+                    .padding(DesignSystem.Spacing.medium)
                 }
 
                 // Description and photo types preview
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     Text(pack.description)
                         .font(DesignSystem.Typography.footnote)
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                         .lineLimit(2)
 
                     // Photo type icons row
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         ForEach(pack.photoTypes.prefix(5)) { photoType in
                             VStack(spacing: 2) {
                                 Image(systemName: photoType.icon)
@@ -217,7 +217,7 @@ struct PackCard: View {
                         Spacer()
                     }
                 }
-                .padding(DesignSystem.Spacing.m)
+                .padding(DesignSystem.Spacing.medium)
                 .background(DesignSystem.Colors.surface)
             }
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
@@ -241,7 +241,7 @@ struct PackDetailSheet: View {
                 DesignSystem.Colors.background.ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         // Pack header
                         ZStack {
                             LinearGradient(
@@ -251,7 +251,7 @@ struct PackDetailSheet: View {
                             )
                             .frame(height: 180)
 
-                            VStack(spacing: DesignSystem.Spacing.s) {
+                            VStack(spacing: DesignSystem.Spacing.small) {
                                 Image(systemName: pack.icon)
                                     .font(.system(size: 48, weight: .bold))
                                     .foregroundStyle(.white)
@@ -268,7 +268,7 @@ struct PackDetailSheet: View {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
 
                         // Photo types list
-                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                             Text("What You Get")
                                 .font(DesignSystem.Typography.title)
                                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -277,7 +277,7 @@ struct PackDetailSheet: View {
                                 photoTypeRow(photoType)
                             }
                         }
-                        .padding(.horizontal, DesignSystem.Spacing.m)
+                        .padding(.horizontal, DesignSystem.Spacing.medium)
 
                         // Generate button
                         VStack(spacing: DesignSystem.Spacing.xs) {
@@ -294,7 +294,7 @@ struct PackDetailSheet: View {
                                 .font(DesignSystem.Typography.footnote)
                                 .foregroundStyle(DesignSystem.Colors.textSecondary)
                         }
-                        .padding(.horizontal, DesignSystem.Spacing.m)
+                        .padding(.horizontal, DesignSystem.Spacing.medium)
                         .padding(.bottom, DesignSystem.Spacing.xxl)
                     }
                 }
@@ -311,7 +311,7 @@ struct PackDetailSheet: View {
     }
 
     private func photoTypeRow(_ photoType: PackPhotoType) -> some View {
-        HStack(spacing: DesignSystem.Spacing.m) {
+        HStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: photoType.icon)
                 .font(.system(size: 18))
                 .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -332,7 +332,7 @@ struct PackDetailSheet: View {
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
             }
         }
-        .padding(DesignSystem.Spacing.s)
+        .padding(DesignSystem.Spacing.small)
         .background(DesignSystem.Colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
     }

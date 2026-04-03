@@ -97,9 +97,15 @@ final class PostHogManager: ObservableObject {
         track("referral_code_shared")
     }
 
+    // MARK: - Track Event
+
+    func trackEvent(_ event: String, properties: [String: Any] = [:]) {
+        track(event, properties: properties)
+    }
+
     // MARK: - Private
 
-    private func track(_ event: String, properties: [String: Any] = [:]) {
+    func track(_ event: String, properties: [String: Any] = [:]) {
         guard isInitialized else { return }
         var allProperties = properties
         allProperties["timestamp"] = ISO8601DateFormatter().string(from: Date())
