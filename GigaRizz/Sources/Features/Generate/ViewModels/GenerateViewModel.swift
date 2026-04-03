@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Generate View Model
 
@@ -139,6 +139,15 @@ final class GenerateViewModel: ObservableObject {
                 continuation.finish()
             }
         }
+    }
+
+    // MARK: - Cancel Generation
+
+    func cancelGeneration() {
+        aiService.cancelGeneration()
+        isGenerating = false
+        generationProgress = 0
+        PostHogManager.shared.track("generation_cancelled")
     }
 
     // MARK: - Reset

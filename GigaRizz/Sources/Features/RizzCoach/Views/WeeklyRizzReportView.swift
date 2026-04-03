@@ -8,9 +8,9 @@ struct WeeklyRizzReportCard: View {
 
     var body: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 // Header
-                HStack(spacing: DesignSystem.Spacing.s) {
+                HStack(spacing: DesignSystem.Spacing.small) {
                     ZStack {
                         RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
                             .fill(report.scoreChange >= 0 ? DesignSystem.Colors.success.opacity(0.2) : DesignSystem.Colors.warning.opacity(0.2))
@@ -40,7 +40,7 @@ struct WeeklyRizzReportCard: View {
 
                 // Milestone (if any)
                 if let milestone = report.milestone {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "trophy.fill")
                             .font(.system(size: 16))
                             .foregroundStyle(DesignSystem.Colors.goldAccent)
@@ -50,7 +50,7 @@ struct WeeklyRizzReportCard: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, DesignSystem.Spacing.xs)
-                    .padding(.horizontal, DesignSystem.Spacing.s)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
                     .background(DesignSystem.Colors.goldAccent.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
                 }
@@ -78,7 +78,7 @@ struct WeeklyRizzReportCard: View {
     }
 
     private func insightRow(_ insight: RizzInsight) -> some View {
-        HStack(spacing: DesignSystem.Spacing.s) {
+        HStack(spacing: DesignSystem.Spacing.small) {
             Circle()
                 .fill(insightColor(insight.type).opacity(0.2))
                 .frame(width: 24, height: 24)
@@ -142,14 +142,14 @@ struct WeeklyRizzReportDetailView: View {
                 DesignSystem.Colors.background.ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         headerSection
                         scoreChangeSection
                         milestoneSection
                         insightsSection
                         topActionsSection
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                     .padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
@@ -171,7 +171,7 @@ struct WeeklyRizzReportDetailView: View {
 
     private var headerSection: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.s) {
+            VStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "calendar.badge.clock")
                     .font(.system(size: 40))
                     .foregroundStyle(
@@ -190,12 +190,12 @@ struct WeeklyRizzReportDetailView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     private var scoreChangeSection: some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.l) {
+            HStack(spacing: DesignSystem.Spacing.large) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
                     Text("Score Change")
                         .font(DesignSystem.Typography.caption)
@@ -226,7 +226,7 @@ struct WeeklyRizzReportDetailView: View {
         Group {
             if let milestone = report.milestone {
                 GRCard {
-                    HStack(spacing: DesignSystem.Spacing.m) {
+                    HStack(spacing: DesignSystem.Spacing.medium) {
                         Image(systemName: "trophy.fill")
                             .font(.system(size: 32))
                             .foregroundStyle(DesignSystem.Colors.goldAccent)
@@ -246,14 +246,14 @@ struct WeeklyRizzReportDetailView: View {
     }
 
     private var insightsSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("This Week's Insights")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
             ForEach(report.insights) { insight in
                 GRCard {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Circle()
                             .fill(insightColor(insight.type))
                             .frame(width: 32, height: 32)
@@ -278,14 +278,14 @@ struct WeeklyRizzReportDetailView: View {
     }
 
     private var topActionsSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Top Actions for Next Week")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
             ForEach(report.topActions) { action in
                 GRCard {
-                    HStack(spacing: DesignSystem.Spacing.s) {
+                    HStack(spacing: DesignSystem.Spacing.small) {
                         Text("#\(action.priority)")
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(DesignSystem.Colors.flameOrange)

@@ -1,11 +1,12 @@
 import Combine
 import FirebaseAuth
-import FirebaseCore
 import Foundation
 
 /// Manages Firebase Authentication state and user identity.
 @MainActor
 final class AuthManager: ObservableObject {
+    // MARK: - Singleton
+
     static let shared = AuthManager()
 
     // MARK: - Published Properties
@@ -14,6 +15,12 @@ final class AuthManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var isLoading = false
     @Published var errorMessage: String?
+
+    // MARK: - Computed Properties
+
+    var currentUserId: String? {
+        currentUser?.uid
+    }
 
     // MARK: - Private Properties
 
@@ -93,11 +100,7 @@ final class AuthManager: ObservableObject {
     // MARK: - Helpers
 
     var userId: String? {
-        currentUser?.uid
-    }
-
-    var currentUserId: String? {
-        currentUser?.uid
+        currentUserId
     }
 
     var userEmail: String? {

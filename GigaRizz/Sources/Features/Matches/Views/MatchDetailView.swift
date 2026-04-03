@@ -5,6 +5,7 @@ struct MatchDetailView: View {
     @ObservedObject var viewModel: MatchesViewModel
     @State private var suggestedReplies: [String] = []
     @State private var isLoadingReplies = false
+    @State private var showChat = false
     @Environment(\.dismiss) private var dismiss
 
     private let coachService = CoachService.shared
@@ -14,23 +15,25 @@ struct MatchDetailView: View {
             ZStack {
                 DesignSystem.Colors.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         matchHeader
+                        openChatButton
                         statusUpdateSection
                         if !match.notes.isEmpty { notesSection }
                         aiReplySection
                         deleteButton
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m).padding(.bottom, DesignSystem.Spacing.xxl)
+                    .padding(.horizontal, DesignSystem.Spacing.medium).padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
             .navigationBarTitleDisplayMode(.inline).toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { Button { dismiss() } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(DesignSystem.Colors.textSecondary) } } }
+            .sheet(isPresented: $showChat) { ChatView(match: match) }
         }
     }
 
     private var matchHeader: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             ZStack {
                 Circle().fill(match.platform.color.opacity(0.2)).frame(width: 80, height: 80)
                 Text(String(match.name.prefix(1))).font(DesignSystem.Typography.scoreLarge).foregroundStyle(match.platform.color)
@@ -43,7 +46,18 @@ struct MatchDetailView: View {
                 HStack(spacing: 4) { Image(systemName: match.status.icon); Text(match.status.rawValue) }
                     .font(DesignSystem.Typography.caption).foregroundStyle(match.status.color)
             }
-        }.padding(.top, DesignSystem.Spacing.m)
+        }.padding(.top, DesignSystem.Spacing.medium)
+    }
+
+    private var openChatButton: some View {
+        GRButton(
+            title: "Open Chat",
+            icon: "message.fill",
+            style: .primary
+        ) {
+            showChat = true
+            DesignSystem.Haptics.light()
+        }
     }
 
     private var statusUpdateSection: some View {
@@ -57,7 +71,7 @@ struct MatchDetailView: View {
                                 Image(systemName: status.icon).font(.system(size: 12))
                                 Text(status.rawValue).font(DesignSystem.Typography.caption)
                             }
-                            .padding(.horizontal, DesignSystem.Spacing.s).padding(.vertical, DesignSystem.Spacing.xs)
+                            .padding(.horizontal, DesignSystem.Spacing.small).padding(.vertical, DesignSystem.Spacing.xs)
                             .background(match.status == status ? status.color.opacity(0.15) : DesignSystem.Colors.surface)
                             .foregroundStyle(match.status == status ? status.color : DesignSystem.Colors.textSecondary)
                             .clipShape(Capsule())
@@ -78,7 +92,7 @@ struct MatchDetailView: View {
     }
 
     private var aiReplySection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Label("AI Reply Suggestions", systemImage: "sparkles").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
             GRButton(title: "Get Reply Ideas", icon: "brain.head.profile", style: .secondary, isLoading: isLoadingReplies) {
                 Task {
@@ -104,7 +118,7 @@ struct MatchDetailView: View {
     private var deleteButton: some View {
         Button(role: .destructive) { viewModel.deleteMatch(match); dismiss() } label: {
             Label("Delete Match", systemImage: "trash").font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.error)
-        }.padding(.top, DesignSystem.Spacing.l)
+        }.padding(.top, DesignSystem.Spacing.large)
     }
 }
 

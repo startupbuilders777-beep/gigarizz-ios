@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Background Scene
 
@@ -28,7 +28,7 @@ struct BackgroundReplacerView: View {
         BackgroundScene(name: "Sports Car", icon: "car.fill", gradient: [.red, .orange], description: "Luxury car backdrop", prompt: "luxury sports car sunset"),
         BackgroundScene(name: "Travel Exotic", icon: "airplane", gradient: [.cyan, .blue], description: "Exotic destination vibes", prompt: "exotic travel destination tropical"),
         BackgroundScene(name: "Dog Park", icon: "dog.fill", gradient: [DesignSystem.Colors.goldAccent, .orange], description: "With a cute dog", prompt: "dog park sunny day golden retriever"),
-        BackgroundScene(name: "Concert", icon: "music.note", gradient: [.pink, .purple], description: "VIP festival energy", prompt: "concert festival vip area lights"),
+        BackgroundScene(name: "Concert", icon: "music.note", gradient: [.pink, .purple], description: "VIP festival energy", prompt: "concert festival vip area lights")
     ]
 
     var body: some View {
@@ -36,14 +36,14 @@ struct BackgroundReplacerView: View {
             DesignSystem.Colors.background.ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.l) {
+                VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
                     photoSection
                     if viewModel.selectedPhoto != nil { sceneGridSection }
                     if viewModel.isProcessing { processingOverlay }
                     if viewModel.resultImage != nil { resultSection }
                 }
-                .padding(.horizontal, DesignSystem.Spacing.m)
+                .padding(.horizontal, DesignSystem.Spacing.medium)
                 .padding(.bottom, DesignSystem.Spacing.xxl)
             }
         }
@@ -59,7 +59,7 @@ struct BackgroundReplacerView: View {
 
     private var headerSection: some View {
         GRCard {
-            HStack(spacing: DesignSystem.Spacing.m) {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 28))
                     .foregroundStyle(
@@ -80,13 +80,13 @@ struct BackgroundReplacerView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     // MARK: - Photo Section
 
     private var photoSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Your Photo")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -107,14 +107,14 @@ struct BackgroundReplacerView: View {
                             .foregroundStyle(.white)
                             .background(Circle().fill(.black.opacity(0.6)))
                     }
-                    .padding(DesignSystem.Spacing.s)
+                    .padding(DesignSystem.Spacing.small)
                 }
             } else {
                 PhotosPicker(
                     selection: $viewModel.photosPickerItem,
                     matching: .images
                 ) {
-                    VStack(spacing: DesignSystem.Spacing.m) {
+                    VStack(spacing: DesignSystem.Spacing.medium) {
                         Image(systemName: "person.crop.rectangle")
                             .font(.system(size: 40, weight: .light))
                             .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -143,16 +143,16 @@ struct BackgroundReplacerView: View {
     // MARK: - Scene Grid
 
     private var sceneGridSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Choose a Scene")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
             LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.s),
-            ], spacing: DesignSystem.Spacing.s) {
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.small),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.small),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.small)
+            ], spacing: DesignSystem.Spacing.small) {
                 ForEach(scenes) { scene in
                     sceneCard(scene)
                 }
@@ -201,7 +201,7 @@ struct BackgroundReplacerView: View {
 
     private var processingOverlay: some View {
         GRCard {
-            VStack(spacing: DesignSystem.Spacing.m) {
+            VStack(spacing: DesignSystem.Spacing.medium) {
                 ProgressView()
                     .tint(DesignSystem.Colors.flameOrange)
                     .scaleEffect(1.5)
@@ -220,7 +220,7 @@ struct BackgroundReplacerView: View {
     // MARK: - Result Section
 
     private var resultSection: some View {
-        VStack(spacing: DesignSystem.Spacing.s) {
+        VStack(spacing: DesignSystem.Spacing.small) {
             Text("Result")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
@@ -237,7 +237,7 @@ struct BackgroundReplacerView: View {
                     )
                     .frame(height: 300)
 
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     Image(systemName: "person.fill")
                         .font(.system(size: 60))
                         .foregroundStyle(.white.opacity(0.7))
@@ -249,7 +249,7 @@ struct BackgroundReplacerView: View {
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
             .cardShadow()
 
-            HStack(spacing: DesignSystem.Spacing.s) {
+            HStack(spacing: DesignSystem.Spacing.small) {
                 GRButton(title: "Save", icon: "square.and.arrow.down") {
                     DesignSystem.Haptics.success()
                 }

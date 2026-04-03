@@ -37,7 +37,7 @@ final class ScreenshotTestHelper: ObservableObject {
             ScreenConfig(name: "coach_main", description: "Rizz Coach with AI suggestions", darkMode: true, category: .social),
             ScreenConfig(name: "matches_list", description: "Match inbox tracking", darkMode: true, category: .social),
             ScreenConfig(name: "rating_view", description: "App rating pre-prompt with stars", darkMode: true, category: .social),
-            ScreenConfig(name: "settings_main", description: "Settings with all options", darkMode: true, category: .settings),
+            ScreenConfig(name: "settings_main", description: "Settings with all options", darkMode: true, category: .settings)
         ]
     }
 
@@ -46,7 +46,7 @@ final class ScreenshotTestHelper: ObservableObject {
         isCapturing = true; capturedScreens = []
         for config in allScreenConfigs() {
             capturedScreens.append(config.name)
-            PostHogManager.shared.track("screenshot_captured", properties: ["screen_name": config.name, "category": config.category.rawValue, "dark_mode": config.darkMode])
+            PostHogManager.shared.trackEvent("screenshot_captured", properties: ["screen_name": config.name, "category": config.category.rawValue, "dark_mode": config.darkMode])
             try? await Task.sleep(nanoseconds: 100_000_000)
         }
         isCapturing = false; return capturedScreens
@@ -65,19 +65,19 @@ struct ScreenshotGalleryView: View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
             ScrollView {
-                VStack(spacing: DesignSystem.Spacing.m) {
+                VStack(spacing: DesignSystem.Spacing.medium) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: DesignSystem.Spacing.xs) {
                             ForEach(ScreenshotTestHelper.ScreenCategory.allCases, id: \.self) { cat in
                                 Button { selectedCategory = cat } label: {
                                     Text(cat.rawValue).font(DesignSystem.Typography.callout)
-                                        .padding(.horizontal, DesignSystem.Spacing.m).padding(.vertical, DesignSystem.Spacing.xs)
+                                        .padding(.horizontal, DesignSystem.Spacing.medium).padding(.vertical, DesignSystem.Spacing.xs)
                                         .background(selectedCategory == cat ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
                                         .foregroundStyle(selectedCategory == cat ? .white : DesignSystem.Colors.textSecondary)
                                         .clipShape(Capsule())
                                 }
                             }
-                        }.padding(.horizontal, DesignSystem.Spacing.m)
+                        }.padding(.horizontal, DesignSystem.Spacing.medium)
                     }
 
                     let configs = helper.screens(for: selectedCategory)
@@ -93,14 +93,14 @@ struct ScreenshotGalleryView: View {
                                     Image(systemName: config.darkMode ? "moon.fill" : "sun.max.fill").font(.system(size: 12)).foregroundStyle(DesignSystem.Colors.textSecondary)
                                 }
                             }
-                        }.padding(.horizontal, DesignSystem.Spacing.m)
+                        }.padding(.horizontal, DesignSystem.Spacing.medium)
                     }
 
                     Button { Task { await helper.captureAllScreens() } } label: {
                         HStack { Image(systemName: "camera.fill"); Text("Capture All (\(helper.totalScreenCount) screens)") }
                             .font(DesignSystem.Typography.callout).foregroundStyle(.white).frame(maxWidth: .infinity).padding()
                             .background(DesignSystem.Colors.flameOrange).clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
-                    }.padding(.horizontal, DesignSystem.Spacing.m).padding(.bottom, DesignSystem.Spacing.xxl)
+                    }.padding(.horizontal, DesignSystem.Spacing.medium).padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
         }.navigationTitle("Screenshot Gallery")

@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 // MARK: - Generate View
 
@@ -7,6 +7,8 @@ struct GenerateView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = GenerateViewModel()
+    @AppStorage("hasGeneratedPhotos") private var hasGeneratedPhotos = false
+    @State private var showFirstGenerationFlow = false
 
     var body: some View {
         ZStack {
@@ -17,14 +19,15 @@ struct GenerateView: View {
                 generatingOverlay
             } else {
                 ScrollView {
-                    VStack(spacing: DesignSystem.Spacing.l) {
+                    VStack(spacing: DesignSystem.Spacing.large) {
                         headerBanner
+                        firstTimePrompt
                         photoPickerSection
                         stylePickerSection
                         generateButton
                         usageBanner
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.m)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
                     .padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
@@ -43,6 +46,11 @@ struct GenerateView: View {
         .sheet(isPresented: $viewModel.showPaywall) {
             PaywallView()
         }
+        .fullScreenCover(isPresented: $showFirstGenerationFlow) {
+            FirstGenerationFlowView()
+                .environmentObject(authManager)
+                .environmentObject(subscriptionManager)
+        }
         .alert("Error", isPresented: .init(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -50,6 +58,54 @@ struct GenerateView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .onAppear {
+            // Show guided flow for first-time users
+            if !hasGeneratedPhotos {
+                showFirstGenerationFlow = true
+            }
+        }
+    }
+
+    // MARK: - First-Time User Prompt
+
+    private var firstTimePrompt: some View {
+        Group {
+            if !hasGeneratedPhotos {
+                Button {
+                    showFirstGenerationFlow = true
+                    DesignSystem.Haptics.light()
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.small) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 18))
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("New here?")
+                                .font(DesignSystem.Typography.callout)
+                                .foregroundStyle(DesignSystem.Colors.textPrimary)
+
+                            Text("Try our guided photo wizard")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14))
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    }
+                    .padding(DesignSystem.Spacing.medium)
+                    .background(DesignSystem.Colors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                            .strokeBorder(DesignSystem.Colors.flameOrange.opacity(0.3), lineWidth: 1)
+                    )
+                }
+            }
         }
     }
 
@@ -75,13 +131,13 @@ struct GenerateView: View {
                 Spacer()
             }
         }
-        .padding(.top, DesignSystem.Spacing.m)
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
     // MARK: - Photo Picker Section
 
     private var photoPickerSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             HStack {
                 Text("Your Photos")
                     .font(DesignSystem.Typography.callout)
@@ -119,7 +175,7 @@ struct GenerateView: View {
     }
 
     private var emptyPhotoPickerContent: some View {
-        VStack(spacing: DesignSystem.Spacing.m) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: "photo.on.rectangle.angled")
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(DesignSystem.Colors.flameOrange)
@@ -157,7 +213,7 @@ struct GenerateView: View {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
                 GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
-                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs),
+                GridItem(.flexible(), spacing: DesignSystem.Spacing.xs)
             ], spacing: DesignSystem.Spacing.xs) {
                 ForEach(viewModel.selectedPhotos) { photo in
                     ZStack(alignment: .topTrailing) {
@@ -211,13 +267,13 @@ struct GenerateView: View {
     // MARK: - Style Picker Section
 
     private var stylePickerSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.s) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             Text("Choose Style")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: DesignSystem.Spacing.s) {
+                HStack(spacing: DesignSystem.Spacing.small) {
                     ForEach(StylePreset.allPresets) { preset in
                         StylePresetCard(
                             preset: preset,
@@ -309,7 +365,7 @@ struct GenerateView: View {
                         Text("Upgrade")
                             .font(DesignSystem.Typography.smallButton)
                             .foregroundStyle(DesignSystem.Colors.deepNight)
-                            .padding(.horizontal, DesignSystem.Spacing.m)
+                            .padding(.horizontal, DesignSystem.Spacing.medium)
                             .padding(.vertical, DesignSystem.Spacing.xs)
                             .background(
                                 LinearGradient(
@@ -328,48 +384,16 @@ struct GenerateView: View {
     // MARK: - Generating Overlay
 
     private var generatingOverlay: some View {
-        VStack(spacing: DesignSystem.Spacing.l) {
-            Spacer()
-
-            Image(systemName: "wand.and.stars")
-                .font(.system(size: 64, weight: .light))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .symbolEffect(.pulse, isActive: true)
-
-            VStack(spacing: DesignSystem.Spacing.s) {
-                Text(viewModel.progressText)
-                    .font(DesignSystem.Typography.title)
-                    .foregroundStyle(DesignSystem.Colors.textPrimary)
-
-                ProgressView(value: viewModel.generationProgress)
-                    .tint(DesignSystem.Colors.flameOrange)
-                    .scaleEffect(y: 2)
-                    .padding(.horizontal, DesignSystem.Spacing.xl)
-
-                Text("\(Int(viewModel.generationProgress * 100))%")
-                    .font(DesignSystem.Typography.scoreDisplay)
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-                    .contentTransition(.numericText())
+        GenerationLoadingView(
+            progress: $viewModel.generationProgress,
+            isGenerating: $viewModel.isGenerating,
+            onCancel: {
+                viewModel.cancelGeneration()
+            },
+            onComplete: {
+                // Results will be shown via showResults sheet
             }
-
-            // Dating Tips Carousel
-            GenerationTipsView()
-                .padding(.horizontal, DesignSystem.Spacing.m)
-
-            Spacer()
-
-            GRButton(title: "Cancel", style: .outline) {
-                viewModel.isGenerating = false
-            }
-            .padding(.horizontal, DesignSystem.Spacing.xl)
-            .padding(.bottom, DesignSystem.Spacing.xl)
-        }
+        )
     }
 }
 
