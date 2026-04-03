@@ -67,6 +67,7 @@
 		986CA2E30C32791E2F48CBA2 /* GenerationLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEAE5768D9AC48FF9548FA29 /* GenerationLoadingView.swift */; };
 		9F15E65A4E663969437B977B /* WeeklyRizzReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D99DBDE4CC7944E3A414E /* WeeklyRizzReportView.swift */; };
 		A255EDB42A2B5BB8F94DD59C /* RateLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */; };
+		A279F21E307462E322E91B81 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA78DA2215748C4BABB82185 /* HapticManager.swift */; };
 		A34588E89DA7AC7DB5ED3D8E /* RizzScoreCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4C556C0D13E6B51CC1EC24 /* RizzScoreCard.swift */; };
 		A8BC2A7C0C5851EB9C63846F /* ChatSuggestionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A461B7AC96D2E40A200905 /* ChatSuggestionBar.swift */; };
 		B18449BDAB37CF547644F2EA /* FullScreenPhotoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A766413B24526ECE697276 /* FullScreenPhotoPreviewView.swift */; };
@@ -190,6 +191,7 @@
 		E692458703523FF53BF76F33 /* GeneratedPhotosGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedPhotosGalleryView.swift; sourceTree = "<group>"; };
 		E80D96DC49FA3D51691C3699 /* AIGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGenerationService.swift; sourceTree = "<group>"; };
 		FA527A2343B1451620BAA531 /* CoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachView.swift; sourceTree = "<group>"; };
+		FA78DA2215748C4BABB82185 /* HapticManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		FB6EFBA315394EFC7F48FDC0 /* PhotoPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPack.swift; sourceTree = "<group>"; };
 		FEAE5768D9AC48FF9548FA29 /* GenerationLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationLoadingView.swift; sourceTree = "<group>"; };
 		FF044D066B14BB54FDCA8D9A /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
@@ -578,6 +580,7 @@
 				E288299C6545840AB3D8B823 /* NotificationSettingsView.swift */,
 				CB9D6C81381FD9C88BE5B94F /* PhotoLibraryService.swift */,
 				7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */,
+				FA78DA2215748C4BABB82185 /* HapticManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -962,6 +965,7 @@
 				C8067C287397CCA2AA5F90DD /* TierCardView.swift in Sources */,
 				802CF9770421948190F0C686 /* PremiumBadge.swift in Sources */,
 				1753E42986BAC7139CD26E51 /* GRComponents.swift in Sources */,
+				A279F21E307462E322E91B81 /* HapticManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
