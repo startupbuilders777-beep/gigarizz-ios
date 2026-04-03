@@ -18,6 +18,22 @@ struct SharePromptView: View {
     @State private var showShareSheet = false
     @State private var shareItems: [Any] = []
 
+    /// Photos sorted with favorites first (by rank), then non-favorites.
+    private var sortedPhotos: [GeneratedPhoto] {
+        photos.sorted { photoA, photoB in
+            // Favorites come first, sorted by rank
+            if photoA.isFavorite && !photoB.isFavorite { return true }
+            if !photoA.isFavorite && photoB.isFavorite { return false }
+            if photoA.isFavorite && photoB.isFavorite {
+                let rankA = photoA.favoriteRank ?? Int.max
+                let rankB = photoB.favoriteRank ?? Int.max
+                return rankA < rankB
+            }
+            // Non-favorites sorted by creation date
+            return photoA.createdAt > photoB.createdAt
+        }
+    }
+
     var body: some View {
         ZStack {
             DesignSystem.Colors.background.ignoresSafeArea()
@@ -41,7 +57,7 @@ struct SharePromptView: View {
                     shareService.handleShareCompletion(
                         activityType: activityType,
                         completed: completed,
-                        photoId: photos[selectedPhotoIndex].id,
+                        photoId: sortedPhotos[safe: selectedPhotoIndex]?.id ?? photos.first?.id ?? "",
                         style: style
                     )
                     if completed {
@@ -98,14 +114,27 @@ struct SharePromptView: View {
 
     private var photoPreviewSection: some View {
         VStack(spacing: DesignSystem.Spacing.small) {
+            // Favorites indicator if first photo is a favorite
+            if sortedPhotos.first?.isFavorite == true {
+                HStack(spacing: DesignSystem.Spacing.micro) {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 10))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    Text("Favorites shown first")
+                        .font(.system(size: 11))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange.opacity(0.8))
+                    Spacer()
+                }
+            }
+
             Text("Select Photo")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
-            // Photo carousel
+            // Photo carousel (favorites first, sorted by rank)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: DesignSystem.Spacing.xs) {
-                    ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
+                    ForEach(Array(sortedPhotos.enumerated()), id: \.element.id) { index, photo in
                         photoThumbnail(index: index, photo: photo)
                     }
                 }
@@ -113,7 +142,7 @@ struct SharePromptView: View {
             }
 
             // Main preview
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                     .fill(
                         LinearGradient(
@@ -136,6 +165,14 @@ struct SharePromptView: View {
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.white.opacity(0.6))
                 }
+
+                // Favorite rank badge if applicable
+                if let photo = sortedPhotos[safe: selectedPhotoIndex],
+                   photo.isFavorite,
+                   let rank = photo.favoriteRank {
+                    RankBadge(rank: rank)
+                        .padding(DesignSystem.Spacing.medium)
+                }
             }
             .frame(height: 280)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
@@ -150,7 +187,7 @@ struct SharePromptView: View {
             }
             DesignSystem.Haptics.light()
         } label: {
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
                     .fill(
                         LinearGradient(
@@ -164,6 +201,29 @@ struct SharePromptView: View {
                 Image(systemName: "person.fill")
                     .font(.system(size: 20, weight: .light))
                     .foregroundStyle(.white.opacity(0.5))
+
+                // Favorite indicator
+                if photo.isFavorite {
+                    VStack {
+                        HStack {
+                            if let rank = photo.favoriteRank {
+                                Text("#\(rank)")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                    .background(DesignSystem.Colors.flameOrange)
+                                    .clipShape(Capsule())
+                            }
+                            Spacer()
+                            Image(systemName: "heart.fill")
+                                .font(.system(size: 10))
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        }
+                        Spacer()
+                    }
+                    .padding(4)
+                }
             }
             .overlay(
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
@@ -437,13 +497,21 @@ extension ShareAspectRatio {
 #Preview {
     SharePromptView(
         photos: [
+            GeneratedPhoto(userId: "demo", style: "Confident", isFavorite: true, favoriteRank: 1),
             GeneratedPhoto(userId: "demo", style: "Confident"),
-            GeneratedPhoto(userId: "demo", style: "Confident"),
-            GeneratedPhoto(userId: "demo", style: "Confident"),
+            GeneratedPhoto(userId: "demo", style: "Confident", isFavorite: true, favoriteRank: 2),
             GeneratedPhoto(userId: "demo", style: "Confident")
         ],
         style: "Confident"
     )
     .environmentObject(SubscriptionManager())
     .preferredColorScheme(.dark)
+}
+
+// MARK: - Safe Array Subscript
+
+private extension Array {
+    subscript(safe index: Int) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
 }

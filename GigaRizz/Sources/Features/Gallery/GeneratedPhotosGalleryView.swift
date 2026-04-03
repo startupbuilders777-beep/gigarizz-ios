@@ -155,39 +155,79 @@ struct GeneratedPhotosGalleryView: View {
             }
         }()
 
-        return Button {
-            viewModel.selectOrganizationMode(mode)
-        } label: {
-            HStack(spacing: DesignSystem.Spacing.micro) {
-                Image(systemName: mode.icon)
-                    .font(.system(size: 12))
+        // Favorites tab links to dedicated FavoritesGalleryView
+        if mode == .favorites {
+            return AnyView(
+                NavigationLink {
+                    FavoritesGalleryView()
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.micro) {
+                        Image(systemName: mode.icon)
+                            .font(.system(size: 12))
 
-                Text(mode.rawValue)
-                    .font(DesignSystem.Typography.smallButton)
+                        Text(mode.rawValue)
+                            .font(DesignSystem.Typography.smallButton)
 
-                if let count, count > 0 {
-                    Text("\(count)")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(
-                            Capsule()
-                                .fill(isSelected ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.textSecondary.opacity(0.5))
-                        )
+                        if let count, count > 0 {
+                            Text("\(count)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(DesignSystem.Colors.goldAccent)
+                                )
+                        }
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(
+                        Capsule()
+                            .fill(DesignSystem.Colors.flameOrange)
+                    )
                 }
-            }
-            .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
-            .padding(.horizontal, DesignSystem.Spacing.small)
-            .padding(.vertical, DesignSystem.Spacing.xs)
-            .background(
-                Capsule()
-                    .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
+                .accessibilityLabel("Favorites tab, \(count ?? 0) favorite photos")
+                .accessibilityHint("Double tap to view favorites gallery with ranking")
+            )
+        } else {
+            return AnyView(
+                Button {
+                    viewModel.selectOrganizationMode(mode)
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.micro) {
+                        Image(systemName: mode.icon)
+                            .font(.system(size: 12))
+
+                        Text(mode.rawValue)
+                            .font(DesignSystem.Typography.smallButton)
+
+                        if let count, count > 0 {
+                            Text("\(count)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(isSelected ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.textSecondary.opacity(0.5))
+                                )
+                        }
+                    }
+                    .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(
+                        Capsule()
+                            .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
+                    )
+                }
+                .accessibilityLabel("\(mode.rawValue) tab\(count != nil ? ", \(count!) items" : "")")
+                .accessibilityValue(isSelected ? "Selected" : "Not selected")
+                .accessibilityHint("Double tap to select")
             )
         }
-        .accessibilityLabel("\(mode.rawValue) tab\(count != nil ? ", \(count!) items" : "")")
-        .accessibilityValue(isSelected ? "Selected" : "Not selected")
-        .accessibilityHint("Double tap to select")
     }
 
     // MARK: - Platform Filter Bar
@@ -564,11 +604,25 @@ struct GeneratedPhotosGalleryView: View {
                             Spacer()
                         }
                     } else if item.photo.isFavorite {
-                        // Favorite heart
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 14))
-                            .foregroundStyle(DesignSystem.Colors.error)
-                            .padding(4)
+                        // Favorite heart and rank badge
+                        ZStack(alignment: .topLeading) {
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                                        .padding(4)
+                                }
+                                Spacer()
+                            }
+
+                            // Rank badge if photo has a rank
+                            if let rank = item.photo.favoriteRank {
+                                RankBadge(rank: rank)
+                                    .padding(4)
+                            }
+                        }
                     }
                 }
             )

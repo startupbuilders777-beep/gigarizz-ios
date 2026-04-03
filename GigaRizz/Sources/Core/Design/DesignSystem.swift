@@ -220,6 +220,24 @@ enum DesignSystem {
             generator.prepare()
             generator.notificationOccurred(.error)
         }
+
+        static func selection() {
+            let generator = UISelectionFeedbackGenerator()
+            generator.prepare()
+            generator.selectionChanged()
+        }
+
+        static func soft() {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+
+        static func rigid() {
+            let generator = UIImpactFeedbackGenerator(style: .rigid)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
 }
 
