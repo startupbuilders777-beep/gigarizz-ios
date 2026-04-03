@@ -7,6 +7,8 @@ struct GenerationResultView: View {
     let style: String
     @State private var selectedIndex = 0
     @State private var showSaveConfirmation = false
+    @State private var showFullScreenPreview = false
+    @State private var previewStartingIndex = 0
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -93,6 +95,13 @@ struct GenerationResultView: View {
                     saveConfirmationOverlay
                 }
             }
+            .fullScreenCover(isPresented: $showFullScreenPreview) {
+                FullScreenPhotoPreviewView(
+                    photos: generatedPhotos,
+                    startingIndex: $previewStartingIndex,
+                    onDismiss: { showFullScreenPreview = false }
+                )
+            }
         }
     }
 
@@ -100,8 +109,8 @@ struct GenerationResultView: View {
 
     private func generatedPhotoCard(photo: GeneratedPhoto, index: Int) -> some View {
         VStack(spacing: DesignSystem.Spacing.s) {
-            // Placeholder — in production this would load from photo.imageURL
             ZStack {
+                // Gradient background
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                     .fill(
                         LinearGradient(
@@ -111,6 +120,7 @@ struct GenerationResultView: View {
                         )
                     )
 
+                // Photo content
                 VStack(spacing: DesignSystem.Spacing.m) {
                     Image(systemName: "person.fill")
                         .font(.system(size: 80, weight: .ultraLight))
@@ -124,11 +134,31 @@ struct GenerationResultView: View {
                         .font(DesignSystem.Typography.scoreLarge)
                         .foregroundStyle(.white)
                 }
+
+                // Tap to expand indicator
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.6))
+                            .padding(DesignSystem.Spacing.s)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .padding(DesignSystem.Spacing.m)
+                    }
+                }
             }
             .frame(height: 380)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
             .padding(.horizontal, DesignSystem.Spacing.l)
             .cardShadow()
+            .onTapGesture {
+                DesignSystem.Haptics.light()
+                previewStartingIndex = index
+                showFullScreenPreview = true
+            }
         }
     }
 

@@ -5,6 +5,10 @@ import Combine
 /// Manages Firebase Authentication state and user identity.
 @MainActor
 final class AuthManager: ObservableObject {
+    // MARK: - Singleton
+
+    static let shared = AuthManager()
+
     // MARK: - Published Properties
 
     @Published var currentUser: User?
