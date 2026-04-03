@@ -1,5 +1,14 @@
 import Foundation
 
+// MARK: - AI API Config
+
+/// Configuration for AI generation limits per tier.
+enum AIAPIConfig {
+    static let freeGenerationsPerDay = 10
+    static let proGenerationsPerDay = 100
+    static let generationsCooldownSeconds: TimeInterval = 5
+}
+
 /// Rate limiter with sliding window and persistent daily tracking.
 /// Prevents abuse across photo generation, API calls, and feature usage.
 @MainActor
