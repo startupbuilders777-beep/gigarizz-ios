@@ -20,6 +20,10 @@ struct GenerateView: View {
             } else {
                 ScrollView {
                     VStack(spacing: DesignSystem.Spacing.large) {
+                        // Transformation Preview — Before/After card for returning users
+                        TransformationPreviewView()
+                            .environmentObject(authManager)
+
                         headerBanner
                         firstTimePrompt
                         photoPickerSection
