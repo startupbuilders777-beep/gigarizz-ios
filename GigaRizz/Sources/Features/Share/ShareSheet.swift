@@ -43,6 +43,7 @@ extension UIActivity.ActivityType {
 
     /// Custom identifier for tracking
     var isSocialMedia: Bool {
+        let rawValueString = rawValue
         switch self {
         case .postToFacebook, .postToTwitter, .postToWeibo, .postToTencentWeibo:
             return true
@@ -50,13 +51,14 @@ extension UIActivity.ActivityType {
             return false
         default:
             // Check for Instagram, TikTok, Snapchat
-            return rawValue.contains("instagram") ||
-                   rawValue.contains("tiktok") ||
-                   rawValue.contains("snapchat")
+            return rawValueString.contains("instagram") ||
+                   rawValueString.contains("tiktok") ||
+                   rawValueString.contains("snapchat")
         }
     }
 
     var displayName: String {
+        let rawValueString = rawValue
         switch self {
         case .postToFacebook: return "Facebook"
         case .postToTwitter: return "Twitter"
@@ -65,10 +67,10 @@ extension UIActivity.ActivityType {
         case .copyToPasteboard: return "Copy"
         case .postToWeibo: return "Weibo"
         default:
-            if rawValue.contains("instagram") { return "Instagram" }
-            if rawValue.contains("tiktok") { return "TikTok" }
-            if rawValue.contains("snapchat") { return "Snapchat" }
-            if rawValue.contains("whatsapp") { return "WhatsApp" }
+            if rawValueString.contains("instagram") { return "Instagram" }
+            if rawValueString.contains("tiktok") { return "TikTok" }
+            if rawValueString.contains("snapchat") { return "Snapchat" }
+            if rawValueString.contains("whatsapp") { return "WhatsApp" }
             return "Other"
         }
     }

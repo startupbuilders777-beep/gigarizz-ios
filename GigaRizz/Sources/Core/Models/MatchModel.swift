@@ -12,6 +12,8 @@ struct Match: Identifiable, Codable, Equatable {
     var lastMessageDate: Date?
     let matchedDate: Date
     var photoName: String? // SF Symbol or initial
+    var hasUnread: Bool = false
+    var lastMessage: String?
 
     init(
         id: String = UUID().uuidString,
@@ -21,7 +23,9 @@ struct Match: Identifiable, Codable, Equatable {
         notes: String = "",
         lastMessageDate: Date? = nil,
         matchedDate: Date = Date(),
-        photoName: String? = nil
+        photoName: String? = nil,
+        hasUnread: Bool = false,
+        lastMessage: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -31,6 +35,8 @@ struct Match: Identifiable, Codable, Equatable {
         self.lastMessageDate = lastMessageDate
         self.matchedDate = matchedDate
         self.photoName = photoName
+        self.hasUnread = hasUnread
+        self.lastMessage = lastMessage
     }
 
     var daysSinceLastMessage: Int? {
@@ -43,14 +49,31 @@ struct Match: Identifiable, Codable, Equatable {
         return days >= 3
     }
 
-    var hasUnread: Bool = false
-    var lastMessage: String?
+    // MARK: - Inbox computed properties
+
+    var isNewMatch: Bool {
+        status == .new && matchedDate > Date().addingTimeInterval(-86400)
+    }
+
+    var hasUnreadMessages: Bool {
+        hasUnread
+    }
+
+    var lastMessageIsFromUser: Bool {
+        // If last message was from user (not from match)
+        status == .active || status == .dateScheduled
+    }
+
+    // MARK: - Inbox sorting
 
     var inboxSortPriority: Int {
-        if hasUnread { return 0 }
-        if status == .new { return 1 }
-        if isStale { return 3 }
-        return 2
+        if isNewMatch { return 0 }
+        if hasUnreadMessages { return 1 }
+        if status == .active { return 2 }
+        if status == .dateScheduled { return 3 }
+        if isStale { return 4 }
+        if status == .ghosted { return 5 }
+        return 6
     }
 }
 

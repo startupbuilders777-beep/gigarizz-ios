@@ -49,11 +49,7 @@ final class PhotoLibraryService: ObservableObject {
 
         // Request permission
         let status: PHAuthorizationStatus
-        if #available(iOS 14, *) {
-            status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
-        } else {
-            status = PHPhotoLibrary.authorizationStatus()
-        }
+        status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
 
         authorizationStatus = status
         return status == .authorized || status == .limited
@@ -171,9 +167,6 @@ final class PhotoLibraryService: ObservableObject {
                 // Create asset from image
                 let creationRequest = PHAssetCreationRequest.creationRequestForAsset(from: image)
 
-                // Note: PHAssetCreationRequest does not support direct metadata assignment
-                // Metadata must be embedded in the image before saving
-
                 // Set creation date
                 creationRequest.creationDate = Date()
             } completionHandler: { success, maybeError in
@@ -220,13 +213,13 @@ final class PhotoLibraryService: ObservableObject {
     // MARK: - Settings URL
 
     /// Returns URL to iOS Settings app for photo library permissions.
-    static var settingsURL: URL? {
+    static func settingsURL() -> URL? {
         URL(string: "App-Prefs:root=Privacy&path=PHOTOS") ?? URL(string: UIApplication.openSettingsURLString)
     }
 
     /// Opens iOS Settings for photo library permissions.
     func openSettings() {
-        guard let url = Self.settingsURL else { return }
+        guard let url = Self.settingsURL() else { return }
         UIApplication.shared.open(url)
     }
 }

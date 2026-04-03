@@ -137,7 +137,7 @@ struct ChatView: View {
     }
 }
 
-// MARK: - Message Bubble
+// MARK: - Chat Message Bubble
 
 /// Individual message bubble in the conversation.
 struct ChatMessageBubble: View {

@@ -308,6 +308,49 @@ struct MatchConversationCell: View {
     }
 }
 
+// MARK: - Inbox Badge
+
+enum InboxBadge {
+    case unread
+    case newMatch
+    case replied
+    case stale
+
+    var icon: String {
+        switch self {
+        case .unread: return "circle.fill"
+        case .newMatch: return "heart.fill"
+        case .replied: return "checkmark"
+        case .stale: return "clock"
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .unread: return ""
+        case .newMatch: return "NEW"
+        case .replied: return "REPLIED"
+        case .stale: return "STALE"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .unread: return DesignSystem.Colors.flameOrange
+        case .newMatch: return DesignSystem.Colors.success
+        case .replied: return DesignSystem.Colors.textSecondary
+        case .stale: return DesignSystem.Colors.textSecondary
+        }
+    }
+
+    static func from(match: Match) -> InboxBadge {
+        if match.isNewMatch { return .newMatch }
+        if match.hasUnreadMessages { return .unread }
+        if match.lastMessageIsFromUser { return .replied }
+        return .stale
+    }
+}
+
 // MARK: - Inbox Badge View
 
 struct InboxBadgeView: View {
@@ -543,63 +586,6 @@ struct ConversationMessage: Identifiable, Equatable {
         formatter.timeStyle = .short
         return formatter.string(from: timestamp)
     }
-}
-
-// MARK: - Inbox Badge
-
-enum InboxBadge: Equatable {
-    case newMatch
-    case unreadMessage(count: Int)
-    case stale(days: Int)
-    case none
-
-    static func from(match: Match) -> InboxBadge {
-        if match.status == .new {
-            return .newMatch
-        }
-        if let days = match.daysSinceLastMessage, days >= 3 {
-            return .stale(days: days)
-        }
-        return .none
-    }
-
-    var color: Color {
-        switch self {
-        case .newMatch: return DesignSystem.Colors.flameOrange
-        case .unreadMessage: return DesignSystem.Colors.success
-        case .stale: return DesignSystem.Colors.textSecondary
-        case .none: return .clear
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .newMatch: return "star.fill"
-        case .unreadMessage: return "message.fill"
-        case .stale: return "clock.fill"
-        case .none: return ""
-        }
-    }
-
-    var text: String {
-        switch self {
-        case .newMatch: return "NEW"
-        case .unreadMessage(let count): return "\(count)"
-        case .stale(let days): return "\(days)d"
-        case .none: return ""
-        }
-    }
-
-    var label: String {
-        switch self {
-        case .newMatch: return "New match"
-        case .unreadMessage(let count): return "\(count) unread messages"
-        case .stale(let days): return "\(days) days since last message"
-        case .none: return ""
-        }
-    }
-
-    static var unread: InboxBadge { .unreadMessage(count: 1) }
 }
 
 // MARK: - Cell Press Style

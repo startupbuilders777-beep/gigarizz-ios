@@ -93,6 +93,8 @@ final class SubscriptionManager: NSObject, ObservableObject {
 
     override init() {
         super.init()
+        // Guard against unconfigured RevenueCat (e.g. during unit tests)
+        guard Purchases.isConfigured else { return }
         purchases.delegate = self
         fetchEntitlements()
     }
