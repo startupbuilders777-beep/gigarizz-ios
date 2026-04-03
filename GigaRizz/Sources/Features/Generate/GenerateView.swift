@@ -328,7 +328,7 @@ struct GenerateView: View {
     // MARK: - Generating Overlay
 
     private var generatingOverlay: some View {
-        VStack(spacing: DesignSystem.Spacing.xl) {
+        VStack(spacing: DesignSystem.Spacing.l) {
             Spacer()
 
             Image(systemName: "wand.and.stars")
@@ -358,10 +358,9 @@ struct GenerateView: View {
                     .contentTransition(.numericText())
             }
 
-            Text("This takes about 30 seconds.\nDon't close the app!")
-                .font(DesignSystem.Typography.footnote)
-                .foregroundStyle(DesignSystem.Colors.textSecondary)
-                .multilineTextAlignment(.center)
+            // Dating Tips Carousel
+            GenerationTipsView()
+                .padding(.horizontal, DesignSystem.Spacing.m)
 
             Spacer()
 

@@ -50,6 +50,8 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
     case tinder = "Tinder"
     case hinge = "Hinge"
     case bumble = "Bumble"
+    case raya = "Raya"
+    case general = "All Apps"
     case other = "Other"
 
     var id: String { rawValue }
@@ -59,6 +61,8 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
         case .tinder: return "flame.fill"
         case .hinge: return "heart.text.square.fill"
         case .bumble: return "bolt.fill"
+        case .raya: return "star.fill"
+        case .general: return "app.badge.fill"
         case .other: return "ellipsis.circle.fill"
         }
     }
@@ -68,7 +72,20 @@ enum DatingPlatform: String, Codable, CaseIterable, Identifiable {
         case .tinder: return DesignSystem.Colors.tinder
         case .hinge: return DesignSystem.Colors.hinge
         case .bumble: return DesignSystem.Colors.bumble
+        case .raya: return Color(hex: "8B5CF6")
+        case .general: return DesignSystem.Colors.flameOrange
         case .other: return DesignSystem.Colors.textSecondary
+        }
+    }
+
+    var photoSlots: Int {
+        switch self {
+        case .tinder: return 9
+        case .hinge: return 6
+        case .bumble: return 6
+        case .raya: return 6
+        case .general: return 6
+        case .other: return 6
         }
     }
 }
