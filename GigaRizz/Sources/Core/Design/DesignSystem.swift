@@ -144,6 +144,7 @@ enum DesignSystem {
 
     // MARK: - Haptics
 
+    @MainActor
     enum Haptics {
         static func light() {
             let generator = UIImpactFeedbackGenerator(style: .light)
