@@ -35,12 +35,6 @@ packages:
   PostHog:
     url: https://github.com/PostHog/posthog-ios
     version: 3.10.0
-  Kingfisher:
-    url: https://github.com/onevcat/Kingfisher
-    version: 8.1.3
-  SnapKit:
-    url: https://github.com/SnapKit/SnapKit
-    version: 5.7.1
 
 targets:
   GigaRizz:
@@ -62,10 +56,6 @@ targets:
         product: RevenueCat
       - package: PostHog
         product: PostHog
-      - package: Kingfisher
-        product: Kingfisher
-      - package: SnapKit
-        product: SnapKit
     info:
       path: GigaRizz/Resources/Info.plist
       properties:

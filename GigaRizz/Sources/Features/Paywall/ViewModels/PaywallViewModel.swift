@@ -117,11 +117,14 @@ final class PaywallViewModel: ObservableObject {
     private let subscriptionManager: SubscriptionManager
     private let postHogManager: PostHogManager
 
+    /// Current RevenueCat offerings fetched on appear
+    @Published var currentOffering: Offering?
+
     // MARK: - Init
 
     init(
         initialTier: TierOption = .plus,
-        subscriptionManager: SubscriptionManager = .init(),
+        subscriptionManager: SubscriptionManager = .shared,
         postHogManager: PostHogManager = .shared
     ) {
         self.selectedTier = initialTier
@@ -136,8 +139,21 @@ final class PaywallViewModel: ObservableObject {
         // Track paywall viewed event
         postHogManager.trackPaywallViewed(trigger: "paywall_modal", variant: "tier_cards")
 
+        // Fetch RC offerings
+        Task { await fetchOfferings() }
+
         // Start staggered card animations
         animateCardsIn()
+    }
+
+    /// Fetch RevenueCat offerings so we can map tier → Package
+    private func fetchOfferings() async {
+        do {
+            let offerings = try await Purchases.shared.offerings()
+            currentOffering = offerings.current
+        } catch {
+            errorMessage = "Could not load prices. Check your connection."
+        }
     }
 
     func selectTier(_ tier: TierOption) {
@@ -153,19 +169,40 @@ final class PaywallViewModel: ObservableObject {
         errorMessage = nil
         DesignSystem.Haptics.medium()
 
-        // In production, this would call RevenueCat purchase
-        // For now, simulate the purchase flow
-        try? await Task.sleep(for: .seconds(1))
+        // Map TierOption → RevenueCat Package
+        guard let offering = currentOffering else {
+            errorMessage = "Offerings not loaded yet. Please try again."
+            isLoading = false
+            return
+        }
+
+        // Lookup by package identifier matching tier name (e.g. "plus", "gold")
+        let packageId = selectedTier.rawValue  // "plus" or "gold"
+        guard let package = offering.availablePackages.first(where: { $0.identifier == packageId })
+                ?? offering.availablePackages.first(where: { $0.identifier.lowercased().contains(packageId) })
+        else {
+            errorMessage = "Package \"\(packageId)\" not found. Check RevenueCat dashboard."
+            isLoading = false
+            return
+        }
+
+        do {
+            try await subscriptionManager.purchase(package: package)
+        } catch {
+            errorMessage = error.localizedDescription
+            DesignSystem.Haptics.error()
+        }
 
         isLoading = false
 
         // Track subscription started event
-        postHogManager.trackSubscriptionStarted(
-            plan: selectedTier.displayName,
-            amount: selectedTier == .plus ? 4.99 : 14.99
-        )
-
-        DesignSystem.Haptics.success()
+        if subscriptionManager.currentTier != .free {
+            postHogManager.trackSubscriptionStarted(
+                plan: selectedTier.displayName,
+                amount: selectedTier == .plus ? 4.99 : 14.99
+            )
+            DesignSystem.Haptics.success()
+        }
     }
 
     func restorePurchases() async {

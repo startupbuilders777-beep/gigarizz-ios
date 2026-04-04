@@ -18,10 +18,15 @@ final class PostHogManager: ObservableObject {
 
     // MARK: - PostHog Configuration
 
-    func initPostHog() {
-        // PostHog SDK will be initialized when Firebase config is available.
-        // Placeholder: in production, use actual API key from Firebase config.
+    /// Called after PostHogSDK.shared.setup() is done in GigaRizzApp.init().
+    /// This simply flips the gate so track calls start flowing.
+    func markInitialized() {
         isInitialized = true
+    }
+
+    /// Legacy entry point — kept for call-site compatibility.
+    func initPostHog() {
+        markInitialized()
     }
 
     // MARK: - Identify

@@ -68,10 +68,14 @@ struct SettingsView: View {
 
                     Section {
                         settingsRow(icon: "info.circle.fill", title: "Version", subtitle: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
-                        settingsRow(icon: "doc.text.fill", title: "Terms of Service", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Terms of Service")
-                            .accessibilityAddTraits(.isLink)
-                        settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Privacy Policy")
-                            .accessibilityAddTraits(.isLink)
+                        Link(destination: AppConstants.termsURL) {
+                            settingsRow(icon: "doc.text.fill", title: "Terms of Service", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Terms of Service")
+                        }
+                        .accessibilityAddTraits(.isLink)
+                        Link(destination: AppConstants.privacyURL) {
+                            settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Privacy Policy")
+                        }
+                        .accessibilityAddTraits(.isLink)
                     } header: { Text("About").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 

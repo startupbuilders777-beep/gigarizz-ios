@@ -17,7 +17,7 @@ final class OnboardingViewModel: ObservableObject {
     
     // MARK: - Constants
     
-    let totalPages = 3
+    let totalPages = 4
     
     // MARK: - Demo Photos (Sample data for interactive mini-picker)
     

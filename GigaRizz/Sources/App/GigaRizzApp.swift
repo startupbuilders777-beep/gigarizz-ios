@@ -1,20 +1,41 @@
+import FirebaseCore
+import PostHog
+import RevenueCat
 import SwiftUI
 
 @main
 struct GigaRizzApp: App {
-    @StateObject private var authManager = AuthManager()
-    @StateObject private var subscriptionManager = SubscriptionManager()
-    @StateObject private var postHogManager = PostHogManager()
+    // Use singletons so every view shares the same instance
+    @StateObject private var authManager = AuthManager.shared
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
+    @StateObject private var postHogManager = PostHogManager.shared
     @StateObject private var deepLinkManager = DeepLinkManager.shared
     @StateObject private var replyReminderService = ReplyReminderService.shared
-    
+
     // Onboarding state from UserDefaults
     @AppStorage("onboarding_has_completed") private var hasCompletedOnboarding = false
     @AppStorage("onboarding_has_seen") private var hasSeenOnboarding = false
-    
+
     // In-memory state for resume prompt
     @State private var showResumePrompt = false
     @State private var onboardingViewModel: OnboardingViewModel?
+
+    // MARK: - SDK Initialization
+
+    init() {
+        // 1. Firebase
+        FirebaseApp.configure()
+
+        // 2. RevenueCat
+        Purchases.logLevel = .debug
+        Purchases.configure(withAPIKey: AppConstants.revenueCatAPIKey)
+
+        // 3. PostHog
+        let phConfig = PostHogConfig(apiKey: AppConstants.postHogAPIKey, host: AppConstants.postHogHost)
+        phConfig.captureApplicationLifecycleEvents = true
+        phConfig.captureScreenViews = true
+        PostHogSDK.shared.setup(phConfig)
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -42,6 +63,9 @@ struct GigaRizzApp: App {
                     } else {
                         // Fresh user or resuming onboarding
                         OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
+                            .environmentObject(authManager)
+                            .environmentObject(subscriptionManager)
+                            .environmentObject(postHogManager)
                             .onAppear {
                                 // Mark as seen when onboarding starts
                                 if !hasSeenOnboarding {
@@ -65,12 +89,13 @@ struct GigaRizzApp: App {
                     SignInView()
                         .environmentObject(authManager)
                         .environmentObject(subscriptionManager)
+                        .environmentObject(postHogManager)
                 }
             }
             .preferredColorScheme(.dark)
             .onAppear {
                 authManager.startAuthStateListener()
-                postHogManager.initPostHog()
+                postHogManager.markInitialized()
                 
                 // Check if we should show resume prompt
                 checkResumePromptState()

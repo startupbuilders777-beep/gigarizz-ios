@@ -151,11 +151,12 @@ final class BioWriterViewModel: ObservableObject {
     private func buildBios() -> [GeneratedBio] {
         let traits = Array(selectedTraits)
         let interests = Array(selectedInterests)
+        guard let firstTrait = traits.first, let firstInterest = interests.first else { return [] }
 
         var bios: [GeneratedBio] = []
 
         // Bio 1: Hook Lead
-        let hook = hookOpener(platform: selectedPlatform, vibe: selectedVibe, trait: traits.first!)
+        let hook = hookOpener(platform: selectedPlatform, vibe: selectedVibe, trait: firstTrait)
         let body1 = interestLine(interests: interests, vibe: selectedVibe)
         let cta1 = callToAction(platform: selectedPlatform, vibe: selectedVibe)
         bios.append(GeneratedBio(
@@ -286,8 +287,8 @@ final class BioWriterViewModel: ObservableObject {
     }
 
     private func storyBio(traits: [PersonalityTrait], interests: [InterestCategory], vibe: BioVibe, platform: BioPlatform) -> String {
-        let mainTrait = traits.first!
-        let mainInterest = interests.first!
+        let mainTrait = traits.first ?? .adventurous
+        let mainInterest = interests.first ?? .travel
 
         let opener: String
         switch (mainTrait, mainInterest) {
@@ -322,8 +323,8 @@ final class BioWriterViewModel: ObservableObject {
     }
 
     private func boldBio(traits: [PersonalityTrait], interests: [InterestCategory], vibe: BioVibe) -> String {
-        let trait = traits.first!
-        let interest = interests.first!
+        let trait = traits.first ?? .adventurous
+        let interest = interests.first ?? .travel
 
         return """
         \(trait.emoji) \(trait.rawValue). \(interest.emoji) \(interest.rawValue). No apologies.

@@ -61,6 +61,8 @@ enum BannerState: Equatable {
 
 @MainActor
 final class SubscriptionManager: NSObject, ObservableObject {
+    static let shared = SubscriptionManager()
+
     // MARK: - Published Properties
 
     @Published var currentTier: SubscriptionTier = .free
@@ -68,6 +70,7 @@ final class SubscriptionManager: NSObject, ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var dailyPhotosUsed = 0
+    @Published var showPaywall = false
 
     // MARK: - Purchases
 
@@ -93,10 +96,40 @@ final class SubscriptionManager: NSObject, ObservableObject {
 
     override init() {
         super.init()
+        // Restore persisted daily usage
+        restoreDailyUsageFromDisk()
         // Guard against unconfigured RevenueCat (e.g. during unit tests)
         guard Purchases.isConfigured else { return }
         purchases.delegate = self
         fetchEntitlements()
+    }
+
+    // MARK: - Daily Usage Persistence
+
+    private static let dailyUsedKey = "daily_photos_used"
+    private static let dailyDateKey = "daily_photos_date"
+
+    private func todayString() -> String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        return fmt.string(from: Date())
+    }
+
+    private func restoreDailyUsageFromDisk() {
+        let saved = UserDefaults.standard.string(forKey: Self.dailyDateKey) ?? ""
+        if saved == todayString() {
+            dailyPhotosUsed = UserDefaults.standard.integer(forKey: Self.dailyUsedKey)
+        } else {
+            // New day — reset
+            dailyPhotosUsed = 0
+            UserDefaults.standard.set(0, forKey: Self.dailyUsedKey)
+            UserDefaults.standard.set(todayString(), forKey: Self.dailyDateKey)
+        }
+    }
+
+    private func persistDailyUsage() {
+        UserDefaults.standard.set(dailyPhotosUsed, forKey: Self.dailyUsedKey)
+        UserDefaults.standard.set(todayString(), forKey: Self.dailyDateKey)
     }
 
     // MARK: - Fetch Entitlements
@@ -195,11 +228,13 @@ final class SubscriptionManager: NSObject, ObservableObject {
 
     func incrementPhotoUsage() {
         dailyPhotosUsed += 1
+        persistDailyUsage()
         updateBannerState()
     }
 
     func resetDailyUsage() {
         dailyPhotosUsed = 0
+        persistDailyUsage()
         updateBannerState()
     }
 }

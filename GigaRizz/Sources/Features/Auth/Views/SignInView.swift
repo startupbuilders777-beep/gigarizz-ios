@@ -146,27 +146,27 @@ struct SignInView: View {
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                     
                     HStack(spacing: DesignSystem.Spacing.small) {
-                        Button {
-                            // Open privacy policy
-                            PostHogManager.shared.trackEvent("privacy_policy_viewed")
-                        } label: {
+                        Link(destination: AppConstants.privacyURL) {
                             Text("Privacy Policy")
                                 .font(DesignSystem.Typography.footnote)
                                 .foregroundStyle(DesignSystem.Colors.flameOrange)
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            PostHogManager.shared.trackEvent("privacy_policy_viewed")
+                        })
                         
                         Text("and")
                             .font(DesignSystem.Typography.footnote)
                             .foregroundStyle(DesignSystem.Colors.textSecondary)
                         
-                        Button {
-                            // Open terms of service
-                            PostHogManager.shared.trackEvent("terms_of_service_viewed")
-                        } label: {
+                        Link(destination: AppConstants.termsURL) {
                             Text("Terms of Service")
                                 .font(DesignSystem.Typography.footnote)
                                 .foregroundStyle(DesignSystem.Colors.flameOrange)
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            PostHogManager.shared.trackEvent("terms_of_service_viewed")
+                        })
                     }
                 }
                 .padding(.bottom, DesignSystem.Spacing.large)

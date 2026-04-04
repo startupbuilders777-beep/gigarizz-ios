@@ -1,14 +1,16 @@
 import SwiftUI
 
-// MARK: - Onboarding View (3-Screen Flow)
+// MARK: - Onboarding View (4-Screen High-Conversion Flow)
 
 /// First impression onboarding flow.
-/// Screen 1: The Promise — value proposition
+/// Screen 1: The Promise — value proposition with social proof
 /// Screen 2: How It Works — 3 steps
-/// Screen 3: Demo mini-picker + Apple Sign-In CTA
+/// Screen 3: Before & After — visual transformation proof
+/// Screen 4: Soft Paywall + Apple Sign-In CTA
 struct OnboardingView: View {
     @StateObject private var viewModel = OnboardingViewModel()
     @Binding var hasCompletedOnboarding: Bool
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     
     @State private var showSignIn = false
     @State private var showPermissionEducation = false
@@ -44,8 +46,15 @@ struct OnboardingView: View {
                     OnboardingPage2View(viewModel: viewModel)
                         .tag(1)
                     
-                    OnboardingPage3View(viewModel: viewModel, onContinue: handlePage3Continue)
+                    OnboardingBeforeAfterView(viewModel: viewModel)
                         .tag(2)
+                    
+                    OnboardingPaywallView(
+                        viewModel: viewModel,
+                        onContinueFree: { handleContinueFree() },
+                        onSignIn: { handleSignIn() }
+                    )
+                    .tag(3)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(DesignSystem.Animation.smoothSpring, value: viewModel.currentPage)
@@ -54,10 +63,12 @@ struct OnboardingView: View {
                 pageDots
                     .padding(.bottom, DesignSystem.Spacing.large)
                 
-                // MARK: - CTA Button
-                ctaButton
-                    .padding(.horizontal, DesignSystem.Spacing.medium)
-                    .padding(.bottom, DesignSystem.Spacing.xl)
+                // MARK: - CTA Button (hidden on paywall page — it has its own)
+                if viewModel.currentPage < 3 {
+                    ctaButton
+                        .padding(.horizontal, DesignSystem.Spacing.medium)
+                        .padding(.bottom, DesignSystem.Spacing.xl)
+                }
             }
         }
         .onAppear {
@@ -68,15 +79,8 @@ struct OnboardingView: View {
         }
         .sheet(isPresented: $showSignIn) {
             SignInView()
-                .environmentObject(AuthManager())
-        }
-        .sheet(isPresented: $showPermissionEducation) {
-            PermissionEducationView(
-                viewModel: viewModel,
-                permissionType: .photo,
-                onGranted: { handlePermissionGranted() },
-                onDenied: { handlePermissionDenied() }
-            )
+                .environmentObject(AuthManager.shared)
+                .environmentObject(subscriptionManager)
         }
     }
     
@@ -108,7 +112,7 @@ struct OnboardingView: View {
     @ViewBuilder
     private var pageDots: some View {
         HStack(spacing: DesignSystem.Spacing.xs) {
-            ForEach(0..<viewModel.totalPages, id: \.self) { index in
+            ForEach(0..<4, id: \.self) { index in
                 Capsule()
                     .fill(index == viewModel.currentPage ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surfaceSecondary)
                     .frame(width: index == viewModel.currentPage ? 24 : 8, height: 8)
@@ -121,7 +125,7 @@ struct OnboardingView: View {
     }
     
     private var pageLabel: String {
-        return "Page \(viewModel.currentPage + 1) of \(viewModel.totalPages)"
+        return "Page \(viewModel.currentPage + 1) of 4"
     }
     
     // MARK: - CTA Button
@@ -141,8 +145,8 @@ struct OnboardingView: View {
     private var ctaTitle: String {
         switch viewModel.currentPage {
         case 0: return "See How It Works"
-        case 1: return "Try It Free"
-        case 2: return "Continue with Apple"
+        case 1: return "See the Magic"
+        case 2: return "Get Started"
         default: return "Continue"
         }
     }
@@ -150,8 +154,8 @@ struct OnboardingView: View {
     private var ctaIcon: String {
         switch viewModel.currentPage {
         case 0: return "arrow.right"
-        case 1: return "play.fill"
-        case 2: return "apple.logo"
+        case 1: return "sparkles"
+        case 2: return "arrow.right"
         default: return "arrow.right"
         }
     }
@@ -159,8 +163,8 @@ struct OnboardingView: View {
     private var ctaHint: String {
         switch viewModel.currentPage {
         case 0: return "Shows the next onboarding page"
-        case 1: return "Proceeds to the demo photo picker"
-        case 2: return "Opens Apple Sign In"
+        case 1: return "Shows before and after examples"
+        case 2: return "Proceeds to pricing options"
         default: return "Continues to next step"
         }
     }
@@ -168,28 +172,20 @@ struct OnboardingView: View {
     // MARK: - Action Handlers
     
     private func handleCtaTap() {
-        if viewModel.currentPage == 2 {
-            // Apple Sign-In on last page
-            viewModel.completeOnboarding()
-            hasCompletedOnboarding = true
-            showSignIn = true
-        } else {
+        if viewModel.currentPage < 3 {
             viewModel.advancePage()
         }
     }
     
-    private func handlePage3Continue() {
+    private func handleContinueFree() {
         viewModel.completeOnboarding()
         hasCompletedOnboarding = true
-        // Show permission education before sign-in
-        showPermissionEducation = true
-    }
-    
-    private func handlePermissionGranted() {
         showSignIn = true
     }
     
-    private func handlePermissionDenied() {
+    private func handleSignIn() {
+        viewModel.completeOnboarding()
+        hasCompletedOnboarding = true
         showSignIn = true
     }
 }
@@ -401,11 +397,12 @@ struct OnboardingPage2View: View {
     }
 }
 
-// MARK: - Onboarding Page 3 — Demo Picker
+// MARK: - Onboarding Page 3 — Before & After Visual Proof
 
-struct OnboardingPage3View: View {
+struct OnboardingBeforeAfterView: View {
     @ObservedObject var viewModel: OnboardingViewModel
-    let onContinue: () -> Void
+    
+    @State private var showAfter = false
     
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.xl) {
@@ -413,99 +410,331 @@ struct OnboardingPage3View: View {
             
             // MARK: - Header
             VStack(spacing: DesignSystem.Spacing.medium) {
-                Text("Try the Demo")
+                Text("See the Difference")
                     .font(DesignSystem.Typography.headline)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
                 
-                Text("Tap to select photos (demo only)")
+                Text("Real users. Real transformations.")
                     .font(DesignSystem.Typography.subheadline)
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
             }
             
-            // MARK: - Demo Photo Grid
-            demoPhotoGrid
-                .padding(.horizontal, DesignSystem.Spacing.xl)
-            
-            // MARK: - Final Message
-            VStack(spacing: DesignSystem.Spacing.medium) {
-                Text("Your dating life starts now")
-                    .font(DesignSystem.Typography.title)
-                    .foregroundStyle(DesignSystem.Colors.textPrimary)
-                
-                Text("1 photo selected = 4 AI variations")
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-            }
-            
-            Spacer()
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Try the Demo. Tap to select photos. Your dating life starts now.")
-    }
-    
-    // MARK: - Demo Photo Grid
-    
-    @ViewBuilder
-    private var demoPhotoGrid: some View {
-        HStack(spacing: DesignSystem.Spacing.medium) {
-            ForEach(viewModel.demoPhotos) { photo in
-                demoPhotoCard(photo: photo)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func demoPhotoCard(photo: DemoPhoto) -> some View {
-        Button {
-            viewModel.toggleDemoPhoto(id: photo.id)
-        } label: {
-            ZStack(alignment: .bottom) {
-                // Photo placeholder
-                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
-                    .fill(DesignSystem.Colors.surfaceSecondary)
-                    .frame(width: 100, height: 120)
-                    .overlay {
-                        // Placeholder icon
-                        Image(systemName: "person.crop.square")
-                            .font(.system(size: 40, weight: .light))
-                            .foregroundStyle(DesignSystem.Colors.textSecondary.opacity(0.5))
-                    }
-                    .accessibilityHidden(true)
-                
-                // Selection indicator
-                if viewModel.selectedDemoPhotos.contains(photo.id) {
-                    RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
-                        .stroke(DesignSystem.Colors.flameOrange, lineWidth: 3)
-                        .frame(width: 100, height: 120)
-                    
-                    // Check mark
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundStyle(DesignSystem.Colors.flameOrange)
-                                .padding(DesignSystem.Spacing.small)
+            // MARK: - Before/After Cards
+            HStack(spacing: DesignSystem.Spacing.medium) {
+                // Before card
+                VStack(spacing: DesignSystem.Spacing.small) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
+                            .fill(DesignSystem.Colors.surfaceSecondary)
+                            .frame(width: 140, height: 180)
+                        
+                        VStack(spacing: DesignSystem.Spacing.xs) {
+                            Image(systemName: "person.crop.square")
+                                .font(.system(size: 48, weight: .light))
+                                .foregroundStyle(DesignSystem.Colors.textSecondary.opacity(0.4))
+                            
+                            Text("📱 Selfie")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
                         }
-                        Spacer()
                     }
-                    .accessibilityHidden(true)
+                    
+                    Text("Before")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+                .opacity(showAfter ? 0.6 : 1)
+                
+                // Arrow
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    .symbolEffect(.bounce, options: .repeating.speed(0.3), value: showAfter)
+                
+                // After card
+                VStack(spacing: DesignSystem.Spacing.small) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
+                            .fill(
+                                LinearGradient(
+                                    colors: [DesignSystem.Colors.flameOrange.opacity(0.2), DesignSystem.Colors.goldAccent.opacity(0.2)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 140, height: 180)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
+                                    .stroke(DesignSystem.Colors.flameOrange.opacity(0.5), lineWidth: 2)
+                            )
+                        
+                        VStack(spacing: DesignSystem.Spacing.xs) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 48, weight: .light))
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                            
+                            Text("✨ AI Enhanced")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        }
+                    }
+                    .scaleEffect(showAfter ? 1.05 : 0.95)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.7), value: showAfter)
+                    
+                    Text("After")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                }
+            }
+            .padding(.horizontal, DesignSystem.Spacing.xl)
+            
+            // MARK: - Social Proof
+            VStack(spacing: DesignSystem.Spacing.small) {
+                HStack(spacing: 4) {
+                    ForEach(0..<5, id: \.self) { _ in
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 16))
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+                    }
                 }
                 
-                // Description label
-                Text(photo.description)
+                Text("\"Got 3x more matches in the first week\"")
+                    .font(DesignSystem.Typography.body)
+                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    .italic()
+                
+                Text("— Alex, 28")
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
-                    .padding(DesignSystem.Spacing.xs)
-                    .frame(maxWidth: .infinity)
-                    .background(DesignSystem.Colors.surface)
             }
-            .frame(width: 100, height: 140)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
-            .cardShadow()
+            .padding(.top, DesignSystem.Spacing.large)
+            
+            Spacer()
+            Spacer()
         }
-        .accessibilityLabel(photo.description)
-        .accessibilityHint(viewModel.selectedDemoPhotos.contains(photo.id) ? "Selected. Double tap to deselect." : "Not selected. Double tap to select.")
+        .onAppear { showAfter = true }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("See the Difference. Real users, real transformations. Quote: Got 3x more matches in the first week.")
+    }
+}
+
+// MARK: - Onboarding Page 4 — Soft Paywall
+
+struct OnboardingPaywallView: View {
+    @ObservedObject var viewModel: OnboardingViewModel
+    let onContinueFree: () -> Void
+    let onSignIn: () -> Void
+    
+    @State private var selectedPlan: OnboardingPlan = .plus
+    
+    enum OnboardingPlan: String, CaseIterable {
+        case free, plus, gold
+        
+        var title: String {
+            switch self {
+            case .free: return "Free"
+            case .plus: return "Plus"
+            case .gold: return "Gold"
+            }
+        }
+        
+        var price: String {
+            switch self {
+            case .free: return "$0"
+            case .plus: return "$4.99"
+            case .gold: return "$14.99"
+            }
+        }
+        
+        var period: String {
+            switch self {
+            case .free: return ""
+            case .plus: return "/mo"
+            case .gold: return "/mo"
+            }
+        }
+        
+        var features: [String] {
+            switch self {
+            case .free: return ["3 photos/day", "1 style", "Watermarked"]
+            case .plus: return ["30 photos/day", "10 styles", "HD downloads", "Rizz Coach"]
+            case .gold: return ["Unlimited photos", "All styles", "HD downloads", "Rizz Coach", "Priority queue"]
+            }
+        }
+        
+        var badge: String? {
+            switch self {
+            case .free: return nil
+            case .plus: return "POPULAR"
+            case .gold: return "BEST VALUE"
+            }
+        }
+    }
+    
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: DesignSystem.Spacing.large) {
+                // MARK: - Header
+                VStack(spacing: DesignSystem.Spacing.small) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 36, weight: .bold))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                    
+                    Text("Choose Your Plan")
+                        .font(DesignSystem.Typography.headline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    
+                    Text("Start free. Upgrade anytime.")
+                        .font(DesignSystem.Typography.subheadline)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+                .padding(.top, DesignSystem.Spacing.xl)
+                
+                // MARK: - Plan Cards
+                VStack(spacing: DesignSystem.Spacing.medium) {
+                    ForEach(OnboardingPlan.allCases, id: \.rawValue) { plan in
+                        planCard(plan: plan)
+                    }
+                }
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                
+                // MARK: - CTA
+                VStack(spacing: DesignSystem.Spacing.medium) {
+                    GRButton(
+                        title: selectedPlan == .free ? "Continue Free" : "Start \(selectedPlan.title) — \(selectedPlan.price)\(selectedPlan.period)",
+                        icon: "apple.logo",
+                        accessibilityHint: "Sign in with Apple and start with \(selectedPlan.title) plan"
+                    ) {
+                        PostHogManager.shared.trackOnboardingCtaTapped(page: 4, cta: "paywall_\(selectedPlan.rawValue)")
+                        if selectedPlan == .free {
+                            onContinueFree()
+                        } else {
+                            onSignIn()
+                        }
+                    }
+                    
+                    if selectedPlan != .free {
+                        Button {
+                            PostHogManager.shared.trackOnboardingCtaTapped(page: 4, cta: "continue_free")
+                            onContinueFree()
+                        } label: {
+                            Text("Continue with Free")
+                                .font(DesignSystem.Typography.smallButton)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                    }
+                }
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+                
+                // MARK: - Legal Footer
+                VStack(spacing: DesignSystem.Spacing.xs) {
+                    Text("By continuing, you agree to our")
+                        .font(DesignSystem.Typography.footnote)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    
+                    HStack(spacing: DesignSystem.Spacing.small) {
+                        Link(destination: AppConstants.termsURL) {
+                            Text("Terms")
+                                .font(DesignSystem.Typography.footnote)
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        }
+                        
+                        Text("and")
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        
+                        Link(destination: AppConstants.privacyURL) {
+                            Text("Privacy Policy")
+                                .font(DesignSystem.Typography.footnote)
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        }
+                    }
+                }
+                .padding(.bottom, DesignSystem.Spacing.xl)
+            }
+        }
+    }
+    
+    // MARK: - Plan Card
+    
+    @ViewBuilder
+    private func planCard(plan: OnboardingPlan) -> some View {
+        let isSelected = selectedPlan == plan
+        
+        Button {
+            withAnimation(DesignSystem.Animation.quickSpring) {
+                selectedPlan = plan
+            }
+            DesignSystem.Haptics.light()
+        } label: {
+            HStack(spacing: DesignSystem.Spacing.medium) {
+                // Radio indicator
+                ZStack {
+                    Circle()
+                        .stroke(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surfaceSecondary, lineWidth: 2)
+                        .frame(width: 24, height: 24)
+                    
+                    if isSelected {
+                        Circle()
+                            .fill(DesignSystem.Colors.flameOrange)
+                            .frame(width: 14, height: 14)
+                    }
+                }
+                
+                // Plan info
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(plan.title)
+                            .font(DesignSystem.Typography.title)
+                            .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        
+                        if let badge = plan.badge {
+                            Text(badge)
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(DesignSystem.Colors.background)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(DesignSystem.Colors.flameOrange)
+                                .clipShape(Capsule())
+                        }
+                    }
+                    
+                    Text(plan.features.joined(separator: " · "))
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        .lineLimit(1)
+                }
+                
+                Spacer()
+                
+                // Price
+                VStack(alignment: .trailing) {
+                    Text(plan.price)
+                        .font(DesignSystem.Typography.title)
+                        .foregroundStyle(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textPrimary)
+                    if !plan.period.isEmpty {
+                        Text(plan.period)
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                }
+            }
+            .padding(DesignSystem.Spacing.medium)
+            .background(DesignSystem.Colors.surfaceSecondary)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
+                    .stroke(isSelected ? DesignSystem.Colors.flameOrange : .clear, lineWidth: 2)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(plan.title) plan, \(plan.price)\(plan.period)")
+        .accessibilityHint(isSelected ? "Currently selected" : "Double tap to select")
     }
 }
 
@@ -522,6 +751,7 @@ struct OnboardingStep {
 
 #Preview("Onboarding Flow") {
     OnboardingView(hasCompletedOnboarding: .constant(false))
+        .environmentObject(SubscriptionManager.shared)
         .preferredColorScheme(.dark)
 }
 
@@ -535,7 +765,12 @@ struct OnboardingStep {
         .preferredColorScheme(.dark)
 }
 
-#Preview("Page 3 - Demo Picker") {
-    OnboardingPage3View(viewModel: OnboardingViewModel(), onContinue: {})
+#Preview("Page 3 - Before & After") {
+    OnboardingBeforeAfterView(viewModel: OnboardingViewModel())
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Page 4 - Soft Paywall") {
+    OnboardingPaywallView(viewModel: OnboardingViewModel(), onContinueFree: {}, onSignIn: {})
         .preferredColorScheme(.dark)
 }

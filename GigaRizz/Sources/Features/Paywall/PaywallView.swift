@@ -190,17 +190,17 @@ struct PaywallView: View {
 
             // Terms and privacy
             HStack(spacing: DesignSystem.Spacing.medium) {
-                Button {} label: {
-                    Text("Terms of Service")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(DesignSystem.Colors.textSecondary)
-                }
+                  Link(destination: AppConstants.termsURL) {
+                      Text("Terms of Service")
+                          .font(DesignSystem.Typography.caption)
+                          .foregroundStyle(DesignSystem.Colors.textSecondary)
+                  }
 
-                Button {} label: {
-                    Text("Privacy Policy")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(DesignSystem.Colors.textSecondary)
-                }
+                  Link(destination: AppConstants.privacyURL) {
+                      Text("Privacy Policy")
+                          .font(DesignSystem.Typography.caption)
+                          .foregroundStyle(DesignSystem.Colors.textSecondary)
+                  }
             }
 
             // Error message

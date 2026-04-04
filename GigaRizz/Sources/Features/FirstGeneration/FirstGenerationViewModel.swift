@@ -144,7 +144,7 @@ final class FirstGenerationViewModel: ObservableObject {
         // - Composition (face position, background)
         // For now: return Confident as safe default
         let freeStyles = StylePreset.allPresets.filter { $0.tier == .free }
-        return freeStyles.first ?? StylePreset.allPresets.first!
+        return freeStyles.first ?? StylePreset.allPresets.first ?? StylePreset(name: "Confident", description: "Clean and confident", icon: "sparkles", prompt: "Professional dating profile headshot", tier: .free)
     }
 
     // MARK: - Navigation
