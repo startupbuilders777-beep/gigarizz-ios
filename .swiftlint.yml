@@ -10,6 +10,7 @@ disabled_rules:
   - trailing_newline
   - cyclomatic_complexity
   - for_where
+  - trailing_comma
 
 opt_in_rules:
   - empty_count

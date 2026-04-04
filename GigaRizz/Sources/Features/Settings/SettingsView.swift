@@ -5,6 +5,7 @@ struct SettingsView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @State private var showDeleteConfirmation = false
     @State private var showPaywall = false
+    @State private var showTierComparison = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -14,7 +15,10 @@ struct SettingsView: View {
                 List {
                     Section {
                         settingsRow(icon: "person.circle.fill", title: "Email", subtitle: authManager.userEmail ?? "Not signed in", color: DesignSystem.Colors.flameOrange, accessibilityLabel: "Email address, \(authManager.userEmail ?? "Not signed in")")
-                        settingsRow(icon: "crown.fill", title: "Plan", subtitle: subscriptionManager.currentTier.displayName, color: DesignSystem.Colors.goldAccent, accessibilityLabel: "Subscription plan, \(subscriptionManager.currentTier.displayName)")
+                        Button { showTierComparison = true } label: {
+                            settingsRow(icon: "crown.fill", title: "Plan", subtitle: subscriptionManager.currentTier.displayName, color: DesignSystem.Colors.goldAccent, accessibilityLabel: "Subscription plan, \(subscriptionManager.currentTier.displayName), tap to compare plans")
+                        }
+                        .buttonStyle(.plain)
                     } header: { Text("Account").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 
@@ -108,6 +112,7 @@ struct SettingsView: View {
                 Button("Delete", role: .destructive) { Task { try? await authManager.deleteAccount(); dismiss() } }
             } message: { Text("This will permanently delete your account and all data. This cannot be undone.") }
             .sheet(isPresented: $showPaywall) { PaywallView() }
+            .sheet(isPresented: $showTierComparison) { TierComparisonView() }
         }
     }
 
