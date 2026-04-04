@@ -6,6 +6,7 @@ struct GigaRizzApp: App {
     @StateObject private var subscriptionManager = SubscriptionManager()
     @StateObject private var postHogManager = PostHogManager()
     @StateObject private var deepLinkManager = DeepLinkManager.shared
+    @StateObject private var replyReminderService = ReplyReminderService.shared
     
     // Onboarding state from UserDefaults
     @AppStorage("onboarding_has_completed") private var hasCompletedOnboarding = false
@@ -73,6 +74,9 @@ struct GigaRizzApp: App {
                 
                 // Check if we should show resume prompt
                 checkResumePromptState()
+                
+                // Setup notification delegate
+                setupNotificationDelegate()
             }
             .onOpenURL { url in
                 // Handle deep links (custom scheme gigarizz:// and universal links https://gigarizz.app)
@@ -121,5 +125,17 @@ struct GigaRizzApp: App {
         UserDefaults.standard.set(true, forKey: "onboarding_has_completed")
         UserDefaults.standard.set(true, forKey: "onboarding_has_seen")
         showResumePrompt = false
+    }
+    
+    // MARK: - Notification Handling
+    
+    private func setupNotificationDelegate() {
+        // Register for notification response handling
+        UNUserNotificationCenter.current().delegate = NotificationDelegateHandler.shared
+        
+        // Schedule initial reply reminder background check
+        Task {
+            await replyReminderService.scheduleNextBackgroundCheck()
+        }
     }
 }

@@ -11,6 +11,7 @@ disabled_rules:
   - cyclomatic_complexity
   - for_where
   - trailing_comma
+  - sorted_imports
 
 opt_in_rules:
   - empty_count
@@ -36,9 +37,11 @@ identifier_name:
     - i
     - j
     - k
+    - l
     - m
     - n
     - p
+    - s
     - x
     - y
     - id
