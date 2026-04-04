@@ -61,6 +61,8 @@ enum BannerState: Equatable {
 
 @MainActor
 final class SubscriptionManager: NSObject, ObservableObject {
+    static let shared = SubscriptionManager()
+
     // MARK: - Published Properties
 
     @Published var currentTier: SubscriptionTier = .free
@@ -68,6 +70,7 @@ final class SubscriptionManager: NSObject, ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var dailyPhotosUsed = 0
+    @Published var showPaywall = false
 
     // MARK: - Purchases
 
