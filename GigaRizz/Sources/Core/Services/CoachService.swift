@@ -102,9 +102,9 @@ final class CoachService: ObservableObject {
             ]
         ]
 
-        let options = bios[tone] ?? bios[.witty]!
+        let options = bios[tone] ?? bios[.witty] ?? []
         DesignSystem.Haptics.success()
-        return options.randomElement()!
+        return options.randomElement() ?? "Your profile is looking great!"
     }
 
     // MARK: - Generate Opening Lines
@@ -134,7 +134,7 @@ final class CoachService: ObservableObject {
         ]
 
         DesignSystem.Haptics.success()
-        return lines.randomElement()!
+        return lines.randomElement() ?? lines[0]
     }
 
     // MARK: - Hinge Prompts

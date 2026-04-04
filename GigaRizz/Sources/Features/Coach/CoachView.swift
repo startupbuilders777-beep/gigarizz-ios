@@ -10,6 +10,7 @@ struct CoachView: View {
             ScrollView {
                 VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
+                    weeklyReportSection
                     bioGeneratorSection
                     openingLinesSection
                     hingePromptsSection
@@ -22,6 +23,46 @@ struct CoachView: View {
         .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 
+    // MARK: - Weekly Report
+    
+    private var weeklyReportSection: some View {
+        NavigationLink {
+            RizzCoachDashboardView()
+        } label: {
+            GRCard {
+                HStack(spacing: DesignSystem.Spacing.medium) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
+                            .fill(DesignSystem.Colors.goldAccent.opacity(0.15))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 20, weight: .medium))
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
+                        Text("Weekly Rizz Report")
+                            .font(DesignSystem.Typography.callout)
+                            .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        Text("See your dating profile score & tips")
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+            }
+        }
+        .buttonStyle(HapticButtonStyle(hapticStyle: .light))
+        .accessibilityLabel("Weekly Rizz Report: See your dating profile score and tips")
+    }
+    
+    // MARK: - Header
+    
     private var headerSection: some View {
         GRCard {
             HStack(spacing: DesignSystem.Spacing.medium) {

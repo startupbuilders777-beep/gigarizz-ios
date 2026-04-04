@@ -5,6 +5,7 @@ import SwiftUI
 /// Primary navigation hub for GigaRizz — first thing users see when opening the app.
 /// Features: user greeting, hero CTA, quick actions, recent generations, daily tip, stats strip.
 struct HomeView: View {
+    @Binding var selectedTab: MainTabView.Tab
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = HomeViewModel()
@@ -38,6 +39,9 @@ struct HomeView: View {
                         if hasGeneratedPhotos {
                             recentGenerationsSection
                         }
+                        
+                        // Tools & Resources
+                        toolsSection
                         
                         // Daily Rizz tip
                         dailyTipSection
@@ -178,8 +182,9 @@ struct HomeView: View {
     // MARK: - Hero CTA Card
     
     private var heroCard: some View {
-        NavigationLink {
-            GenerateView()
+        Button {
+            selectedTab = .generate
+            DesignSystem.Haptics.medium()
         } label: {
             ZStack {
                 // Gradient background
@@ -216,9 +221,8 @@ struct HomeView: View {
             }
             .cardShadow()
         }
-        .buttonStyle(HapticButtonStyle(hapticStyle: .medium))
         .accessibilityLabel("Generate new AI photos")
-        .accessibilityHint("Double tap to start photo generation")
+        .accessibilityHint("Double tap to switch to photo generation tab")
     }
     
     // MARK: - Quick Actions Section
@@ -239,24 +243,25 @@ struct HomeView: View {
     
     private func quickActionButton(_ action: QuickAction) -> some View {
         VStack(spacing: DesignSystem.Spacing.xs) {
-            NavigationLink {
-                destinationForAction(action)
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(DesignSystem.Colors.surface)
-                        .frame(width: 64, height: 64)
-                    
-                    Image(systemName: action.icon)
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+            Group {
+                if let tab = action.switchesTab {
+                    // Actions that have dedicated tabs → switch tab instead of pushing
+                    Button {
+                        selectedTab = tab
+                        DesignSystem.Haptics.light()
+                    } label: {
+                        quickActionIcon(action)
+                    }
+                } else {
+                    // Actions without dedicated tabs → NavigationLink
+                    NavigationLink {
+                        destinationForAction(action)
+                    } label: {
+                        quickActionIcon(action)
+                    }
+                    .buttonStyle(HapticButtonStyle(hapticStyle: .light))
                 }
-                .overlay(
-                    Circle()
-                        .strokeBorder(DesignSystem.Colors.divider, lineWidth: 1)
-                )
             }
-            .buttonStyle(HapticButtonStyle(hapticStyle: .light))
             
             Text(action.title)
                 .font(DesignSystem.Typography.caption)
@@ -271,17 +276,32 @@ struct HomeView: View {
         .accessibilityLabel("\(action.title): \(action.subtitle)")
     }
     
+    /// Icon circle shared between NavigationLink and Button quick actions
+    private func quickActionIcon(_ action: QuickAction) -> some View {
+        ZStack {
+            Circle()
+                .fill(DesignSystem.Colors.surface)
+                .frame(width: 64, height: 64)
+            
+            Image(systemName: action.icon)
+                .font(.system(size: 24, weight: .medium))
+                .foregroundStyle(DesignSystem.Colors.flameOrange)
+        }
+        .overlay(
+            Circle()
+                .strokeBorder(DesignSystem.Colors.divider, lineWidth: 1)
+        )
+    }
+    
     @ViewBuilder
     private func destinationForAction(_ action: QuickAction) -> some View {
         switch action {
-        case .photoPicker:
-            GenerateView()
-        case .rizzCoach:
-            CoachView()
         case .profileScore:
             ProfileView()
         case .myGallery:
             GeneratedPhotosGalleryView()
+        default:
+            EmptyView() // Tab-switching actions handled by button, not NavigationLink
         }
     }
     
@@ -378,6 +398,50 @@ struct HomeView: View {
             }
         }
         .buttonStyle(HapticButtonStyle(hapticStyle: .light))
+    }
+    
+    // MARK: - Tools Section
+    
+    private var toolsSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+            Text("Tools & Resources")
+                .font(DesignSystem.Typography.callout)
+                .foregroundStyle(DesignSystem.Colors.textPrimary)
+            
+            NavigationLink {
+                ToolsHubView()
+            } label: {
+                GRCard {
+                    HStack(spacing: DesignSystem.Spacing.medium) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
+                                .fill(DesignSystem.Colors.flameOrange.opacity(0.15))
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "wrench.and.screwdriver")
+                                .font(.system(size: 20))
+                                .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
+                            Text("Tools Hub")
+                                .font(DesignSystem.Typography.callout)
+                                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                            Text("Photo audit, packs, bio tips & more")
+                                .font(DesignSystem.Typography.footnote)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                }
+            }
+            .buttonStyle(HapticButtonStyle(hapticStyle: .light))
+            .accessibilityLabel("Tools Hub: Photo audit, packs, bio tips and more")
+        }
     }
     
     // MARK: - Daily Tip Section
@@ -538,7 +602,7 @@ struct HomeView: View {
 // MARK: - Preview
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(.home))
         .environmentObject(AuthManager())
         .environmentObject(SubscriptionManager())
         .preferredColorScheme(.dark)
