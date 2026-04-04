@@ -120,6 +120,12 @@ final class PaywallViewModel: ObservableObject {
     /// Current RevenueCat offerings fetched on appear
     @Published var currentOffering: Offering?
 
+    /// Introductory offer prices keyed by tier (e.g. "plus" → "$2.49/mo")
+    @Published var introPrices: [String: String] = [:]
+
+    /// Whether any tier has an active introductory offer
+    var hasIntroOffer: Bool { !introPrices.isEmpty }
+
     // MARK: - Init
 
     init(
@@ -146,11 +152,34 @@ final class PaywallViewModel: ObservableObject {
         animateCardsIn()
     }
 
-    /// Fetch RevenueCat offerings so we can map tier → Package
+    /// Fetch RevenueCat offerings so we can map tier → Package.
+    /// Also detects introductory offers (free trials, discounted first period).
     private func fetchOfferings() async {
         do {
             let offerings = try await Purchases.shared.offerings()
             currentOffering = offerings.current
+
+            // Detect introductory offers per package
+            if let offering = offerings.current {
+                var intros: [String: String] = [:]
+                for package in offering.availablePackages {
+                    if let intro = package.storeProduct.introductoryDiscount {
+                        let priceStr = intro.price == 0
+                            ? "Free"
+                            : intro.localizedPriceString
+                        let periodStr: String
+                        switch intro.subscriptionPeriod.unit {
+                        case .day:   periodStr = intro.subscriptionPeriod.value == 7 ? "week" : "\(intro.subscriptionPeriod.value) day(s)"
+                        case .week:  periodStr = "week"
+                        case .month: periodStr = "mo"
+                        case .year:  periodStr = "yr"
+                        @unknown default: periodStr = ""
+                        }
+                        intros[package.identifier.lowercased()] = "\(priceStr)/\(periodStr)"
+                    }
+                }
+                introPrices = intros
+            }
         } catch {
             errorMessage = "Could not load prices. Check your connection."
         }

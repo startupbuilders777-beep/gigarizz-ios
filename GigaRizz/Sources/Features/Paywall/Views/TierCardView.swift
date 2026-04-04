@@ -9,6 +9,8 @@ struct TierCardView: View {
     let animationIndex: Int
     let currentAnimationIndex: Int
     let onSelect: () -> Void
+    /// Optional introductory offer string (e.g. "$2.49/mo first month")
+    var introPrice: String?
 
     @State private var badgeScale: CGFloat = 0
 
@@ -34,16 +36,29 @@ struct TierCardView: View {
                     .foregroundStyle(tierForegroundColor)
 
                 // Price
-                HStack(spacing: 2) {
-                    Text(tier.price)
-                        .font(.system(size: tier == .free ? 20 : 28, weight: .bold))
-                    if !tier.period.isEmpty {
-                        Text(tier.period)
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                VStack(spacing: 2) {
+                    HStack(spacing: 2) {
+                        Text(tier.price)
+                            .font(.system(size: tier == .free ? 20 : 28, weight: .bold))
+                            .strikethrough(introPrice != nil, color: DesignSystem.Colors.textSecondary)
+                        if !tier.period.isEmpty {
+                            Text(tier.period)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                    }
+                    .foregroundStyle(introPrice != nil ? DesignSystem.Colors.textSecondary : tierForegroundColor)
+
+                    // Intro offer price
+                    if let introPrice {
+                        Text(introPrice)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(DesignSystem.Colors.success)
+                        Text("first period")
+                            .font(.system(size: 10))
+                            .foregroundStyle(DesignSystem.Colors.success.opacity(0.8))
                     }
                 }
-                .foregroundStyle(tierForegroundColor)
 
                 // Features list
                 VStack(spacing: DesignSystem.Spacing.xs) {
@@ -171,7 +186,8 @@ struct TierCardView: View {
                 isSelected: tier == .plus,
                 animationIndex: index,
                 currentAnimationIndex: 2,
-                onSelect: {}
+                onSelect: {},
+                introPrice: tier == .plus ? "$2.49/mo" : nil
             )
         }
     }

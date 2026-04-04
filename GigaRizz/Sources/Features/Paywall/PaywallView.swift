@@ -142,7 +142,8 @@ struct PaywallView: View {
                             isSelected: viewModel.selectedTier == tier,
                             animationIndex: index,
                             currentAnimationIndex: viewModel.cardAnimationIndex,
-                            onSelect: { viewModel.selectTier(tier) }
+                            onSelect: { viewModel.selectTier(tier) },
+                            introPrice: viewModel.introPrices[tier.rawValue]
                         )
                         .frame(width: tierCardWidth)
                     }

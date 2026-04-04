@@ -82,6 +82,28 @@ struct ToolsHubView: View {
                             color: DesignSystem.Colors.flameOrange
                         )
                     }
+
+                    NavigationLink {
+                        PhotoRankingView()
+                    } label: {
+                        toolCard(
+                            title: "Photo Ranking",
+                            subtitle: "Rank your best shots",
+                            icon: "trophy.fill",
+                            color: DesignSystem.Colors.goldAccent
+                        )
+                    }
+
+                    NavigationLink {
+                        LightingColorGradeView()
+                    } label: {
+                        toolCard(
+                            title: "Color Grade",
+                            subtitle: "Pro lighting presets",
+                            icon: "camera.filters",
+                            color: .purple
+                        )
+                    }
                 }
 
                 // Stats Banner
