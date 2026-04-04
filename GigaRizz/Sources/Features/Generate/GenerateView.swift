@@ -7,8 +7,10 @@ struct GenerateView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = GenerateViewModel()
+    @StateObject private var stylePresetManager = StylePresetManager.shared
     @AppStorage("hasGeneratedPhotos") private var hasGeneratedPhotos = false
     @State private var showFirstGenerationFlow = false
+    @State private var showRizzCoach = false
 
     var body: some View {
         ZStack {
@@ -63,7 +65,16 @@ struct GenerateView: View {
             // Show guided flow for first-time users
             if !hasGeneratedPhotos {
                 showFirstGenerationFlow = true
+            } else {
+                // Set initial style from most-used preset for returning users
+                if viewModel.selectedStyle == nil {
+                    viewModel.selectedStyle = stylePresetManager.recommendedPreset(for: subscriptionManager.currentTier)
+                }
             }
+        }
+        .navigationDestination(isPresented: $showRizzCoach) {
+            RizzCoachDashboardView()
+                .environmentObject(subscriptionManager)
         }
     }
 
@@ -281,9 +292,51 @@ struct GenerateView: View {
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
+            // "Not sure?" CTA linking to Rizz Coach style quiz
+            Button {
+                showRizzCoach = true
+                DesignSystem.Haptics.light()
+            } label: {
+                HStack(spacing: DesignSystem.Spacing.xs) {
+                    Image(systemName: "questionmark.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    
+                    Text("Not sure? Let Rizz Coach help you find your style")
+                        .font(DesignSystem.Typography.footnote)
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange.opacity(0.7))
+                }
+                .padding(.vertical, DesignSystem.Spacing.xs)
+                .padding(.horizontal, DesignSystem.Spacing.small)
+                .background(DesignSystem.Colors.flameOrange.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.chip))
+            }
+            .padding(.bottom, DesignSystem.Spacing.xs)
+
+            // Most-used preset indicator
+            if let mostUsed = stylePresetManager.mostUsedPreset {
+                HStack(spacing: DesignSystem.Spacing.xs) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 12))
+                        .foregroundStyle(DesignSystem.Colors.goldAccent)
+                    
+                    Text("Your favorite: \(mostUsed.name)")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.goldAccent)
+                }
+                .padding(.bottom, DesignSystem.Spacing.xs)
+            }
+
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: DesignSystem.Spacing.small) {
-                    ForEach(StylePreset.allPresets) { preset in
+                    // Show presets sorted by usage (most-used first)
+                    ForEach(stylePresetManager.presetsSortedByUsage(for: subscriptionManager.currentTier)) { preset in
                         StylePresetCard(
                             preset: preset,
                             isSelected: viewModel.selectedStyle?.id == preset.id,

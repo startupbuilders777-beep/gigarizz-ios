@@ -234,4 +234,14 @@ enum QuickAction: Identifiable, CaseIterable {
         case .myGallery: return "photo.on.rectangle.angled"
         }
     }
+    
+    /// Returns the tab to switch to, or nil if this action should push via NavigationLink
+    var switchesTab: MainTabView.Tab? {
+        switch self {
+        case .photoPicker: return .generate
+        case .rizzCoach: return .coach
+        case .profileScore: return nil
+        case .myGallery: return nil
+        }
+    }
 }

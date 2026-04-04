@@ -41,6 +41,7 @@ final class FirstGenerationViewModel: ObservableObject {
     // MARK: - Services
 
     private let aiService = AIGenerationService.shared
+    private let stylePresetManager = StylePresetManager.shared
     private var tipTimer: Timer?
 
     // MARK: - Computed Properties
@@ -210,6 +211,9 @@ final class FirstGenerationViewModel: ObservableObject {
             generatedPhotos = result.photos
             currentStep = .results
             hasGeneratedPhotos = true  // Mark as completed for first-time users
+            
+            // Record style preset usage for future recommendations
+            stylePresetManager.recordUsage(style)
 
             PostHogManager.shared.track("first_generation_completed", properties: [
                 "style": style.name,
