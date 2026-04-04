@@ -70,7 +70,7 @@ struct GRButton: View {
 
 /// Elevated card container with design system styling.
 struct GRCard<Content: View>: View {
-    var padding: CGFloat = DesignSystem.Spacing.medium
+    var padding: CGFloat = DesignSystem.Spacing.m
     @ViewBuilder let content: () -> Content
 
     var body: some View {
@@ -128,7 +128,7 @@ struct EmptyStateView: View {
     var ctaAction: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.large) {
+        VStack(spacing: DesignSystem.Spacing.l) {
             Image(systemName: icon)
                 .font(.system(size: 56, weight: .light))
                 .foregroundStyle(
