@@ -9,6 +9,7 @@ struct HomeView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = HomeViewModel()
     @State private var showPaywall = false
+    @State private var showQuickUpload = false
     @AppStorage("hasGeneratedPhotos") private var hasGeneratedPhotos = false
     
     var body: some View {
@@ -69,8 +70,19 @@ struct HomeView: View {
             .sheet(isPresented: $showPaywall) {
                 PaywallView()
             }
+            .sheet(isPresented: $showQuickUpload) {
+                QuickUploadSheet()
+                    .environmentObject(authManager)
+                    .environmentObject(subscriptionManager)
+            }
         }
         .preferredColorScheme(.dark)
+        .overlay(alignment: .bottomTrailing) {
+            // Quick Upload FAB - power user single-photo express generation
+            QuickUploadFAB(isPresented: $showQuickUpload)
+                .padding(.trailing, DesignSystem.Spacing.medium)
+                .padding(.bottom, DesignSystem.Spacing.large)
+        }
     }
     
     // MARK: - Header Section

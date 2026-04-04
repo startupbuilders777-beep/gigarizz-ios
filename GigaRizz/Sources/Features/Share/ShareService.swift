@@ -7,6 +7,10 @@ import UIKit
 /// Handles shareable content composition: photo + optional caption + optional watermark.
 @MainActor
 final class ShareService: ObservableObject {
+    // MARK: - Singleton
+
+    static let shared = ShareService()
+
     // MARK: - Published State
 
     @Published var isProcessing: Bool = false
@@ -16,6 +20,39 @@ final class ShareService: ObservableObject {
     // MARK: - Dependencies
 
     private let analytics = PostHogManager.shared
+
+    // MARK: - Static Share Helper
+
+    /// Quick share an image without watermark processing.
+    static func shareImage(_ image: UIImage) {
+        let activityVC = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
+
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            rootViewController.present(activityVC, animated: true)
+        }
+    }
+
+    /// Quick share with caption.
+    static func shareImage(_ image: UIImage, caption: String?) {
+        var items: [Any] = [image]
+        if let caption {
+            items.append(caption)
+        }
+
+        let activityVC = UIActivityViewController(
+            activityItems: items,
+            applicationActivities: nil
+        )
+
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            rootViewController.present(activityVC, animated: true)
+        }
+    }
 
     // MARK: - Share Items
 
