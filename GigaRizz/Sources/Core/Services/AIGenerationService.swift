@@ -79,12 +79,7 @@ final class AIGenerationService: ObservableObject {
             case .mock:
                 return try await generateMockPhotos(userId: userId, style: style, count: count, startTime: startTime)
             case .production:
-                // LAUNCH TODO: Route through CloudFunctionsService to Firebase Cloud Functions
-                // let endpoint = "generatePhotos"
-                // let payload = ["style": style.prompt, "count": count, "userId": userId]
-                // let response = try await CloudFunctionsService.shared.call(endpoint, data: payload)
-                // return parse(response)
-                return try await generateMockPhotos(userId: userId, style: style, count: count, startTime: startTime)
+                return try await generateViaBackend(userId: userId, style: style, count: count, startTime: startTime)
             }
         } catch is CancellationError {
             isGenerating = false
@@ -140,6 +135,49 @@ final class AIGenerationService: ObservableObject {
             style: style.name,
             processingTime: processingTime
         )
+    }
+
+    // MARK: - Backend Generation
+
+    private func generateViaBackend(userId: String, style: StylePreset, count: Int, startTime: Date) async throws -> GenerationResult {
+        // 1. Submit job to backend
+        generationProgress = 0.05
+        let job = try await GigaRizzAPIClient.shared.submitGeneration(
+            style: style.name.lowercased().replacingOccurrences(of: " ", with: "_"),
+            prompt: style.prompt
+        )
+
+        // 2. Poll for completion
+        let jobId = job.jobId
+        var attempts = 0
+        let maxAttempts = 120  // ~2 minutes at 1s intervals
+
+        while attempts < maxAttempts {
+            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            attempts += 1
+
+            let status = try await GigaRizzAPIClient.shared.checkGeneration(jobId: jobId)
+
+            if status.status == "completed" {
+                generationProgress = 1.0
+                let photos = status.resultUrls.map { _ in
+                    GeneratedPhoto(userId: userId, style: style.name, createdAt: Date())
+                }
+                let processingTime = Date().timeIntervalSince(startTime)
+                isGenerating = false
+                DesignSystem.Haptics.success()
+                return GenerationResult(photos: photos, style: style.name, processingTime: processingTime)
+            } else if status.status == "failed" {
+                throw GenerationError.apiError(status.error ?? "Generation failed on server")
+            }
+
+            // Update progress from server
+            generationProgress = max(generationProgress, status.progress)
+        }
+
+        // Timed out
+        try? await GigaRizzAPIClient.shared.cancelGeneration(jobId: jobId)
+        throw GenerationError.apiError("Generation timed out")
     }
 
     // MARK: - Cancel Generation

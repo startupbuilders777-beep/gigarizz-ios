@@ -23,6 +23,16 @@ enum AppConstants {
     static let postHogAPIKey = "phc_REPLACE_WITH_YOUR_POSTHOG_KEY"
     static let postHogHost = "https://us.i.posthog.com"
 
+    // MARK: - Backend API
+
+    /// GigaRizz FastAPI backend URL.
+    /// In development, points to local server. In production, update to your deployed URL.
+    #if DEBUG
+    static let backendBaseURL = "http://localhost:8000"
+    #else
+    static let backendBaseURL = "https://api.gigarizz.app"
+    #endif
+
     // MARK: - RevenueCat Entitlements
 
     static let entitlementGold = "gold"

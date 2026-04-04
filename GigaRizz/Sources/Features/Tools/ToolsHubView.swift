@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ToolsHubView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @StateObject private var featureFlags = FeatureFlagManager.shared
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -82,49 +83,59 @@ struct ToolsHubView: View {
                             color: DesignSystem.Colors.flameOrange
                         )
                     }
+                    .opacity(featureFlags.isEnabled(.backgroundReplacer) ? 1 : 0.4)
+                    .disabled(!featureFlags.isEnabled(.backgroundReplacer))
 
-                    NavigationLink {
-                        PhotoRankingView()
-                    } label: {
-                        toolCard(
-                            title: "Photo Ranking",
-                            subtitle: "Rank your best shots",
-                            icon: "trophy.fill",
-                            color: DesignSystem.Colors.goldAccent
-                        )
+                    if featureFlags.isEnabled(.photoRanking) {
+                        NavigationLink {
+                            PhotoRankingView()
+                        } label: {
+                            toolCard(
+                                title: "Photo Ranking",
+                                subtitle: "Rank your best shots",
+                                icon: "trophy.fill",
+                                color: DesignSystem.Colors.goldAccent
+                            )
+                        }
                     }
 
-                    NavigationLink {
-                        LightingColorGradeView()
-                    } label: {
-                        toolCard(
-                            title: "Color Grade",
-                            subtitle: "Pro lighting presets",
-                            icon: "camera.filters",
-                            color: .purple
-                        )
+                    if featureFlags.isEnabled(.colorGrade) {
+                        NavigationLink {
+                            LightingColorGradeView()
+                        } label: {
+                            toolCard(
+                                title: "Color Grade",
+                                subtitle: "Pro lighting presets",
+                                icon: "camera.filters",
+                                color: .purple
+                            )
+                        }
                     }
 
-                    NavigationLink {
-                        ExpressionCoachView()
-                    } label: {
-                        toolCard(
-                            title: "Expression Coach",
-                            subtitle: "Real-time face coaching",
-                            icon: "face.smiling",
-                            color: .cyan
-                        )
+                    if featureFlags.isEnabled(.expressionCoach) {
+                        NavigationLink {
+                            ExpressionCoachView()
+                        } label: {
+                            toolCard(
+                                title: "Expression Coach",
+                                subtitle: "Real-time face coaching",
+                                icon: "face.smiling",
+                                color: .cyan
+                            )
+                        }
                     }
 
-                    NavigationLink {
-                        PoseLibraryView()
-                    } label: {
-                        toolCard(
-                            title: "Pose Library",
-                            subtitle: "30 dating-ready poses",
-                            icon: "figure.stand",
-                            color: .indigo
-                        )
+                    if featureFlags.isEnabled(.poseLibrary) {
+                        NavigationLink {
+                            PoseLibraryView()
+                        } label: {
+                            toolCard(
+                                title: "Pose Library",
+                                subtitle: "30 dating-ready poses",
+                                icon: "figure.stand",
+                                color: .indigo
+                            )
+                        }
                     }
                 }
 
@@ -137,6 +148,9 @@ struct ToolsHubView: View {
         .background(DesignSystem.Colors.background.ignoresSafeArea())
         .navigationTitle("Tools")
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .task {
+            await featureFlags.refreshIfNeeded()
+        }
     }
 
     // MARK: - Header

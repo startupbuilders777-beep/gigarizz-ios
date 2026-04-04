@@ -83,10 +83,13 @@ final class CoachService: ObservableObject {
 
         switch ServiceMode.current {
         case .production:
-            // LAUNCH TODO: Call Firebase Cloud Function "generateBio"
-            // POST /generateBio { interests, tone, platform }
-            // Parse response JSON → String bio
-            return try await generateMockBio(tone: tone)
+            let response = try await GigaRizzAPIClient.shared.generateBio(
+                interests: interests,
+                tone: tone.rawValue.lowercased().components(separatedBy: " ").first ?? "witty",
+                platform: platform.rawValue
+            )
+            DesignSystem.Haptics.success()
+            return response.bio
 
         case .mock:
             return try await generateMockBio(tone: tone)
@@ -132,9 +135,16 @@ final class CoachService: ObservableObject {
 
         switch ServiceMode.current {
         case .production:
-            // LAUNCH TODO: Call Firebase Cloud Function "generateOpeningLines"
-            // POST /generateOpeningLines { matchName, platform, context }
-            return try await generateMockOpeningLines(matchName: matchName, context: context)
+            let profileContext = [
+                "Name: \(matchName)",
+                context.map { "Context: \($0)" } ?? "",
+                "Platform: \(platform.rawValue)"
+            ].filter { !$0.isEmpty }.joined(separator: ". ")
+            let response = try await GigaRizzAPIClient.shared.generateOpeners(
+                profileContext: profileContext
+            )
+            DesignSystem.Haptics.success()
+            return response.openers
 
         case .mock:
             return try await generateMockOpeningLines(matchName: matchName, context: context)
@@ -170,8 +180,9 @@ final class CoachService: ObservableObject {
 
         switch ServiceMode.current {
         case .production:
-            // LAUNCH TODO: Call Firebase Cloud Function "generateHingePrompts"
-            return try await generateMockHingePrompts()
+            let response = try await GigaRizzAPIClient.shared.generatePrompts()
+            DesignSystem.Haptics.success()
+            return response.prompts.map { (prompt: $0.prompt, answer: $0.answer) }
 
         case .mock:
             return try await generateMockHingePrompts()
@@ -207,9 +218,12 @@ final class CoachService: ObservableObject {
 
         switch ServiceMode.current {
         case .production:
-            // LAUNCH TODO: Call Firebase Cloud Function "suggestReply"
-            // POST /suggestReply { message, matchName, conversationContext }
-            return try await generateMockReplies()
+            let response = try await GigaRizzAPIClient.shared.suggestReplies(
+                theirMessage: message,
+                conversationContext: [conversationContext].compactMap { $0 }
+            )
+            DesignSystem.Haptics.success()
+            return response.replies
 
         case .mock:
             return try await generateMockReplies()
