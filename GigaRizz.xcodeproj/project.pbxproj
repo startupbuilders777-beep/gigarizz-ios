@@ -39,6 +39,7 @@
 		55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D43BF3150F2A4D233B24EEE /* StylePreset.swift */; };
 		5705FC193E69520B8BFA7921 /* FirstGenerationFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDB6C9AA0DA8023C88256D8 /* FirstGenerationFlowView.swift */; };
 		5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF044D066B14BB54FDCA8D9A /* AuthManager.swift */; };
+		5AD156901F8D7DC35518E4ED /* StylePresetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */; };
 		5BA02A3B076C46DE049DBA3E /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 18662EDD693A194C4735E46A /* RevenueCat */; };
 		5BD3BBDB04341F1AD6BCE740 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD71821CA50C08195C451B /* Kingfisher */; };
 		5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */; };
@@ -182,6 +183,7 @@
 		58B3FC7203B581442F6FD7EB /* PermissionEducationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionEducationView.swift; sourceTree = "<group>"; };
 		59E6D82BF7273BF14619B5BD /* MatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailView.swift; sourceTree = "<group>"; };
 		5A0E38BCE2E268A6CF768B41 /* PhotoAuditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAuditView.swift; sourceTree = "<group>"; };
+		5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePresetManager.swift; sourceTree = "<group>"; };
 		5CE7EE035980A46F7CBEAE29 /* PHPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerSheet.swift; sourceTree = "<group>"; };
 		627AB2CF8A5C95CF2194C47E /* PhotoPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewModel.swift; sourceTree = "<group>"; };
 		65157ED82B2A0F48E273E014 /* PhotoQualityAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoQualityAnalyzer.swift; sourceTree = "<group>"; };
@@ -610,6 +612,7 @@
 				E288299C6545840AB3D8B823 /* NotificationSettingsView.swift */,
 				CB9D6C81381FD9C88BE5B94F /* PhotoLibraryService.swift */,
 				7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */,
+				5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1074,6 +1077,7 @@
 				4897191A08D8B0A9BB5E9E65 /* SignInView.swift in Sources */,
 				CB9700264360001A69A656D2 /* StorageManager.swift in Sources */,
 				55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */,
+				5AD156901F8D7DC35518E4ED /* StylePresetManager.swift in Sources */,
 				C239059B870A9DE6503B416B /* SubscriptionManager.swift in Sources */,
 				BA9498F56F0268E36E084A60 /* TierCardView.swift in Sources */,
 				5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */,
