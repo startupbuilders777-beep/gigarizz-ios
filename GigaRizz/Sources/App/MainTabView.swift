@@ -3,14 +3,22 @@ import SwiftUI
 // MARK: - Main Tab View
 
 struct MainTabView: View {
-    @State private var selectedTab: Tab = .generate
+    @State private var selectedTab: Tab = .home
 
     enum Tab: String, CaseIterable {
-        case generate, profile, coach, matches
+        case home, generate, coach, matches
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            // Home Dashboard - Primary navigation hub
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(Tab.home)
+
+            // Generate - Photo generation flow
             NavigationStack {
                 GenerateView()
             }
@@ -19,14 +27,7 @@ struct MainTabView: View {
             }
             .tag(Tab.generate)
 
-            NavigationStack {
-                ProfileView()
-            }
-            .tabItem {
-                Label("Profile", systemImage: "person.crop.circle")
-            }
-            .tag(Tab.profile)
-
+            // Coach - AI dating advice
             NavigationStack {
                 CoachView()
             }
@@ -35,6 +36,7 @@ struct MainTabView: View {
             }
             .tag(Tab.coach)
 
+            // Matches - Match tracking
             NavigationStack {
                 MatchesView()
             }
