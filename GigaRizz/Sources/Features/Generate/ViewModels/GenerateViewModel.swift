@@ -23,6 +23,7 @@ final class GenerateViewModel: ObservableObject {
 
     private let aiService = AIGenerationService.shared
     private let storageManager = StorageManager.shared
+    private let stylePresetManager = StylePresetManager.shared
 
     // MARK: - Constants
 
@@ -111,6 +112,10 @@ final class GenerateViewModel: ObservableObject {
 
             generatedPhotos = result.photos
             subscriptionManager.incrementPhotoUsage()
+            
+            // Record style preset usage for future recommendations
+            stylePresetManager.recordUsage(style)
+            
             showResults = true
 
             PostHogManager.shared.trackPhotoGenerated(
