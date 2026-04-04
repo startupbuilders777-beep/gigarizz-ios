@@ -31,6 +31,10 @@ final class HomeViewModel: ObservableObject {
             profilesUpdated: profilesUpdated
         )
     }
+
+    var mostRecentGeneration: RecentGeneration? {
+        recentGenerations.max(by: { $0.date < $1.date })
+    }
     
     // MARK: - Init
     
@@ -139,6 +143,8 @@ struct RecentGeneration: Identifiable {
     let style: String
     let date: Date
     let photoCount: Int
+    var beforeImageName: String?
+    var afterImageName: String?
     
     var dateText: String {
         let formatter = RelativeDateTimeFormatter()

@@ -5,6 +5,7 @@ import SwiftUI
 /// Primary navigation hub for GigaRizz — first thing users see when opening the app.
 /// Features: user greeting, hero CTA, quick actions, recent generations, daily tip, stats strip.
 struct HomeView: View {
+    @Binding var selectedTab: MainTabView.Tab
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = HomeViewModel()
@@ -22,12 +23,15 @@ struct HomeView: View {
                     VStack(spacing: DesignSystem.Spacing.large) {
                         // Header section
                         headerSection
-                        
+
                         // Onboarding banner (if needed)
                         if viewModel.showOnboardingBanner {
                             onboardingBanner
                         }
-                        
+
+                        // Viral Transformation Preview — top of home screen
+                        transformationPreviewSection
+
                         // Hero CTA card
                         heroCard
                         
@@ -220,7 +224,32 @@ struct HomeView: View {
         .accessibilityLabel("Generate new AI photos")
         .accessibilityHint("Double tap to start photo generation")
     }
-    
+
+    // MARK: - Transformation Preview Section (Viral Hook)
+
+    @ViewBuilder
+    private var transformationPreviewSection: some View {
+        if let latest = viewModel.mostRecentGeneration {
+            BeforeAfterSliderCard(
+                beforeImageName: latest.beforeImageName,
+                afterImageName: latest.afterImageName,
+                styleName: latest.style,
+                onGenerateMore: {
+                    selectedTab = .generate
+                }
+            )
+            .accessibilityLabel("Your most recent photo transformation")
+            .accessibilityHint("Drag the slider to compare before and after, or tap Generate More to create new photos")
+        } else {
+            // New user — show sample transformation
+            SampleTransformationCard {
+                selectedTab = .generate
+            }
+            .accessibilityLabel("Sample photo transformation preview")
+            .accessibilityHint("Tap to see your own glow-up")
+        }
+    }
+
     // MARK: - Quick Actions Section
     
     private var quickActionsSection: some View {
@@ -538,7 +567,7 @@ struct HomeView: View {
 // MARK: - Preview
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(.home))
         .environmentObject(AuthManager())
         .environmentObject(SubscriptionManager())
         .preferredColorScheme(.dark)
