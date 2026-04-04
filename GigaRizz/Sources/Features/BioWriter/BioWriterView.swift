@@ -340,6 +340,6 @@ struct BioWriterView: View {
     NavigationStack {
         BioWriterView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

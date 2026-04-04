@@ -204,6 +204,6 @@ struct TierComparisonView: View {
 
 #Preview {
     TierComparisonView()
-        .environmentObject(SubscriptionManager())
+        .environmentObject(SubscriptionManager.shared)
         .preferredColorScheme(.dark)
 }

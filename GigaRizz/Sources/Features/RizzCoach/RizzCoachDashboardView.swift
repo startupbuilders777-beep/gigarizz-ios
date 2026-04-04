@@ -159,7 +159,7 @@ struct RizzCoachDashboardView: View { @StateObject private var viewModel = RizzC
 // MARK: - Preview
 
 #Preview { NavigationStack { RizzCoachDashboardView()
-            .environmentObject(SubscriptionManager())
+            .environmentObject(SubscriptionManager.shared)
     }
     .preferredColorScheme(.dark)
 }

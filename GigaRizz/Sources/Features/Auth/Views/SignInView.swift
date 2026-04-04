@@ -232,6 +232,6 @@ struct SignInView: View {
 
 #Preview {
     SignInView()
-        .environmentObject(AuthManager())
+        .environmentObject(AuthManager.shared)
         .preferredColorScheme(.dark)
 }

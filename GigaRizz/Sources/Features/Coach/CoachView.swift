@@ -204,4 +204,4 @@ struct CoachView: View {
     }
 }
 
-#Preview { NavigationStack { CoachView() }.environmentObject(SubscriptionManager()).preferredColorScheme(.dark) }
+#Preview { NavigationStack { CoachView() }.environmentObject(SubscriptionManager.shared).preferredColorScheme(.dark) }

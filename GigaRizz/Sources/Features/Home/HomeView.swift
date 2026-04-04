@@ -603,7 +603,7 @@ struct HomeView: View {
 
 #Preview {
     HomeView(selectedTab: .constant(.home))
-        .environmentObject(AuthManager())
-        .environmentObject(SubscriptionManager())
+        .environmentObject(AuthManager.shared)
+        .environmentObject(SubscriptionManager.shared)
         .preferredColorScheme(.dark)
 }

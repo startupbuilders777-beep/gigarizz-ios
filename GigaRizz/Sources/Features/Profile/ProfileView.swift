@@ -162,4 +162,4 @@ struct ProfileView: View {
     }
 }
 
-#Preview { NavigationStack { ProfileView() }.environmentObject(AuthManager()).environmentObject(SubscriptionManager()).preferredColorScheme(.dark) }
+#Preview { NavigationStack { ProfileView() }.environmentObject(AuthManager.shared).environmentObject(SubscriptionManager.shared).preferredColorScheme(.dark) }

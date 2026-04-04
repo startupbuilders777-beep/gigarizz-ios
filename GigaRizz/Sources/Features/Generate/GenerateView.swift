@@ -526,7 +526,7 @@ struct StylePresetCard: View {
     NavigationStack {
         GenerateView()
     }
-    .environmentObject(AuthManager())
-    .environmentObject(SubscriptionManager())
+    .environmentObject(AuthManager.shared)
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

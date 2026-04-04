@@ -86,16 +86,16 @@ final class NotificationDelegateHandler: NSObject, UNUserNotificationCenterDeleg
                     if let deepLink = deepLink, let url = URL(string: deepLink) {
                         _ = DeepLinkManager.shared.handleURL(url)
                     } else {
-                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://matches")!)
+                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://matches")!) // Known-valid literal
                     }
                 }
                 
             case NotificationManager.Category.generationComplete.rawValue:
                 if actionIdentifier == "VIEW_ACTION" || actionIdentifier == UNNotificationDefaultActionIdentifier {
                     if let batchId = batchId {
-                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://generation/\(batchId)")!)
+                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://generation/\(batchId)")!) // Known-valid literal
                     } else {
-                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://gallery")!)
+                        _ = DeepLinkManager.shared.handleURL(URL(string: "gigarizz://gallery")!) // Known-valid literal
                     }
                 }
                 

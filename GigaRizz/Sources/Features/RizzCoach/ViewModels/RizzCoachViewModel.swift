@@ -132,7 +132,9 @@ final class RizzCoachViewModel: ObservableObject {
                 actionTitle: "Learn More"
             )
             DesignSystem.Haptics.light()
-        } catch {}
+        } catch {
+            // Tip loading is non-critical; silently fall back to current tip
+        }
         isLoading = false
     }
 }

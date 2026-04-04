@@ -444,6 +444,6 @@ extension ShareAspectRatio {
         ],
         style: "Confident"
     )
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

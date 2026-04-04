@@ -213,6 +213,6 @@ struct ToolsHubView: View {
     NavigationStack {
         ToolsHubView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

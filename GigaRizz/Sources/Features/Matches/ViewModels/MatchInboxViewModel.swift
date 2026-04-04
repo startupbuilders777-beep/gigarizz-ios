@@ -31,7 +31,9 @@ final class MatchInboxViewModel: ObservableObject {
 
     func loadMatches() {
         isLoading = true
-        // Load from local cache first
+
+        #if DEBUG
+        // Demo data for previews and development
         matches = Match.demoMatches.sorted { lhs, rhs in
             if lhs.inboxSortPriority != rhs.inboxSortPriority {
                 return lhs.inboxSortPriority < rhs.inboxSortPriority
@@ -47,6 +49,10 @@ final class MatchInboxViewModel: ObservableObject {
                 messagesCache[match.id] = generateDemoMessages(for: match)
             }
         }
+        #else
+        // LAUNCH TODO: Fetch matches from Firestore
+        matches = []
+        #endif
 
         // Simulate network delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
@@ -128,8 +134,10 @@ final class MatchInboxViewModel: ObservableObject {
             matches[index].lastMessageDate = Date()
         }
 
-        // Simulate reply after delay
+        // Simulate reply after delay (debug only)
+        #if DEBUG
         simulateReply(to: match)
+        #endif
     }
 
     func messages(for matchId: String) -> [ConversationMessage] {

@@ -710,6 +710,6 @@ final class FaceEnhancementViewModel: ObservableObject {
     NavigationStack {
         FaceEnhancementView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

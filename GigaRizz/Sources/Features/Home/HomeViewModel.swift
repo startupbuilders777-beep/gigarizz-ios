@@ -84,26 +84,27 @@ final class HomeViewModel: ObservableObject {
     func updateDailyTip() {
         let today = Calendar.current.startOfDay(for: Date())
         let lastTipDate = UserDefaults.standard.object(forKey: "last_tip_date") as? Date
-        
-        if lastTipDate == nil || !Calendar.current.isDate(lastTipDate!, inSameDayAs: today) {
+
+        if let lastTipDate, Calendar.current.isDate(lastTipDate, inSameDayAs: today) {
+            // Use stored tip index
+            tipIndex = UserDefaults.standard.integer(forKey: "tip_index")
+            dailyTip = HomeDailyTip.allTips[tipIndex]
+        } else {
             // Rotate to next tip
             tipIndex = (tipIndex + 1) % HomeDailyTip.allTips.count
             dailyTip = HomeDailyTip.allTips[tipIndex]
             UserDefaults.standard.set(today, forKey: "last_tip_date")
             UserDefaults.standard.set(tipIndex, forKey: "tip_index")
-        } else {
-            // Use stored tip index
-            tipIndex = UserDefaults.standard.integer(forKey: "tip_index")
-            dailyTip = HomeDailyTip.allTips[tipIndex]
         }
     }
-    
+
     // MARK: - Recent Generations
     
     private func loadRecentGenerations() {
-        // Demo data - in production would fetch from Firestore
+        // In production, fetch from Firestore. Mock data shown only in DEBUG builds.
         let hasGenerated = UserDefaults.standard.bool(forKey: "hasGeneratedPhotos")
         if hasGenerated && recentGenerations.isEmpty {
+            #if DEBUG
             recentGenerations = [
                 RecentGeneration(
                     id: "demo1",
@@ -118,6 +119,7 @@ final class HomeViewModel: ObservableObject {
                     photoCount: 4
                 )
             ]
+            #endif
         }
     }
     

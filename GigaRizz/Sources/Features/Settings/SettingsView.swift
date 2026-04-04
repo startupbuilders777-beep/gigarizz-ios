@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var showDeleteConfirmation = false
     @State private var showPaywall = false
     @State private var showTierComparison = false
+    @State private var errorMessage: String?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -81,7 +82,7 @@ struct SettingsView: View {
 
                     Section {
                         Button {
-                            do { try authManager.signOut(); dismiss() } catch { }
+                            do { try authManager.signOut(); dismiss() } catch { errorMessage = "Sign out failed. Please try again." }
                         } label: {
                             settingsRow(icon: "rectangle.portrait.and.arrow.right", title: "Sign Out", subtitle: "", color: DesignSystem.Colors.warning, accessibilityLabel: "Sign Out")
                         }
@@ -117,6 +118,9 @@ struct SettingsView: View {
             } message: { Text("This will permanently delete your account and all data. This cannot be undone.") }
             .sheet(isPresented: $showPaywall) { PaywallView() }
             .sheet(isPresented: $showTierComparison) { TierComparisonView() }
+            .alert("Error", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+                Button("OK", role: .cancel) { }
+            } message: { Text(errorMessage ?? "") }
         }
     }
 
@@ -146,4 +150,4 @@ struct SettingsView: View {
     }
 }
 
-#Preview { SettingsView().environmentObject(AuthManager()).environmentObject(SubscriptionManager()).preferredColorScheme(.dark) }
+#Preview { SettingsView().environmentObject(AuthManager.shared).environmentObject(SubscriptionManager.shared).preferredColorScheme(.dark) }

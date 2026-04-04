@@ -12,6 +12,7 @@ final class CoachViewModel: ObservableObject {
     @Published var isGeneratingLines = false
     @Published var isGeneratingPrompts = false
     @Published var copiedBio = false
+    @Published var errorMessage: String?
 
     private let coachService = CoachService.shared
 
@@ -20,7 +21,10 @@ final class CoachViewModel: ObservableObject {
         defer { isGeneratingBio = false }
         do {
             generatedBio = try await coachService.generateBio(interests: [], tone: selectedTone, platform: selectedPlatform)
-        } catch { generatedBio = nil }
+        } catch {
+            generatedBio = nil
+            errorMessage = "Couldn't generate bio. Please try again."
+        }
     }
 
     func generateOpeningLines() async {
@@ -28,7 +32,10 @@ final class CoachViewModel: ObservableObject {
         defer { isGeneratingLines = false }
         do {
             openingLines = try await coachService.generateOpeningLines(matchName: matchName.isEmpty ? "there" : matchName, platform: selectedPlatform)
-        } catch { openingLines = [] }
+        } catch {
+            openingLines = []
+            errorMessage = "Couldn't generate opening lines. Please try again."
+        }
     }
 
     func generateHingePrompts() async {
@@ -36,6 +43,9 @@ final class CoachViewModel: ObservableObject {
         defer { isGeneratingPrompts = false }
         do {
             hingePrompts = try await coachService.generateHingePrompts()
-        } catch { hingePrompts = [] }
+        } catch {
+            hingePrompts = []
+            errorMessage = "Couldn't generate prompts. Please try again."
+        }
     }
 }

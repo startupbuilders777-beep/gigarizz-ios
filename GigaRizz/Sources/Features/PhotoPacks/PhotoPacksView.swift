@@ -360,6 +360,6 @@ struct PackDetailSheet: View {
     NavigationStack {
         PhotoPacksView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

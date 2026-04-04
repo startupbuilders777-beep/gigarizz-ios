@@ -819,7 +819,7 @@ struct FirstGenerationFlowView: View {
 
 #Preview {
     FirstGenerationFlowView()
-        .environmentObject(AuthManager())
-        .environmentObject(SubscriptionManager())
+        .environmentObject(AuthManager.shared)
+        .environmentObject(SubscriptionManager.shared)
         .preferredColorScheme(.dark)
 }

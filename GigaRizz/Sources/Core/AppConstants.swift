@@ -6,7 +6,9 @@ enum AppConstants {
 
     // MARK: - Legal URLs
 
+    // swiftlint:disable:next force_unwrapping
     static let termsURL = URL(string: "https://www.plutorock.com/terms")!
+    // swiftlint:disable:next force_unwrapping
     static let privacyURL = URL(string: "https://www.plutorock.com/privacy")!
     static let supportEmail = "support@plutorock.com"
 

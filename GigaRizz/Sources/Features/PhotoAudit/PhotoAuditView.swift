@@ -411,6 +411,6 @@ struct PhotoAuditView: View {
     NavigationStack {
         PhotoAuditView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }
