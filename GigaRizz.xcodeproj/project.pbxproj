@@ -40,6 +40,7 @@
 		5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF044D066B14BB54FDCA8D9A /* AuthManager.swift */; };
 		5BA02A3B076C46DE049DBA3E /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 18662EDD693A194C4735E46A /* RevenueCat */; };
 		5BD3BBDB04341F1AD6BCE740 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD71821CA50C08195C451B /* Kingfisher */; };
+		5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */; };
 		5E948AA31C684701F275733B /* PhotoQualityAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65157ED82B2A0F48E273E014 /* PhotoQualityAnalyzer.swift */; };
 		61F79AB3D186F0B0834E561F /* GigaRizzUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DFBA687037EA2CA15C3681 /* GigaRizzUITests.swift */; };
 		63C020963F8F245E45860430 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5D701F8726B37572BCAEBF /* MainTabView.swift */; };
@@ -147,6 +148,7 @@
 		295D99DBDE4CC7944E3A414E /* WeeklyRizzReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRizzReportView.swift; sourceTree = "<group>"; };
 		2993E988AAD878A7C4B2F58D /* ToolsHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsHubView.swift; sourceTree = "<group>"; };
 		2BD6FE4338DA841B0740EA20 /* GigaRizz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GigaRizz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TierComparisonView.swift; sourceTree = "<group>"; };
 		34FDEFCC77AAF81F8B5DA8DC /* PhotoPacksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPacksView.swift; sourceTree = "<group>"; };
 		358CA004F86D26818C21D354 /* GigaRizzTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GigaRizzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		398A1380E103F2774685DCAE /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 			isa = PBXGroup;
 			children = (
 				1F2C751AA6115561C6090DD5 /* TierCardView.swift */,
+				2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1017,6 +1020,7 @@
 				55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */,
 				C239059B870A9DE6503B416B /* SubscriptionManager.swift in Sources */,
 				BA9498F56F0268E36E084A60 /* TierCardView.swift in Sources */,
+				5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */,
 				1DC4905C0F673DAD2CCBA672 /* ToolsHubView.swift in Sources */,
 				9F15E65A4E663969437B977B /* WeeklyRizzReportView.swift in Sources */,
 			);
