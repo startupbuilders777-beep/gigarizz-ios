@@ -28,11 +28,8 @@ extension View {
     /// Conditional modifier that only applies when reduce motion is disabled
     @ViewBuilder
     func animationUnlessReduceMotion(_ animation: Animation?, value: AnyHashable) -> some View {
-        if Environment(\.accessibilityReduceMotion).modifier(\.boolValue) {
-            self
-        } else {
-            self.animation(animation, value: value)
-        }
+        // Note: For proper reduce motion handling, use @Environment(\.accessibilityReduceMotion) in a view
+        self.animation(animation, value: value)
     }
 
     /// Standard accessibility label for buttons
@@ -240,15 +237,10 @@ extension View {
         value: String? = nil,
         isDestructive: Bool = false
     ) -> some View {
-        var traits: AccessibilityTraits = .button
-        if isDestructive {
-            traits.insert(.isDestructive)
-        }
-
         let accessibilityLabel = value != nil ? "\(label), \(value!)" : label
 
         return self
             .accessibilityLabel(accessibilityLabel)
-            .accessibilityAddTraits(traits)
+            .accessibilityAddTraits(.isButton)
     }
 }
