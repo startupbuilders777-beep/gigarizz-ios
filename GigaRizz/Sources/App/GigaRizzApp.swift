@@ -5,6 +5,7 @@ struct GigaRizzApp: App {
     @StateObject private var authManager = AuthManager()
     @StateObject private var subscriptionManager = SubscriptionManager()
     @StateObject private var postHogManager = PostHogManager()
+    @StateObject private var deepLinkManager = DeepLinkManager.shared
     
     // Onboarding state from UserDefaults
     @AppStorage("onboarding_has_completed") private var hasCompletedOnboarding = false
@@ -72,6 +73,16 @@ struct GigaRizzApp: App {
                 
                 // Check if we should show resume prompt
                 checkResumePromptState()
+            }
+            .onOpenURL { url in
+                // Handle deep links (custom scheme gigarizz:// and universal links https://gigarizz.app)
+                deepLinkManager.handleURL(url)
+            }
+            .onChange(of: authManager.isAuthenticated) { _, isAuth in
+                // Route deferred deep link after authentication
+                if isAuth && deepLinkManager.hasPendingDeepLink {
+                    deepLinkManager.routeDeferredDeepLink()
+                }
             }
         }
     }

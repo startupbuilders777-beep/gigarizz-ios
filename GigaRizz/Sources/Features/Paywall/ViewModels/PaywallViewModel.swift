@@ -105,7 +105,7 @@ struct TierFeature: Identifiable {
 final class PaywallViewModel: ObservableObject {
     // MARK: - Published Properties
 
-    @Published var selectedTier: TierOption = .plus
+    @Published var selectedTier: TierOption
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var isRestoring = false
@@ -120,9 +120,11 @@ final class PaywallViewModel: ObservableObject {
     // MARK: - Init
 
     init(
+        initialTier: TierOption = .plus,
         subscriptionManager: SubscriptionManager = .init(),
         postHogManager: PostHogManager = .shared
     ) {
+        self.selectedTier = initialTier
         self.subscriptionManager = subscriptionManager
         self.postHogManager = postHogManager
         self.hasFreePhotosRemaining = subscriptionManager.canGeneratePhoto
