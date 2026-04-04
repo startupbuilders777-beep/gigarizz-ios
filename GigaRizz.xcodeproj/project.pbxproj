@@ -44,6 +44,7 @@
 		5BD3BBDB04341F1AD6BCE740 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD71821CA50C08195C451B /* Kingfisher */; };
 		5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */; };
 		5E948AA31C684701F275733B /* PhotoQualityAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65157ED82B2A0F48E273E014 /* PhotoQualityAnalyzer.swift */; };
+		6129FD5297E1A63120BA4A82 /* DeepLinkRouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2FB716AA41A73759926F7B /* DeepLinkRouterView.swift */; };
 		61F79AB3D186F0B0834E561F /* GigaRizzUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DFBA687037EA2CA15C3681 /* GigaRizzUITests.swift */; };
 		63C020963F8F245E45860430 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5D701F8726B37572BCAEBF /* MainTabView.swift */; };
 		6AD50A66E6B06896D3E80C9D /* FirstGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EBF295F9847D439BD8A7C5 /* FirstGenerationViewModel.swift */; };
@@ -54,6 +55,7 @@
 		70064D05FD5875FE172624A2 /* RizzCoachViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BE3D86958EC3A1DBA3FFE1 /* RizzCoachViewModel.swift */; };
 		727C34B468FD7F63E0748275 /* CoachViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EB93A4DF9AFB701AA149B0 /* CoachViewModel.swift */; };
 		7533467C0DD7F31073564942 /* PostHogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3A7D6C19AFECB3D15EBE6C /* PostHogManager.swift */; };
+		76E5B280D379F244B7882A2D /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE07EAD8FF3240ECA9A132 /* DeepLinkManager.swift */; };
 		7B73827B1D05F4DD26CE3FEA /* CoachService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762CE5CAA525B372E9C22BE9 /* CoachService.swift */; };
 		7CBA6D6BE54A15B270FC5F46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664F72CC6B63018EBE8BCBC6 /* Assets.xcassets */; };
 		7D36863CD26A01BAB88D1CBC /* QuickUploadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B8A9681652D6AB07022C0 /* QuickUploadSheet.swift */; };
@@ -151,6 +153,7 @@
 		16AE4A40F0549C69C4889419 /* BioWriterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioWriterView.swift; sourceTree = "<group>"; };
 		19BD213F248B9EE41CF6C92D /* AppRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingView.swift; sourceTree = "<group>"; };
 		19EBF295F9847D439BD8A7C5 /* FirstGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstGenerationViewModel.swift; sourceTree = "<group>"; };
+		1B2FB716AA41A73759926F7B /* DeepLinkRouterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouterView.swift; sourceTree = "<group>"; };
 		1BD5950DD8B3A5EE578F6144 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		1CE06EB1387E067638BDCFA0 /* GigaRizzUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GigaRizzUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F2C751AA6115561C6090DD5 /* TierCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TierCardView.swift; sourceTree = "<group>"; };
@@ -240,6 +243,7 @@
 		E288299C6545840AB3D8B823 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		E38D8916B6B86B3B3F34C12D /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		E692458703523FF53BF76F33 /* GeneratedPhotosGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedPhotosGalleryView.swift; sourceTree = "<group>"; };
+		E7DE07EAD8FF3240ECA9A132 /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		E80D96DC49FA3D51691C3699 /* AIGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGenerationService.swift; sourceTree = "<group>"; };
 		EABFD24F40F5018F5F0C76E6 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F41E437B47C13F9E3CCFB709 /* ProfileCompletenessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletenessView.swift; sourceTree = "<group>"; };
@@ -549,6 +553,8 @@
 		99ECD3BE5F16075050469CEC /* App */ = {
 			isa = PBXGroup;
 			children = (
+				E7DE07EAD8FF3240ECA9A132 /* DeepLinkManager.swift */,
+				1B2FB716AA41A73759926F7B /* DeepLinkRouterView.swift */,
 				C4999B0A3C3D5BA1FD6C2B7E /* GigaRizzApp.swift */,
 				0F5D701F8726B37572BCAEBF /* MainTabView.swift */,
 			);
@@ -1003,6 +1009,8 @@
 				7B73827B1D05F4DD26CE3FEA /* CoachService.swift in Sources */,
 				14D1B7D40556F5C4515EF9D6 /* CoachView.swift in Sources */,
 				727C34B468FD7F63E0748275 /* CoachViewModel.swift in Sources */,
+				76E5B280D379F244B7882A2D /* DeepLinkManager.swift in Sources */,
+				6129FD5297E1A63120BA4A82 /* DeepLinkRouterView.swift in Sources */,
 				8888E9BA7AD10776961B89C3 /* DesignSystem.swift in Sources */,
 				E24EEC5F1C5BD2E973E61B01 /* FaceEnhancementView.swift in Sources */,
 				6ADD4F9588127C2A6F0B435C /* FavoritesGalleryView.swift in Sources */,

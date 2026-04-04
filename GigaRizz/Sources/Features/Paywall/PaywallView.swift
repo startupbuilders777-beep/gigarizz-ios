@@ -6,9 +6,24 @@ import SwiftUI
 /// The single most important revenue-conversion surface for GigaRizz.
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = PaywallViewModel()
+    @StateObject private var viewModel: PaywallViewModel
 
     @State private var closeButtonScale: CGFloat = 1.0
+    
+    // MARK: - Deep Link Parameters
+    
+    /// Initial tier to pre-select (from deep link gigarizz://paywall?tier=plus)
+    let initialTier: TierOption?
+    
+    /// Promo/referral code (from deep link gigarizz://paywall?promo=GRIZZ-XXXX)
+    let promoCode: String?
+
+    init(initialTier: TierOption? = nil, promoCode: String? = nil) {
+        self.initialTier = initialTier
+        self.promoCode = promoCode
+        // Initialize ViewModel with pre-selected tier
+        _viewModel = StateObject(wrappedValue: PaywallViewModel(initialTier: initialTier ?? .plus))
+    }
 
     var body: some View {
         NavigationStack {
