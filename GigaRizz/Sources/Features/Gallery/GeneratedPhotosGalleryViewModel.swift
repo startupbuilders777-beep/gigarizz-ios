@@ -153,6 +153,8 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
     private let photosKey = "gigarizz_generated_photos"
     private let albumsKey = "gigarizz_photo_albums"
     private let favoritesKey = "gigarizz_favorites"
+    private let favoritesRanksKey = "gigarizz_favorites_ranks"
+    private let favoritesAddedKey = "gigarizz_favorites_added_dates"
 
     // MARK: - Init
 
@@ -330,6 +332,7 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
     func toggleFavorite(_ itemId: String) {
         if let index = allPhotos.firstIndex(where: { $0.id == itemId }) {
             let photo = allPhotos[index].photo
+            let newFavoriteStatus = !photo.isFavorite
             let updatedPhoto = GeneratedPhoto(
                 id: photo.id,
                 userId: photo.userId,
@@ -337,12 +340,38 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
                 imageURL: photo.imageURL,
                 thumbnailURL: photo.thumbnailURL,
                 createdAt: photo.createdAt,
-                isFavorite: !photo.isFavorite
+                isFavorite: newFavoriteStatus
             )
             allPhotos[index] = GalleryPhotoItem(photo: updatedPhoto, platformTag: allPhotos[index].platformTag)
             saveToStorage()
+            
+            // Persist favorites added dates
+            persistFavoriteAddedDate(itemId, isFavorite: newFavoriteStatus)
+            
             updateDisplayedPhotos()
             DesignSystem.Haptics.medium()
+        }
+    }
+    
+    // MARK: - Persist Favorite Added Date
+    
+    private func persistFavoriteAddedDate(_ photoId: String, isFavorite: Bool) {
+        var addedDates: [String: Date] = [:]
+        if let data = UserDefaults.standard.data(forKey: favoritesAddedKey),
+           let dates = try? JSONDecoder().decode([String: Date].self, from: data) {
+            addedDates = dates
+        }
+        
+        if isFavorite {
+            // Add date when marking as favorite
+            addedDates[photoId] = Date()
+        } else {
+            // Remove date when unmarking
+            addedDates.removeValue(forKey: photoId)
+        }
+        
+        if let data = try? JSONEncoder().encode(addedDates) {
+            UserDefaults.standard.set(data, forKey: favoritesAddedKey)
         }
     }
 
