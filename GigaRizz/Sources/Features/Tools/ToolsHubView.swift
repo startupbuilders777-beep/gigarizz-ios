@@ -61,13 +61,27 @@ struct ToolsHubView: View {
                         )
                     }
 
-                    toolCard(
-                        title: "More Soon",
-                        subtitle: "New tools coming",
-                        icon: "sparkles",
-                        color: DesignSystem.Colors.textSecondary
-                    )
-                    .opacity(0.5)
+                    NavigationLink {
+                        FaceEnhancementView()
+                    } label: {
+                        toolCard(
+                            title: "Face Enhance",
+                            subtitle: "Natural AI retouching",
+                            icon: "face.smiling.fill",
+                            color: DesignSystem.Colors.success
+                        )
+                    }
+
+                    NavigationLink {
+                        BackgroundReplacerView()
+                    } label: {
+                        toolCard(
+                            title: "Backgrounds",
+                            subtitle: "AI scene replacement",
+                            icon: "photo.on.rectangle.angled",
+                            color: DesignSystem.Colors.flameOrange
+                        )
+                    }
                 }
 
                 // Stats Banner
