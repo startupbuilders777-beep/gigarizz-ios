@@ -104,6 +104,28 @@ struct ToolsHubView: View {
                             color: .purple
                         )
                     }
+
+                    NavigationLink {
+                        ExpressionCoachView()
+                    } label: {
+                        toolCard(
+                            title: "Expression Coach",
+                            subtitle: "Real-time face coaching",
+                            icon: "face.smiling",
+                            color: .cyan
+                        )
+                    }
+
+                    NavigationLink {
+                        PoseLibraryView()
+                    } label: {
+                        toolCard(
+                            title: "Pose Library",
+                            subtitle: "30 dating-ready poses",
+                            icon: "figure.stand",
+                            color: .indigo
+                        )
+                    }
                 }
 
                 // Stats Banner

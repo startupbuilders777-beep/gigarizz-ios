@@ -29,6 +29,8 @@
 		269D86E2E04F76AA210209A4 /* LightingColorGradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3C58BF468249DC52B273F3 /* LightingColorGradeView.swift */; };
 		2ACC1F1B48B4FE7C5EF63440 /* ProfilePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCDAC804046EB3748B615D9 /* ProfilePreviewView.swift */; };
 		3042D01002919BC525EB004C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38D8916B6B86B3B3F34C12D /* ChatMessage.swift */; };
+		364AA402F60CAEC67CECA2D4 /* PoseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797552FDA3474CB5702B1EC8 /* PoseLibraryView.swift */; };
+		3B8A3FA4CF71C750E102EACF /* ExpressionCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB8D220AF293D3D1F02A7D3 /* ExpressionCoachView.swift */; };
 		3F890DA4A900755F8B31800C /* GigaRizzTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80525043E6165C988CDA301C /* GigaRizzTests.swift */; };
 		47084037144A9AF6E74F8808 /* RizzCoachDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C926641C1F7D0A54F963CF9 /* RizzCoachDashboardView.swift */; };
 		4897191A08D8B0A9BB5E9E65 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40A9783F89E6E9C937D4313 /* SignInView.swift */; };
@@ -202,6 +204,7 @@
 		77439C9EFEEACA9F69A184FC /* SharePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePromptView.swift; sourceTree = "<group>"; };
 		7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimiter.swift; sourceTree = "<group>"; };
 		77F49FCAFFE752C731AD3C66 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		797552FDA3474CB5702B1EC8 /* PoseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseLibraryView.swift; sourceTree = "<group>"; };
 		7BA503BC7CB9D3845A2FB76E /* PhotoComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoComparisonView.swift; sourceTree = "<group>"; };
 		7F57DF58B39F10905B8B6279 /* FaceEnhancementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnhancementView.swift; sourceTree = "<group>"; };
 		80525043E6165C988CDA301C /* GigaRizzTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigaRizzTests.swift; sourceTree = "<group>"; };
@@ -235,6 +238,7 @@
 		CB08C1759FFED8D9FEDA29EE /* FavoritesGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesGalleryView.swift; sourceTree = "<group>"; };
 		CB7A4B2EC7B04F30CC5252A1 /* MatchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesView.swift; sourceTree = "<group>"; };
 		CB9D6C81381FD9C88BE5B94F /* PhotoLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryService.swift; sourceTree = "<group>"; };
+		CCB8D220AF293D3D1F02A7D3 /* ExpressionCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionCoachView.swift; sourceTree = "<group>"; };
 		CD471BE3EB7435C1DD6FC181 /* RizzCoachModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzCoachModels.swift; sourceTree = "<group>"; };
 		D04044853DD09EA424506D2F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D1BE05C5361F4F0B6D06CB99 /* BackgroundReplacerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundReplacerView.swift; sourceTree = "<group>"; };
@@ -452,6 +456,7 @@
 				EA22912A97D0AAF035A58AAF /* Coach */,
 				66F1CA94B11DB6872D6B5896 /* ColorGrade */,
 				BDEDF0B3FF5FABD5BE5AC9D1 /* Comparison */,
+				6400599D8917808474A68465 /* ExpressionCoach */,
 				C576BC0F1761F9FB70805577 /* FaceEnhancement */,
 				1341DEF56E519D63B7C0B10D /* FirstGeneration */,
 				D2D04093FB8F20E07570B362 /* Gallery */,
@@ -465,6 +470,7 @@
 				C6E2E2A0692F8869BDC4714D /* PhotoPacks */,
 				4B62017D468AAC1F5F8B4D60 /* PhotoPicker */,
 				57D030FF6F246CF2D5F35BC5 /* PhotoRanking */,
+				CDE3F98F065B3F0FCDBE6C37 /* PoseLibrary */,
 				2ADC3FF164E50D4C32E3D1BB /* Preview */,
 				02FA2E580EA5ACFCC85BA50B /* Profile */,
 				F941F3C9BFBE3F8321241B74 /* QuickUpload */,
@@ -499,6 +505,14 @@
 				01BE3D86958EC3A1DBA3FFE1 /* RizzCoachViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		6400599D8917808474A68465 /* ExpressionCoach */ = {
+			isa = PBXGroup;
+			children = (
+				CCB8D220AF293D3D1F02A7D3 /* ExpressionCoachView.swift */,
+			);
+			path = ExpressionCoach;
 			sourceTree = "<group>";
 		};
 		66F1CA94B11DB6872D6B5896 /* ColorGrade */ = {
@@ -724,6 +738,14 @@
 				D1BE05C5361F4F0B6D06CB99 /* BackgroundReplacerView.swift */,
 			);
 			path = BackgroundReplacer;
+			sourceTree = "<group>";
+		};
+		CDE3F98F065B3F0FCDBE6C37 /* PoseLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				797552FDA3474CB5702B1EC8 /* PoseLibraryView.swift */,
+			);
+			path = PoseLibrary;
 			sourceTree = "<group>";
 		};
 		D06C0474DE01623B34712B5B /* RizzCoach */ = {
@@ -1036,6 +1058,7 @@
 				76E5B280D379F244B7882A2D /* DeepLinkManager.swift in Sources */,
 				6129FD5297E1A63120BA4A82 /* DeepLinkRouterView.swift in Sources */,
 				8888E9BA7AD10776961B89C3 /* DesignSystem.swift in Sources */,
+				3B8A3FA4CF71C750E102EACF /* ExpressionCoachView.swift in Sources */,
 				E24EEC5F1C5BD2E973E61B01 /* FaceEnhancementView.swift in Sources */,
 				6ADD4F9588127C2A6F0B435C /* FavoritesGalleryView.swift in Sources */,
 				4C722F468EC6BEA5103AC864 /* FavoritesViewModel.swift in Sources */,
@@ -1087,6 +1110,7 @@
 				5E948AA31C684701F275733B /* PhotoQualityAnalyzer.swift in Sources */,
 				95B5D59C729EAFD6991AE849 /* PhotoQualityIssue.swift in Sources */,
 				12CD048AB9F5E3EF6C8577AA /* PhotoRankingView.swift in Sources */,
+				364AA402F60CAEC67CECA2D4 /* PoseLibraryView.swift in Sources */,
 				7533467C0DD7F31073564942 /* PostHogManager.swift in Sources */,
 				BC80C98DAF2A22FA97AA6674 /* PremiumBadge.swift in Sources */,
 				E0782A6727E0EE18AC7A0096 /* ProfileCompletenessView.swift in Sources */,
