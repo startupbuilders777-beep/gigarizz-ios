@@ -46,6 +46,9 @@ struct MatchDetailView: View {
                 HStack(spacing: 4) { Image(systemName: match.status.icon); Text(match.status.rawValue) }
                     .font(DesignSystem.Typography.caption).foregroundStyle(match.status.color)
             }
+            
+            // Reminder mute control
+            MatchReminderMuteButton(matchId: match.id)
         }.padding(.top, DesignSystem.Spacing.medium)
     }
 

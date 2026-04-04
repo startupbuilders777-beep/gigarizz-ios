@@ -18,6 +18,7 @@ final class NotificationManager: ObservableObject {
         case weeklyReport = "WEEKLY_REPORT"
         case streakReminder = "STREAK_REMINDER"
         case promoOffer = "PROMO_OFFER"
+        case replyReminder = "REPLY_REMINDER"
     }
 
     init() { Task { await checkAuthorizationStatus() } }
@@ -44,13 +45,32 @@ final class NotificationManager: ObservableObject {
         let viewAction = UNNotificationAction(identifier: "VIEW_ACTION", title: "View", options: [.foreground])
         let generateAction = UNNotificationAction(identifier: "GENERATE_ACTION", title: "Generate Now", options: [.foreground])
         let dismissAction = UNNotificationAction(identifier: "DISMISS_ACTION", title: "Later", options: [.destructive])
+        
+        // Reply reminder actions
+        let replyAction = UNNotificationAction(identifier: "REPLY_ACTION", title: "Reply Now", options: [.foreground])
+        let remindLaterAction = UNNotificationAction(identifier: "REMIND_LATER_ACTION", title: "Remind Me Later", options: [])
+        let muteMatchAction = UNNotificationAction(identifier: "MUTE_MATCH_ACTION", title: "Stop Reminders", options: [.destructive])
 
         let generationCategory = UNNotificationCategory(identifier: Category.generationComplete.rawValue, actions: [viewAction, dismissAction], intentIdentifiers: [])
         let reminderCategory = UNNotificationCategory(identifier: Category.dailyReminder.rawValue, actions: [generateAction, dismissAction], intentIdentifiers: [])
         let matchCategory = UNNotificationCategory(identifier: Category.matchUpdate.rawValue, actions: [viewAction, dismissAction], intentIdentifiers: [])
         let weeklyCategory = UNNotificationCategory(identifier: Category.weeklyReport.rawValue, actions: [viewAction], intentIdentifiers: [])
+        
+        // Reply reminder category with 4 actions
+        let replyReminderCategory = UNNotificationCategory(
+            identifier: Category.replyReminder.rawValue,
+            actions: [replyAction, remindLaterAction, muteMatchAction, dismissAction],
+            intentIdentifiers: [],
+            options: [.customDismissAction]
+        )
 
-        center.setNotificationCategories([generationCategory, reminderCategory, matchCategory, weeklyCategory])
+        center.setNotificationCategories([
+            generationCategory,
+            reminderCategory,
+            matchCategory,
+            weeklyCategory,
+            replyReminderCategory
+        ])
     }
 
     func scheduleDefaultReminders() async {

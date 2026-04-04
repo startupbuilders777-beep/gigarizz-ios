@@ -39,7 +39,6 @@
 		55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D43BF3150F2A4D233B24EEE /* StylePreset.swift */; };
 		5705FC193E69520B8BFA7921 /* FirstGenerationFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDB6C9AA0DA8023C88256D8 /* FirstGenerationFlowView.swift */; };
 		5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF044D066B14BB54FDCA8D9A /* AuthManager.swift */; };
-		5AD156901F8D7DC35518E4ED /* StylePresetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */; };
 		5BA02A3B076C46DE049DBA3E /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 18662EDD693A194C4735E46A /* RevenueCat */; };
 		5BD3BBDB04341F1AD6BCE740 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3ACD71821CA50C08195C451B /* Kingfisher */; };
 		5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6876704206E6FF7ABD1DDE /* TierComparisonView.swift */; };
@@ -76,9 +75,11 @@
 		917E90912642712ECDFED06C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 479B99EB76155E5D53EF09E5 /* FirebaseAnalytics */; };
 		95B5D59C729EAFD6991AE849 /* PhotoQualityIssue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5E0B4932B80706F0AABB88 /* PhotoQualityIssue.swift */; };
 		986CA2E30C32791E2F48CBA2 /* GenerationLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEAE5768D9AC48FF9548FA29 /* GenerationLoadingView.swift */; };
+		9E60C66051431C0805E0D7DC /* NotificationDelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC986FA45BD7C539849B64B5 /* NotificationDelegateHandler.swift */; };
 		9F15E65A4E663969437B977B /* WeeklyRizzReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D99DBDE4CC7944E3A414E /* WeeklyRizzReportView.swift */; };
 		A255EDB42A2B5BB8F94DD59C /* RateLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */; };
 		A34588E89DA7AC7DB5ED3D8E /* RizzScoreCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4C556C0D13E6B51CC1EC24 /* RizzScoreCard.swift */; };
+		A34FA35D69422EE0B5EECEB0 /* ReplyReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB64A26F8632D0F188585846 /* ReplyReminderService.swift */; };
 		A8BC2A7C0C5851EB9C63846F /* ChatSuggestionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A461B7AC96D2E40A200905 /* ChatSuggestionBar.swift */; };
 		B18449BDAB37CF547644F2EA /* FullScreenPhotoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39A766413B24526ECE697276 /* FullScreenPhotoPreviewView.swift */; };
 		B32A47DFDAB4B85C0F5ADCB4 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018C0185C8E7C67B378D5A00 /* ChatView.swift */; };
@@ -100,7 +101,6 @@
 		D6B072C0E815F49DCF016E67 /* SharePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77439C9EFEEACA9F69A184FC /* SharePromptView.swift */; };
 		E0782A6727E0EE18AC7A0096 /* ProfileCompletenessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41E437B47C13F9E3CCFB709 /* ProfileCompletenessView.swift */; };
 		E0D61A8EB360AC96FCFBF6DE /* GenerateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC59BF99B3A522FC7F4BD807 /* GenerateViewModel.swift */; };
-		E24EEC5F1C5BD2E973E61B01 /* FaceEnhancementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F57DF58B39F10905B8B6279 /* FaceEnhancementView.swift */; };
 		E4B7C006D4ADBF006442CA77 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD5950DD8B3A5EE578F6144 /* NotificationManager.swift */; };
 		E5129FA86B7C0BCECAB955E0 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D721F13DA69EDEA69D0B6324 /* OnboardingViewModel.swift */; };
 		E524CE40274FAA4B15F642A8 /* GigaRizzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4999B0A3C3D5BA1FD6C2B7E /* GigaRizzApp.swift */; };
@@ -186,7 +186,6 @@
 		58B3FC7203B581442F6FD7EB /* PermissionEducationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionEducationView.swift; sourceTree = "<group>"; };
 		59E6D82BF7273BF14619B5BD /* MatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailView.swift; sourceTree = "<group>"; };
 		5A0E38BCE2E268A6CF768B41 /* PhotoAuditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAuditView.swift; sourceTree = "<group>"; };
-		5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePresetManager.swift; sourceTree = "<group>"; };
 		5CE7EE035980A46F7CBEAE29 /* PHPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerSheet.swift; sourceTree = "<group>"; };
 		627AB2CF8A5C95CF2194C47E /* PhotoPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewModel.swift; sourceTree = "<group>"; };
 		65157ED82B2A0F48E273E014 /* PhotoQualityAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoQualityAnalyzer.swift; sourceTree = "<group>"; };
@@ -199,7 +198,6 @@
 		7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimiter.swift; sourceTree = "<group>"; };
 		77F49FCAFFE752C731AD3C66 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		7BA503BC7CB9D3845A2FB76E /* PhotoComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoComparisonView.swift; sourceTree = "<group>"; };
-		7F57DF58B39F10905B8B6279 /* FaceEnhancementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnhancementView.swift; sourceTree = "<group>"; };
 		80525043E6165C988CDA301C /* GigaRizzTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigaRizzTests.swift; sourceTree = "<group>"; };
 		859EEBB906EF7DA9074D21F5 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		86962B847609C3E672068CFC /* GenerationTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationTipsView.swift; sourceTree = "<group>"; };
@@ -221,7 +219,9 @@
 		AF80505BFE1C5B4A1F61812D /* PremiumBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumBadge.swift; sourceTree = "<group>"; };
 		B357084A0B55E74C89CD7F84 /* FavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModel.swift; sourceTree = "<group>"; };
 		B4D1A8F547E6E8631AE0F136 /* MatchesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesViewModel.swift; sourceTree = "<group>"; };
+		BB64A26F8632D0F188585846 /* ReplyReminderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyReminderService.swift; sourceTree = "<group>"; };
 		BC59BF99B3A522FC7F4BD807 /* GenerateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateViewModel.swift; sourceTree = "<group>"; };
+		BC986FA45BD7C539849B64B5 /* NotificationDelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegateHandler.swift; sourceTree = "<group>"; };
 		C277F423C477672433D26A46 /* GenerateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateView.swift; sourceTree = "<group>"; };
 		C4999B0A3C3D5BA1FD6C2B7E /* GigaRizzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigaRizzApp.swift; sourceTree = "<group>"; };
 		C9E766333B03BAC5A0036DB9 /* ProfileCompletenessViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCompletenessViewModel.swift; sourceTree = "<group>"; };
@@ -445,7 +445,6 @@
 				D2CFDC574191A8D76B010C18 /* BioWriter */,
 				EA22912A97D0AAF035A58AAF /* Coach */,
 				BDEDF0B3FF5FABD5BE5AC9D1 /* Comparison */,
-				C576BC0F1761F9FB70805577 /* FaceEnhancement */,
 				1341DEF56E519D63B7C0B10D /* FirstGeneration */,
 				D2D04093FB8F20E07570B362 /* Gallery */,
 				77967DC324B1508D44EAD284 /* Generate */,
@@ -614,11 +613,12 @@
 				A3CF9F9F86F928AA38602579 /* CloudFunctionsService.swift */,
 				762CE5CAA525B372E9C22BE9 /* CoachService.swift */,
 				12FCC488385D0DE0D3FBC3FE /* HapticManager.swift */,
+				BC986FA45BD7C539849B64B5 /* NotificationDelegateHandler.swift */,
 				1BD5950DD8B3A5EE578F6144 /* NotificationManager.swift */,
 				E288299C6545840AB3D8B823 /* NotificationSettingsView.swift */,
 				CB9D6C81381FD9C88BE5B94F /* PhotoLibraryService.swift */,
 				7782E1C80C9E49C8F0B39729 /* RateLimiter.swift */,
-				5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */,
+				BB64A26F8632D0F188585846 /* ReplyReminderService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -657,14 +657,6 @@
 				D40A9783F89E6E9C937D4313 /* SignInView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		C576BC0F1761F9FB70805577 /* FaceEnhancement */ = {
-			isa = PBXGroup;
-			children = (
-				7F57DF58B39F10905B8B6279 /* FaceEnhancementView.swift */,
-			);
-			path = FaceEnhancement;
 			sourceTree = "<group>";
 		};
 		C6E2E2A0692F8869BDC4714D /* PhotoPacks */ = {
@@ -1012,7 +1004,6 @@
 				76E5B280D379F244B7882A2D /* DeepLinkManager.swift in Sources */,
 				6129FD5297E1A63120BA4A82 /* DeepLinkRouterView.swift in Sources */,
 				8888E9BA7AD10776961B89C3 /* DesignSystem.swift in Sources */,
-				E24EEC5F1C5BD2E973E61B01 /* FaceEnhancementView.swift in Sources */,
 				6ADD4F9588127C2A6F0B435C /* FavoritesGalleryView.swift in Sources */,
 				4C722F468EC6BEA5103AC864 /* FavoritesViewModel.swift in Sources */,
 				5705FC193E69520B8BFA7921 /* FirstGenerationFlowView.swift in Sources */,
@@ -1038,6 +1029,7 @@
 				07F3495938687229A4A95457 /* MatchModel.swift in Sources */,
 				FE2234BAD8CB4B2822DC4790 /* MatchesView.swift in Sources */,
 				FEF1ED44644BCFC05200D6E6 /* MatchesViewModel.swift in Sources */,
+				9E60C66051431C0805E0D7DC /* NotificationDelegateHandler.swift in Sources */,
 				E4B7C006D4ADBF006442CA77 /* NotificationManager.swift in Sources */,
 				CA6130FC8035FC862CE415F8 /* NotificationSettingsView.swift in Sources */,
 				09BA79605921446AEA2525B8 /* OnboardingResumePromptView.swift in Sources */,
@@ -1070,6 +1062,7 @@
 				7D36863CD26A01BAB88D1CBC /* QuickUploadSheet.swift in Sources */,
 				8636DB3E75C9FC1CF4E0F9E0 /* QuickUploadViewModel.swift in Sources */,
 				A255EDB42A2B5BB8F94DD59C /* RateLimiter.swift in Sources */,
+				A34FA35D69422EE0B5EECEB0 /* ReplyReminderService.swift in Sources */,
 				EBFBD93305D5B59E8548663F /* ResponseTimeTrackerView.swift in Sources */,
 				47084037144A9AF6E74F8808 /* RizzCoachDashboardView.swift in Sources */,
 				C5C97152CF00B94E29DA49C5 /* RizzCoachModels.swift in Sources */,
@@ -1085,7 +1078,6 @@
 				4897191A08D8B0A9BB5E9E65 /* SignInView.swift in Sources */,
 				CB9700264360001A69A656D2 /* StorageManager.swift in Sources */,
 				55B6711623E3715741DEC9C7 /* StylePreset.swift in Sources */,
-				5AD156901F8D7DC35518E4ED /* StylePresetManager.swift in Sources */,
 				C239059B870A9DE6503B416B /* SubscriptionManager.swift in Sources */,
 				BA9498F56F0268E36E084A60 /* TierCardView.swift in Sources */,
 				5DF9570ACCB2B7396F8D924C /* TierComparisonView.swift in Sources */,
