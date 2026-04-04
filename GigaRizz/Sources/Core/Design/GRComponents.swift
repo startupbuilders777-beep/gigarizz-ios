@@ -13,13 +13,11 @@ struct GRButton: View {
     var style: Style = .primary
     var isLoading: Bool = false
     var isDisabled: Bool = false
+    var accessibilityHint: String?
     let action: () -> Void
 
     var body: some View {
-        Button(action: {
-            DesignSystem.Haptics.light()
-            action()
-        }, label: {
+        Button(action: action, label: {
             HStack(spacing: DesignSystem.Spacing.xs) {
                 if isLoading {
                     ProgressView()
@@ -34,7 +32,7 @@ struct GRButton: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 52)
+            .frame(minHeight: 52)
             .foregroundStyle(textColor)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
@@ -47,6 +45,11 @@ struct GRButton: View {
         })
         .disabled(isDisabled || isLoading)
         .opacity(isDisabled ? 0.5 : 1.0)
+        .buttonStyle(HapticButtonStyle(hapticStyle: .light))
+        .allowsHitTesting(!isDisabled && !isLoading)
+        .accessibilityLabel(title)
+        .accessibilityHint(accessibilityHint ?? "Double tap to activate")
+        .accessibilityAddTraits(.isButton)
     }
 
     private var backgroundColor: Color {
@@ -87,6 +90,7 @@ struct GRCard<Content: View>: View {
 /// Animated loading skeleton placeholder.
 struct ShimmerView: View {
     @State private var phase: CGFloat = 0
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     var body: some View {
         GeometryReader { geometry in
@@ -107,6 +111,7 @@ struct ShimmerView: View {
             )
         }
         .onAppear {
+            guard !reduceMotion else { return }
             withAnimation(
                 .linear(duration: 1.5)
                 .repeatForever(autoreverses: false)
@@ -114,6 +119,7 @@ struct ShimmerView: View {
                 phase = 1
             }
         }
+        .accessibilityHidden(true)
     }
 }
 
@@ -141,12 +147,14 @@ struct EmptyStateView: View {
                         endPoint: .bottomTrailing
                     )
                 )
+                .accessibilityHidden(true)
 
             VStack(spacing: DesignSystem.Spacing.xs) {
                 Text(title)
                     .font(DesignSystem.Typography.headline)
                     .foregroundStyle(DesignSystem.Colors.textPrimary)
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(subtitle)
                     .font(DesignSystem.Typography.subheadline)
@@ -164,6 +172,8 @@ struct EmptyStateView: View {
             }
         }
         .padding(DesignSystem.Spacing.xl)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title). \(subtitle)")
     }
 }
 

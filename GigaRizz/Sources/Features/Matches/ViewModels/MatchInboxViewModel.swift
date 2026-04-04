@@ -153,7 +153,7 @@ final class MatchInboxViewModel: ObservableObject {
 
             let reply = ConversationMessage(
                 id: UUID().uuidString,
-                text: replies.randomElement()!,
+                text: replies.randomElement() ?? "Hey! \u{1F60A}",
                 isFromMe: false,
                 timestamp: Date()
             )

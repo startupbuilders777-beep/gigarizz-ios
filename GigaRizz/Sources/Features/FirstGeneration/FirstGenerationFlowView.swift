@@ -9,7 +9,9 @@ struct FirstGenerationFlowView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @StateObject private var viewModel = FirstGenerationViewModel()
+    @StateObject private var stylePresetManager = StylePresetManager.shared
     @Environment(\.dismiss) private var dismiss
+    @State private var showRizzCoach = false
 
     var body: some View {
         NavigationStack {
@@ -59,6 +61,10 @@ struct FirstGenerationFlowView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .navigationDestination(isPresented: $showRizzCoach) {
+            RizzCoachDashboardView()
+                .environmentObject(subscriptionManager)
+        }
     }
 
     // MARK: - Step 1: Upload
@@ -352,9 +358,51 @@ struct FirstGenerationFlowView: View {
                     .foregroundStyle(DesignSystem.Colors.textSecondary)
                     .padding(.horizontal, DesignSystem.Spacing.medium)
 
+                // "Not sure?" CTA
+                Button {
+                    showRizzCoach = true
+                    DesignSystem.Haptics.light()
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.xs) {
+                        Image(systemName: "questionmark.circle.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        
+                        Text("Not sure? Let Rizz Coach help you find your style")
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12))
+                            .foregroundStyle(DesignSystem.Colors.flameOrange.opacity(0.7))
+                    }
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                    .background(DesignSystem.Colors.flameOrange.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.chip))
+                }
+                .padding(.horizontal, DesignSystem.Spacing.medium)
+
+                // Most-used preset indicator for returning users
+                if let mostUsed = stylePresetManager.mostUsedPreset {
+                    HStack(spacing: DesignSystem.Spacing.xs) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 12))
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+                        
+                        Text("Your favorite: \(mostUsed.name)")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(DesignSystem.Colors.goldAccent)
+                    }
+                    .padding(.horizontal, DesignSystem.Spacing.medium)
+                }
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: DesignSystem.Spacing.small) {
-                        ForEach(viewModel.availableStyles) { style in
+                        // Show presets sorted by usage (most-used first)
+                        ForEach(stylePresetManager.presetsSortedByUsage(for: subscriptionManager.currentTier)) { style in
                             styleCard(style)
                         }
                     }

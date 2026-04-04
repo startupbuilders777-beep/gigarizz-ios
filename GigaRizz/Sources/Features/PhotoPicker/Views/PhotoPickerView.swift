@@ -151,9 +151,10 @@ struct PhotoPickerView: View {
                     ],
                     spacing: DesignSystem.Spacing.small
                 ) {
-                    ForEach(viewModel.selectedPhotos) { photo in
+                    ForEach(Array(viewModel.selectedPhotos.enumerated()), id: \.element.id) { index, photo in
                         PhotoGridItem(
                             photo: photo,
+                            orderNumber: index + 1,
                             issues: viewModel.issues(for: photo),
                             isRemovable: true,
                             onRemove: {
@@ -274,6 +275,7 @@ struct PhotoPickerView: View {
 /// Individual photo thumbnail in the selection grid.
 struct PhotoGridItem: View {
     let photo: SelectedPhotoItem
+    let orderNumber: Int
     let issues: [PhotoQualityIssue]
     let isRemovable: Bool
     let onRemove: () -> Void
@@ -298,8 +300,8 @@ struct PhotoGridItem: View {
                     .transition(.scale.combined(with: .opacity))
             }
 
-            // Checkmark overlay
-            checkmarkOverlay
+            // Order number badge
+            orderNumberBadge
                 .opacity(issues.isEmpty ? 1 : 0.3)
 
             // Remove button
@@ -328,18 +330,27 @@ struct PhotoGridItem: View {
         .padding(DesignSystem.Spacing.xs)
     }
 
-    // MARK: - Checkmark Overlay
+    // MARK: - Order Number Badge
 
-    private var checkmarkOverlay: some View {
+    private var orderNumberBadge: some View {
         VStack {
             Spacer()
             HStack {
                 Spacer()
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 22, weight: .bold))
+                // Order number circle badge
+                Text("\(orderNumber)")
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(.white)
-                    .background(DesignSystem.Colors.flameOrange)
+                    .frame(width: 26, height: 26)
+                    .background(
+                        LinearGradient(
+                            colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .clipShape(Circle())
+                    .shadow(color: DesignSystem.Colors.flameOrange.opacity(0.4), radius: 3, x: 0, y: 2)
                     .padding(DesignSystem.Spacing.xs)
             }
         }

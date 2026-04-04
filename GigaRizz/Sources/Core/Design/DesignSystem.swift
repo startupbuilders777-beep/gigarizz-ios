@@ -1,5 +1,40 @@
 import SwiftUI
 
+// MARK: - Scaled Typography (Dynamic Type Scalable)
+
+/// Returns a scaled version of the design system typography
+enum ScaledTypography {
+    /// Large title that scales with Dynamic Type
+    static let largeTitle = Font.largeTitle.weight(.bold)
+
+    /// Headline that scales with Dynamic Type
+    static let headline = Font.headline.weight(.bold)
+
+    /// Title that scales with Dynamic Type
+    static let title = Font.title2.weight(.semibold)
+
+    /// Body that scales with Dynamic Type
+    static let body = Font.body
+
+    /// Callout that scales with Dynamic Type
+    static let callout = Font.callout.weight(.medium)
+
+    /// Subheadline that scales with Dynamic Type
+    static let subheadline = Font.subheadline
+
+    /// Footnote that scales with Dynamic Type
+    static let footnote = Font.footnote
+
+    /// Caption that scales with Dynamic Type
+    static let caption = Font.caption.weight(.medium)
+
+    /// Button text that scales with Dynamic Type
+    static let button = Font.body.weight(.semibold)
+
+    /// Small button text that scales with Dynamic Type
+    static let smallButton = Font.subheadline.weight(.medium)
+}
+
 // MARK: - Design System
 
 enum DesignSystem {
@@ -55,38 +90,38 @@ enum DesignSystem {
         static let divider = Color.white.opacity(0.08)
     }
 
-    // MARK: - Typography
+    // MARK: - Typography (Dynamic Type Scalable)
 
     enum Typography {
-        /// Large headline — SF Pro Display Bold 28pt.
-        static let largeTitle = Font.system(size: 28, weight: .bold, design: .default)
+        /// Large headline — scales with Dynamic Type.
+        static let largeTitle = ScaledTypography.largeTitle
 
-        /// Headline — SF Pro Display Bold 24pt.
-        static let headline = Font.system(size: 24, weight: .bold, design: .default)
+        /// Headline — scales with Dynamic Type.
+        static let headline = ScaledTypography.headline
 
-        /// Title — SF Pro Display Semibold 20pt.
-        static let title = Font.system(size: 20, weight: .semibold, design: .default)
+        /// Title — scales with Dynamic Type.
+        static let title = ScaledTypography.title
 
-        /// Body — SF Pro Text Regular 17pt.
-        static let body = Font.system(size: 17, weight: .regular, design: .default)
+        /// Body — scales with Dynamic Type.
+        static let body = ScaledTypography.body
 
-        /// Callout — SF Pro Text Medium 16pt.
-        static let callout = Font.system(size: 16, weight: .medium, design: .default)
+        /// Callout — scales with Dynamic Type.
+        static let callout = ScaledTypography.callout
 
-        /// Subheadline — SF Pro Text Regular 15pt.
-        static let subheadline = Font.system(size: 15, weight: .regular, design: .default)
+        /// Subheadline — scales with Dynamic Type.
+        static let subheadline = ScaledTypography.subheadline
 
-        /// Footnote — SF Pro Text Regular 13pt.
-        static let footnote = Font.system(size: 13, weight: .regular, design: .default)
+        /// Footnote — scales with Dynamic Type.
+        static let footnote = ScaledTypography.footnote
 
-        /// Caption — SF Pro Text Medium 12pt.
-        static let caption = Font.system(size: 12, weight: .medium, design: .default)
+        /// Caption — scales with Dynamic Type.
+        static let caption = ScaledTypography.caption
 
-        /// Button text — SF Pro Text Semibold 17pt.
-        static let button = Font.system(size: 17, weight: .semibold, design: .default)
+        /// Button text — scales with Dynamic Type.
+        static let button = ScaledTypography.button
 
-        /// Small button text — SF Pro Text Medium 14pt.
-        static let smallButton = Font.system(size: 14, weight: .medium, design: .default)
+        /// Small button text — scales with Dynamic Type.
+        static let smallButton = ScaledTypography.smallButton
 
         /// Score display — SF Pro Display Bold 48pt for Rizz Score.
         static let scoreDisplay = Font.system(size: 48, weight: .bold, design: .default)
@@ -112,6 +147,10 @@ enum DesignSystem {
         static let xl: CGFloat = 32
         /// 48pt extra extra large.
         static let xxl: CGFloat = 48
+        /// Short aliases for convenience
+        static let m = medium
+        static let l = large
+        static let s = small
     }
 
     // MARK: - Corner Radius
@@ -133,52 +172,63 @@ enum DesignSystem {
         static let elevated = ShadowStyle(color: .black.opacity(0.3), radius: 16, shadowX: 0, shadowY: 8)
     }
 
-    // MARK: - Animation
+    // MARK: - Animation (Reduce Motion Aware)
 
     enum Animation {
         static let cardSpring = SwiftUI.Animation.spring(response: 0.5, dampingFraction: 0.7)
         static let quickSpring = SwiftUI.Animation.spring(response: 0.3, dampingFraction: 0.8)
         static let easeOut = SwiftUI.Animation.easeOut(duration: 0.2)
         static let smoothSpring = SwiftUI.Animation.spring(response: 0.4, dampingFraction: 0.75)
+
+        /// Returns the animation, or nil if reduce motion is enabled
+        static func adaptiveAnimation(reduceMotion: Bool) -> SwiftUI.Animation? {
+            reduceMotion ? nil : cardSpring
+        }
     }
 
     // MARK: - Haptics
 
+    /// Haptic feedback namespace — delegates to centralized HapticManager.
+    /// Use HapticManager.shared or HapticManager static methods directly for full functionality.
     enum Haptics {
+        /// Light haptic for subtle button taps.
         static func light() {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.light()
         }
 
+        /// Medium haptic for card swipes and snaps.
         static func medium() {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.medium()
         }
 
+        /// Heavy haptic for significant actions.
         static func heavy() {
-            let generator = UIImpactFeedbackGenerator(style: .heavy)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.heavy()
         }
 
+        /// Success notification for completed actions.
         static func success() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.success)
+            HapticManager.success()
         }
 
+        /// Warning notification for cautionary states.
         static func warning() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.warning)
+            HapticManager.warning()
         }
 
+        /// Error notification for failed operations.
         static func error() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.error)
+            HapticManager.error()
+        }
+
+        /// Soft haptic for gentle interactions.
+        static func soft() {
+            HapticManager.soft()
+        }
+
+        /// Selection haptic for pickers and segment controls.
+        static func selection() {
+            HapticManager.selection()
         }
     }
 }

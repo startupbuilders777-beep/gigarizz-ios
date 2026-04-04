@@ -1,0 +1,69 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAM_ID.com.gigarizz.app"
+        ],
+        "components": [
+          {
+            "/": "/photo/*",
+            "comment": "Opens photo preview for specific photo ID"
+          },
+          {
+            "/": "/gallery",
+            "comment": "Opens generated photos gallery"
+          },
+          {
+            "/": "/paywall",
+            "comment": "Opens paywall with optional tier parameter"
+          },
+          {
+            "/": "/paywall/*",
+            "comment": "Opens paywall with tier pre-selected"
+          },
+          {
+            "/": "/promo/*",
+            "comment": "Opens paywall with promo code"
+          },
+          {
+            "/": "/coach",
+            "comment": "Opens Rizz Coach tab"
+          },
+          {
+            "/": "/onboarding",
+            "comment": "Re-runs onboarding flow"
+          },
+          {
+            "/": "/match/*",
+            "comment": "Opens chat with specific match"
+          },
+          {
+            "/": "/generation/*",
+            "comment": "Opens generation results for batch"
+          },
+          {
+            "/": "*",
+            "comment": "Fallback - opens home screen"
+          }
+        ]
+      }
+    ]
+  },
+  "weblinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAM_ID.com.gigarizz.app"
+        ],
+        "components": [
+          {
+            "/": "*",
+            "exclude": true,
+            "comment": "Exclude all web links - app handles everything"
+          }
+        ]
+      }
+    ]
+  }
+}

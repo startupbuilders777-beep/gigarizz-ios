@@ -1,190 +1,243 @@
 import SwiftUI
 
+// MARK: - Paywall View
+
+/// Full-screen paywall modal with tier selection (Free, Plus, Gold).
+/// The single most important revenue-conversion surface for GigaRizz.
 struct PaywallView: View {
-    @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    @State private var selectedPlan: PlanOption = .monthly
-    @State private var isRestoring = false
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: PaywallViewModel
 
-    enum PlanOption: String, CaseIterable {
-        case weekly = "Weekly"
-        case monthly = "Monthly"
-        case lifetime = "Lifetime"
+    @State private var closeButtonScale: CGFloat = 1.0
+    
+    // MARK: - Deep Link Parameters
+    
+    /// Initial tier to pre-select (from deep link gigarizz://paywall?tier=plus)
+    let initialTier: TierOption?
+    
+    /// Promo/referral code (from deep link gigarizz://paywall?promo=GRIZZ-XXXX)
+    let promoCode: String?
 
-        var price: String {
-            switch self {
-            case .weekly: return "$4.99"
-            case .monthly: return "$9.99"
-            case .lifetime: return "$49.99"
-            }
-        }
-
-        var period: String {
-            switch self {
-            case .weekly: return "/week"
-            case .monthly: return "/month"
-            case .lifetime: return "one-time"
-            }
-        }
-
-        var savings: String? {
-            switch self {
-            case .weekly: return nil
-            case .monthly: return "Save 50%"
-            case .lifetime: return "Best Value"
-            }
-        }
+    init(initialTier: TierOption? = nil, promoCode: String? = nil) {
+        self.initialTier = initialTier
+        self.promoCode = promoCode
+        // Initialize ViewModel with pre-selected tier
+        _viewModel = StateObject(wrappedValue: PaywallViewModel(initialTier: initialTier ?? .plus))
     }
 
     var body: some View {
         NavigationStack {
             ZStack {
                 DesignSystem.Colors.background.ignoresSafeArea()
-                ScrollView {
+
+                ScrollView(showsIndicators: false) {
                     VStack(spacing: DesignSystem.Spacing.large) {
+                        // Hero illustration
                         heroSection
-                        featuresSection
-                        planSelection
-                        ctaSection
+
+                        // Headline
+                        headlineSection
+
+                        // Tier cards
+                        tierCardsSection
+
+                        // Footer
                         footerSection
                     }
                     .padding(.horizontal, DesignSystem.Spacing.medium)
                     .padding(.bottom, DesignSystem.Spacing.xxl)
                 }
             }
+            .navigationBarHidden(true)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(DesignSystem.Colors.textSecondary)
-                            .font(.system(size: 22))
+                // Dismiss button (only if user has free photos remaining)
+                if viewModel.canDismiss {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                closeButtonScale = 0.8
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                dismiss()
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                                .frame(width: 32, height: 32)
+                                .background(DesignSystem.Colors.surface)
+                                .clipShape(Circle())
+                                .scaleEffect(closeButtonScale)
+                        }
+                        .accessibilityLabel("Close paywall")
                     }
                 }
             }
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
+
+    // MARK: - Hero Section
 
     private var heroSection: some View {
+        ZStack {
+            // Decorative flame/lens illustration
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            DesignSystem.Colors.flameOrange.opacity(0.3),
+                            DesignSystem.Colors.goldAccent.opacity(0.2),
+                            .clear
+                        ],
+                        startPoint: .center,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 200, height: 200)
+
+            // Central icon
+            Image(systemName: "flame.fill")
+                .font(.system(size: 48, weight: .light))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.goldAccent],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .padding(.top, DesignSystem.Spacing.large)
+        }
+        .padding(.top, DesignSystem.Spacing.xxl)
+    }
+
+    // MARK: - Headline Section
+
+    private var headlineSection: some View {
+        VStack(spacing: DesignSystem.Spacing.small) {
+            Text("Unlock Your Best Photos")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                .multilineTextAlignment(.center)
+
+            Text("Upgrade to Plus or Gold and never hit a wall.")
+                .font(DesignSystem.Typography.subheadline)
+                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    // MARK: - Tier Cards Section
+
+    private var tierCardsSection: some View {
         VStack(spacing: DesignSystem.Spacing.medium) {
-            HStack(spacing: DesignSystem.Spacing.medium) {
-                VStack(spacing: DesignSystem.Spacing.xs) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
-                            .fill(DesignSystem.Colors.surfaceSecondary)
-                            .frame(width: 140, height: 180)
-                        VStack(spacing: DesignSystem.Spacing.xs) {
-                            Image(systemName: "person.fill").font(.system(size: 40)).foregroundStyle(DesignSystem.Colors.textSecondary)
-                            Text("\u{1F610}").font(.system(size: 24))
-                        }
+            // Horizontal scroll for iPhone, vertical for iPad
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: DesignSystem.Spacing.small) {
+                    ForEach(Array(TierOption.allCases.enumerated()), id: \.element.id) { index, tier in
+                        TierCardView(
+                            tier: tier,
+                            isSelected: viewModel.selectedTier == tier,
+                            animationIndex: index,
+                            currentAnimationIndex: viewModel.cardAnimationIndex,
+                            onSelect: { viewModel.selectTier(tier) }
+                        )
+                        .frame(width: tierCardWidth)
                     }
-                    Text("Before").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
                 }
-                Image(systemName: "arrow.right").font(.system(size: 24, weight: .bold)).foregroundStyle(DesignSystem.Colors.flameOrange)
-                VStack(spacing: DesignSystem.Spacing.xs) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
-                            .fill(LinearGradient(colors: [DesignSystem.Colors.flameOrange.opacity(0.3), DesignSystem.Colors.goldAccent.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                            .frame(width: 140, height: 180)
-                        VStack(spacing: DesignSystem.Spacing.xs) {
-                            Image(systemName: "person.fill").font(.system(size: 40)).foregroundStyle(DesignSystem.Colors.flameOrange)
-                            Text("\u{1F525}").font(.system(size: 24))
-                        }
-                    }
-                    .overlay(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium).strokeBorder(DesignSystem.Colors.flameOrange, lineWidth: 2))
-                    Text("After").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.flameOrange)
-                }
-            }.padding(.top, DesignSystem.Spacing.large)
-            VStack(spacing: DesignSystem.Spacing.xs) {
-                Text("Unlock Your Full Rizz").font(DesignSystem.Typography.headline).foregroundStyle(DesignSystem.Colors.textPrimary)
-                Text("10x your matches with AI-powered dating photos").font(DesignSystem.Typography.subheadline).foregroundStyle(DesignSystem.Colors.textSecondary).multilineTextAlignment(.center)
+                .padding(.horizontal, DesignSystem.Spacing.micro)
+            }
+            .frame(height: tierCardHeight)
+
+            // Purchase button
+            if viewModel.selectedTier != .free {
+                purchaseButton
             }
         }
     }
 
-    private var featuresSection: some View {
-        VStack(spacing: DesignSystem.Spacing.small) {
-            featureRow(icon: "wand.and.stars", title: "Unlimited AI Photos", subtitle: "Generate as many dating photos as you want")
-            featureRow(icon: "paintpalette.fill", title: "All 10 Style Presets", subtitle: "Confident, Adventurous, Golden Hour, and more")
-            featureRow(icon: "arrow.down.circle.fill", title: "HD Downloads", subtitle: "Full resolution photos with no watermark")
-            featureRow(icon: "brain.head.profile", title: "Rizz Coach", subtitle: "AI-powered bios, openers, and conversation tips")
-            featureRow(icon: "bolt.fill", title: "Priority Queue", subtitle: "Skip the line — your photos generate first")
-        }
-    }
-
-    private func featureRow(icon: String, title: String, subtitle: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.medium) {
-            Image(systemName: icon).font(.system(size: 20)).foregroundStyle(DesignSystem.Colors.flameOrange).frame(width: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
-                Text(subtitle).font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary)
-            }
-            Spacer()
-            Image(systemName: "checkmark.circle.fill").foregroundStyle(DesignSystem.Colors.success)
-        }
-        .padding(.horizontal, DesignSystem.Spacing.medium)
-        .padding(.vertical, DesignSystem.Spacing.small)
-        .background(DesignSystem.Colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small))
-    }
-
-    private var planSelection: some View {
-        VStack(spacing: DesignSystem.Spacing.small) {
-            Text("Choose Your Plan").font(DesignSystem.Typography.title).foregroundStyle(DesignSystem.Colors.textPrimary)
-            HStack(spacing: DesignSystem.Spacing.small) {
-                ForEach(PlanOption.allCases, id: \.self) { plan in planCard(plan) }
+    private var purchaseButton: some View {
+        GRButton(
+            title: viewModel.isLoading ? "Processing..." : "Subscribe to \(viewModel.selectedTier.displayName)",
+            icon: viewModel.selectedTier == .gold ? "crown.fill" : "star.fill",
+            isLoading: viewModel.isLoading,
+            isDisabled: viewModel.isLoading
+        ) {
+            Task {
+                await viewModel.purchaseSelectedTier()
             }
         }
+        .padding(.top, DesignSystem.Spacing.medium)
     }
 
-    private func planCard(_ plan: PlanOption) -> some View {
-        Button {
-            withAnimation(DesignSystem.Animation.quickSpring) { selectedPlan = plan }
-            DesignSystem.Haptics.light()
-        } label: {
-            VStack(spacing: DesignSystem.Spacing.xs) {
-                if let savings = plan.savings {
-                    Text(savings).font(DesignSystem.Typography.caption)
-                        .foregroundStyle(plan == .lifetime ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.success)
-                        .padding(.horizontal, DesignSystem.Spacing.xs).padding(.vertical, 2)
-                        .background(Capsule().fill((plan == .lifetime ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.success).opacity(0.15)))
-                }
-                Text(plan.rawValue).font(DesignSystem.Typography.callout).foregroundStyle(DesignSystem.Colors.textPrimary)
-                Text(plan.price).font(DesignSystem.Typography.headline).foregroundStyle(selectedPlan == plan ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.textPrimary)
-                Text(plan.period).font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary)
-            }
-            .frame(maxWidth: .infinity).padding(.vertical, DesignSystem.Spacing.medium)
-            .background(selectedPlan == plan ? DesignSystem.Colors.flameOrange.opacity(0.1) : DesignSystem.Colors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
-            .overlay(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium).strokeBorder(selectedPlan == plan ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.divider, lineWidth: selectedPlan == plan ? 2 : 1))
-        }
-    }
-
-    private var ctaSection: some View {
-        VStack(spacing: DesignSystem.Spacing.small) {
-            GRButton(title: "Start 3-Day Free Trial", icon: "flame.fill") {
-                DesignSystem.Haptics.medium()
-                PostHogManager.shared.trackPaywallViewed(trigger: "paywall_cta")
-            }
-            Text("Cancel anytime. You won't be charged during the trial.").font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary).multilineTextAlignment(.center)
-        }
-    }
+    // MARK: - Footer Section
 
     private var footerSection: some View {
-        VStack(spacing: DesignSystem.Spacing.small) {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            // Restore purchases
             Button {
-                isRestoring = true
-                Task { await subscriptionManager.restorePurchases(); isRestoring = false }
+                Task {
+                    await viewModel.restorePurchases()
+                }
             } label: {
-                Text(isRestoring ? "Restoring..." : "Restore Purchases").font(DesignSystem.Typography.footnote).foregroundStyle(DesignSystem.Colors.textSecondary)
-            }.disabled(isRestoring)
+                Text(viewModel.isRestoring ? "Restoring..." : "Restore Purchases")
+                    .font(DesignSystem.Typography.footnote)
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+            }
+            .disabled(viewModel.isRestoring)
+
+            // Terms and privacy
             HStack(spacing: DesignSystem.Spacing.medium) {
-                Button { } label: { Text("Terms of Service").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary) }
-                Button { } label: { Text("Privacy Policy").font(DesignSystem.Typography.caption).foregroundStyle(DesignSystem.Colors.textSecondary) }
+                Button {} label: {
+                    Text("Terms of Service")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+
+                Button {} label: {
+                    Text("Privacy Policy")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+            }
+
+            // Error message
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(DesignSystem.Colors.error)
+                    .multilineTextAlignment(.center)
             }
         }
+        .padding(.top, DesignSystem.Spacing.large)
+    }
+
+    // MARK: - Layout Helpers
+
+    private var tierCardWidth: CGFloat {
+        // Full width minus 32pt margins, divided by 3 with spacing
+        let screenWidth = UIScreen.main.bounds.width
+        let margins = DesignSystem.Spacing.medium * 2
+        let spacing = DesignSystem.Spacing.small * 2
+        return (screenWidth - margins - spacing) / 3
+    }
+
+    private var tierCardHeight: CGFloat {
+        // 120pt on iPhone per spec, taller for feature list
+        return 280
     }
 }
 
-#Preview {
-    PaywallView().environmentObject(SubscriptionManager()).preferredColorScheme(.dark)
+// MARK: - Preview
+
+#Preview("PaywallView") {
+    PaywallView()
+        .preferredColorScheme(.dark)
+}
+
+#Preview("PaywallView - Light") {
+    PaywallView()
+        .preferredColorScheme(.light)
 }

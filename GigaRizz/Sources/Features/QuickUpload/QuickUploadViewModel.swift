@@ -2,49 +2,42 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
-// MARK: - Generate View Model
+// MARK: - Quick Upload ViewModel
 
+/// Simplified view model for power user single-photo express generation.
 @MainActor
-final class GenerateViewModel: ObservableObject {
+final class QuickUploadViewModel: ObservableObject {
     // MARK: - Published Properties
 
-    @Published var selectedPhotos: [SelectedPhotoItem] = []
-    @Published var photosPickerItems: [PhotosPickerItem] = []
+    @Published var selectedPhoto: UIImage?
+    @Published var photosPickerItem: PhotosPickerItem?
     @Published var selectedStyle: StylePreset?
     @Published var generatedPhotos: [GeneratedPhoto] = []
-    @Published var isLoadingPhotos = false
     @Published var isGenerating = false
     @Published var generationProgress: Double = 0
     @Published var showPaywall = false
     @Published var showResults = false
+    @Published var showSharePrompt = false
+    @Published var shareCountdown: Int = 3
     @Published var errorMessage: String?
 
     // MARK: - Services
 
     private let aiService = AIGenerationService.shared
     private let storageManager = StorageManager.shared
-    private let stylePresetManager = StylePresetManager.shared
-
-    // MARK: - Constants
-
-    let minimumPhotos = 3
-    let maximumPhotos = 6
+    private var shareTimer: Timer?
 
     // MARK: - Computed Properties
 
     var canGenerate: Bool {
-        selectedPhotos.count >= minimumPhotos && selectedStyle != nil && !isGenerating
-    }
-
-    var photoCountText: String {
-        "\(selectedPhotos.count)/\(maximumPhotos) photos"
+        selectedPhoto != nil && selectedStyle != nil && !isGenerating
     }
 
     var progressText: String {
-        if generationProgress < 0.25 {
-            return "Analyzing your photos..."
-        } else if generationProgress < 0.5 {
-            return "Building your look..."
+        if generationProgress < 0.3 {
+            return "Uploading..."
+        } else if generationProgress < 0.6 {
+            return "AI thinking..."
         } else if generationProgress < 0.9 {
             return "Creating magic ✨"
         } else {
@@ -54,75 +47,61 @@ final class GenerateViewModel: ObservableObject {
 
     // MARK: - Photo Loading
 
-    func loadPhotos() async {
-        isLoadingPhotos = true
-        defer { isLoadingPhotos = false }
+    func loadPhoto() async {
+        guard let item = photosPickerItem else { return }
 
-        var loaded: [SelectedPhotoItem] = []
-
-        for item in photosPickerItems {
-            if let data = try? await item.loadTransferable(type: Data.self),
-               let image = UIImage(data: data) {
-                loaded.append(SelectedPhotoItem(image: image))
-            }
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let image = UIImage(data: data) {
+            selectedPhoto = image
+            DesignSystem.Haptics.light()
         }
-
-        // Keep existing + add new, up to max
-        let newPhotos = loaded.filter { newItem in
-            !selectedPhotos.contains(where: { $0.id == newItem.id })
-        }
-        selectedPhotos = Array((selectedPhotos + newPhotos).prefix(maximumPhotos))
     }
 
-    // MARK: - Remove Photo
-
-    func removePhoto(_ photo: SelectedPhotoItem) {
-        selectedPhotos.removeAll { $0.id == photo.id }
+    func clearPhoto() {
+        selectedPhoto = nil
+        photosPickerItem = nil
         DesignSystem.Haptics.light()
     }
 
     // MARK: - Generate
 
     func generate(userId: String, subscriptionManager: SubscriptionManager) async {
-        guard canGenerate else { return }
+        guard canGenerate, let photo = selectedPhoto, let style = selectedStyle else { return }
 
         guard subscriptionManager.canGeneratePhoto else {
             showPaywall = true
             return
         }
 
-        guard let style = selectedStyle else { return }
-
         isGenerating = true
         errorMessage = nil
+        generationProgress = 0
 
         do {
-            let images = selectedPhotos.map(\.image)
-
+            // Quick upload uses single photo mode
             let result = try await aiService.generatePhotos(
-                sourceImages: images,
+                sourceImages: [photo],
                 style: style,
-                userId: userId
+                userId: userId,
+                count: 1,
+                allowSinglePhoto: true // Quick Upload allows single photo
             )
 
-            // Track progress from service
+            // Track progress
             for await progress in progressStream() {
                 generationProgress = progress
             }
 
             generatedPhotos = result.photos
             subscriptionManager.incrementPhotoUsage()
-            
-            // Record style preset usage for future recommendations
-            stylePresetManager.recordUsage(style)
-            
             showResults = true
 
-            PostHogManager.shared.trackPhotoGenerated(
-                style: style.name,
-                tier: subscriptionManager.currentTier.rawValue,
-                photoCount: result.photos.count
-            )
+            DesignSystem.Haptics.success()
+
+            PostHogManager.shared.track("quick_upload_generated", properties: [
+                "style": style.name,
+                "tier": subscriptionManager.currentTier.rawValue
+            ])
         } catch {
             errorMessage = error.localizedDescription
             DesignSystem.Haptics.error()
@@ -131,7 +110,7 @@ final class GenerateViewModel: ObservableObject {
         isGenerating = false
     }
 
-    // MARK: - Progress Stream (simplified)
+    // MARK: - Progress Stream
 
     private func progressStream() -> AsyncStream<Double> {
         AsyncStream { continuation in
@@ -146,24 +125,48 @@ final class GenerateViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Share Countdown
+
+    func startShareCountdown() {
+        shareCountdown = 3
+        showSharePrompt = true
+
+        shareTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            Task { @MainActor in
+                self.shareCountdown -= 1
+                if self.shareCountdown <= 0 {
+                    self.cancelShareCountdown()
+                }
+            }
+        }
+    }
+
+    func cancelShareCountdown() {
+        shareTimer?.invalidate()
+        shareTimer = nil
+        showSharePrompt = false
+    }
+
     // MARK: - Cancel Generation
 
     func cancelGeneration() {
         aiService.cancelGeneration()
         isGenerating = false
         generationProgress = 0
-        PostHogManager.shared.track("generation_cancelled")
     }
 
     // MARK: - Reset
 
     func reset() {
-        selectedPhotos = []
-        photosPickerItems = []
+        selectedPhoto = nil
+        photosPickerItem = nil
         selectedStyle = nil
         generatedPhotos = []
         generationProgress = 0
         showResults = false
+        showSharePrompt = false
         errorMessage = nil
+        cancelShareCountdown()
     }
 }

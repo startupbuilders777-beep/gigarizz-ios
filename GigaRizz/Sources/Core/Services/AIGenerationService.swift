@@ -33,23 +33,26 @@ final class AIGenerationService: ObservableObject {
 
     /// Generate AI photos from source images using a style preset.
     /// - Parameters:
-    ///   - sourceImages: 3-6 user photos
+    ///   - sourceImages: 1-6 user photos (single photo allowed for Quick Upload)
     ///   - style: The style preset to apply
     ///   - userId: Current user ID
     ///   - count: Number of photos to generate (default 4)
+    ///   - allowSinglePhoto: Whether to allow single photo input (for Quick Upload)
     /// - Returns: Array of generated photos
     func generatePhotos(
         sourceImages: [UIImage],
         style: StylePreset,
         userId: String,
-        count: Int = 4
+        count: Int = 4,
+        allowSinglePhoto: Bool = false
     ) async throws -> GenerationResult {
         guard !sourceImages.isEmpty else {
             throw GenerationError.noSourceImages
         }
 
-        guard sourceImages.count >= 3 else {
-            throw GenerationError.insufficientPhotos(minimum: 3, provided: sourceImages.count)
+        let minimumRequired = allowSinglePhoto ? 1 : 3
+        guard sourceImages.count >= minimumRequired else {
+            throw GenerationError.insufficientPhotos(minimum: minimumRequired, provided: sourceImages.count)
         }
 
         isGenerating = true

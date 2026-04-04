@@ -101,11 +101,14 @@ struct GeneratedPhotosGalleryView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 16))
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .accessibilityHidden(true)
 
             TextField("Search by date, style, platform...", text: $viewModel.searchText)
                 .font(DesignSystem.Typography.subheadline)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
                 .textFieldStyle(.plain)
+                .accessibilityLabel("Search photos")
+                .accessibilityHint("Enter search terms to filter photos by date, style, or platform")
 
             if !viewModel.searchText.isEmpty {
                 Button {
@@ -115,6 +118,8 @@ struct GeneratedPhotosGalleryView: View {
                         .font(.system(size: 16))
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                 }
+                .accessibilityLabel("Clear search")
+                .accessibilityHint("Double tap to clear search text")
             }
         }
         .padding(DesignSystem.Spacing.small)
@@ -150,37 +155,79 @@ struct GeneratedPhotosGalleryView: View {
             }
         }()
 
-        return Button {
-            viewModel.selectOrganizationMode(mode)
-        } label: {
-            HStack(spacing: DesignSystem.Spacing.micro) {
-                Image(systemName: mode.icon)
-                    .font(.system(size: 12))
+        // Favorites tab uses NavigationLink to FavoritesGalleryView
+        if mode == .favorites && count != nil && count! > 0 {
+            return AnyView(
+                NavigationLink {
+                    FavoritesGalleryView()
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.micro) {
+                        Image(systemName: mode.icon)
+                            .font(.system(size: 12))
 
-                Text(mode.rawValue)
-                    .font(DesignSystem.Typography.smallButton)
+                        Text(mode.rawValue)
+                            .font(DesignSystem.Typography.smallButton)
 
-                if let count, count > 0 {
-                    Text("\(count)")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(
-                            Capsule()
-                                .fill(isSelected ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.textSecondary.opacity(0.5))
-                        )
+                        if let count, count > 0 {
+                            Text("\(count)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(DesignSystem.Colors.goldAccent)
+                                )
+                        }
+                    }
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(
+                        Capsule()
+                            .fill(DesignSystem.Colors.surface)
+                    )
                 }
-            }
-            .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
-            .padding(.horizontal, DesignSystem.Spacing.small)
-            .padding(.vertical, DesignSystem.Spacing.xs)
-            .background(
-                Capsule()
-                    .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
+                .accessibilityLabel("\(mode.rawValue) tab\(count != nil ? ", \(count!) items" : "")")
+                .accessibilityHint("Double tap to open favorites gallery")
+            )
+        } else {
+            return AnyView(
+                Button {
+                    viewModel.selectOrganizationMode(mode)
+                } label: {
+                    HStack(spacing: DesignSystem.Spacing.micro) {
+                        Image(systemName: mode.icon)
+                            .font(.system(size: 12))
+
+                        Text(mode.rawValue)
+                            .font(DesignSystem.Typography.smallButton)
+
+                        if let count, count > 0 {
+                            Text("\(count)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(isSelected ? DesignSystem.Colors.goldAccent : DesignSystem.Colors.textSecondary.opacity(0.5))
+                                )
+                        }
+                    }
+                    .foregroundStyle(isSelected ? .white : DesignSystem.Colors.textSecondary)
+                    .padding(.horizontal, DesignSystem.Spacing.small)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(
+                        Capsule()
+                            .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
+                    )
+                }
+                .accessibilityLabel("\(mode.rawValue) tab\(count != nil ? ", \(count!) items" : "")")
+                .accessibilityValue(isSelected ? "Selected" : "Not selected")
+                .accessibilityHint("Double tap to select")
             )
         }
-        .accessibilityLabel("\(mode.rawValue) tab")
     }
 
     // MARK: - Platform Filter Bar
@@ -218,6 +265,8 @@ struct GeneratedPhotosGalleryView: View {
                     .fill(isSelected ? (platform?.color ?? DesignSystem.Colors.flameOrange) : DesignSystem.Colors.surface)
             )
         }
+        .accessibilityLabel("\(name) platform filter")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
     // MARK: - Style Filter Bar
@@ -251,6 +300,8 @@ struct GeneratedPhotosGalleryView: View {
                         .fill(isSelected ? DesignSystem.Colors.flameOrange : DesignSystem.Colors.surface)
                 )
         }
+        .accessibilityLabel("\(name) style filter")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
     // MARK: - Album Selector Bar
@@ -365,6 +416,18 @@ struct GeneratedPhotosGalleryView: View {
                     GenerateView()
                 } label: {
                     Text("Generate Photos")
+                        .font(DesignSystem.Typography.smallButton)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, DesignSystem.Spacing.large)
+                        .padding(.vertical, DesignSystem.Spacing.small)
+                        .background(DesignSystem.Colors.flameOrange)
+                        .clipShape(Capsule())
+                }
+            } else if viewModel.selectedOrganizationMode == .favorites {
+                NavigationLink {
+                    GeneratedPhotosGalleryView()
+                } label: {
+                    Text("Go to Gallery")
                         .font(DesignSystem.Typography.smallButton)
                         .foregroundStyle(.white)
                         .padding(.horizontal, DesignSystem.Spacing.large)
@@ -495,6 +558,8 @@ struct GeneratedPhotosGalleryView: View {
 
     private func photoCell(_ item: GalleryPhotoItem, index: Int) -> some View {
         let isSelected = viewModel.selectedPhotoIds.contains(item.id)
+        let totalPhotos = viewModel.filteredPhotos.count
+        let favoriteText = item.photo.isFavorite ? " favorited" : ""
 
         return ZStack(alignment: .topTrailing) {
             // Photo thumbnail placeholder
@@ -510,6 +575,7 @@ struct GeneratedPhotosGalleryView: View {
                 Image(systemName: "person.fill")
                     .font(.system(size: 30, weight: .ultraLight))
                     .foregroundStyle(.white.opacity(0.3))
+                    .accessibilityHidden(true)
 
                 // Style badge overlay
                 VStack {
@@ -549,12 +615,25 @@ struct GeneratedPhotosGalleryView: View {
                             }
                             Spacer()
                         }
-                    } else if item.photo.isFavorite {
-                        // Favorite heart
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 14))
-                            .foregroundStyle(DesignSystem.Colors.error)
-                            .padding(4)
+                    } else {
+                        // Favorite heart - tappable to toggle
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    viewModel.toggleFavorite(item.id)
+                                    DesignSystem.Haptics.medium()
+                                } label: {
+                                    Image(systemName: item.photo.isFavorite ? "heart.fill" : "heart")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(item.photo.isFavorite ? DesignSystem.Colors.error : DesignSystem.Colors.textSecondary)
+                                        .padding(4)
+                                }
+                                .accessibilityLabel(item.photo.isFavorite ? "Remove from favorites" : "Add to favorites")
+                                .accessibilityHint("Double tap to toggle favorite status")
+                            }
+                            Spacer()
+                        }
                     }
                 }
             )
@@ -590,6 +669,9 @@ struct GeneratedPhotosGalleryView: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityLabel("Photo \(index + 1) of \(totalPhotos), \(item.photo.style)\(favoriteText)")
+        .accessibilityHint("Double tap to view full size, long press to select")
+        .accessibilityAddTraits(.isButton)
     }
 
     private func selectionCheckbox(_ isSelected: Bool) -> some View {
@@ -604,6 +686,9 @@ struct GeneratedPhotosGalleryView: View {
                     .foregroundStyle(.white)
             }
         }
+        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
+        .accessibilityHint("Double tap to toggle selection")
+        .accessibilityAddTraits(.isButton)
     }
 
     private func gradientForStyle(_ style: String) -> [Color] {
@@ -629,6 +714,7 @@ struct GeneratedPhotosGalleryView: View {
             Image(systemName: "internaldrive")
                 .font(.system(size: 14))
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Storage: \(viewModel.storageSizeText)")
