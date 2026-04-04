@@ -84,27 +84,13 @@ struct OnboardingView: View {
         }
     }
     
-    // MARK: - Skip Button
+    // MARK: - Skip Button (removed for conversion — users can swipe or use paywall "Continue Free")
     
     @ViewBuilder
     private var skipButton: some View {
-        HStack {
-            Spacer()
-            if viewModel.currentPage < viewModel.totalPages - 1 {
-                Button {
-                    viewModel.skipOnboarding()
-                    hasCompletedOnboarding = true
-                    PostHogManager.shared.trackOnboardingCtaTapped(page: viewModel.currentPage + 1, cta: "Skip")
-                } label: {
-                    Text("Skip")
-                        .font(DesignSystem.Typography.smallButton)
-                        .foregroundStyle(DesignSystem.Colors.textSecondary)
-                }
-                .accessibilityHint("Skip onboarding and go directly to sign in")
-            }
-        }
-        .padding(.horizontal, DesignSystem.Spacing.medium)
-        .frame(height: 44)
+        // Intentionally empty — high-converting onboarding removes skip.
+        // Users reach the paywall screen which has "Continue Free" escape.
+        Color.clear.frame(height: 44)
     }
     
     // MARK: - Page Dots

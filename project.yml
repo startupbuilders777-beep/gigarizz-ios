@@ -64,6 +64,10 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
         ITSAppUsesNonExemptEncryption: false
+        CFBundleURLTypes:
+          - CFBundleURLName: com.gigarizz.app
+            CFBundleURLSchemes:
+              - gigarizz
         NSPhotoLibraryUsageDescription: "GigaRizz needs access to your photos to generate AI-enhanced dating photos."
         NSPhotoLibraryAddUsageDescription: "GigaRizz saves your generated photos to your photo library."
         NSCameraUsageDescription: "GigaRizz uses your camera to capture photos for AI enhancement."

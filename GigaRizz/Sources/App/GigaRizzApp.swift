@@ -96,6 +96,7 @@ struct GigaRizzApp: App {
             .onAppear {
                 authManager.startAuthStateListener()
                 postHogManager.markInitialized()
+                AppRatingManager.shared.trackAppLaunch()
                 
                 // Check if we should show resume prompt
                 checkResumePromptState()

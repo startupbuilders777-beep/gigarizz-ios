@@ -221,6 +221,7 @@ final class FirstGenerationViewModel: ObservableObject {
                 "processing_time": result.processingTime
             ])
 
+            AppRatingManager.shared.trackPhotoGenerated()
             DesignSystem.Haptics.success()
         } catch {
             errorMessage = error.localizedDescription

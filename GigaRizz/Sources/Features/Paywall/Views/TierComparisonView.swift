@@ -26,8 +26,8 @@ struct TierComparisonView: View {
 
     private let plans = [
         ("Free", "person.fill", Color.gray, "$0"),
-        ("Plus", "sparkles", DesignSystem.Colors.flameOrange, "$9.99/mo"),
-        ("Gold", "star.fill", DesignSystem.Colors.goldAccent, "$19.99/mo")
+        ("Plus", "sparkles", DesignSystem.Colors.flameOrange, "$4.99/mo"),
+        ("Gold", "star.fill", DesignSystem.Colors.goldAccent, "$14.99/mo")
     ]
 
     private var rows: [FeatureRow] {

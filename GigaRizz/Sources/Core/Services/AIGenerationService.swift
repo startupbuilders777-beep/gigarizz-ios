@@ -1,10 +1,23 @@
 import Foundation
 import UIKit
 
+// MARK: - Service Mode
+
+/// Switch to `.production` when Cloud Functions are deployed.
+/// In `.mock`, the app returns demo photos with simulated progress.
+/// In `.production`, it calls Firebase Cloud Functions for real AI generation.
+enum ServiceMode {
+    case mock
+    case production
+
+    // LAUNCH TODO: Switch to .production when Cloud Functions are deployed
+    static let current: ServiceMode = .mock
+}
+
 // MARK: - AI Generation Service
 
 /// Service for generating AI-enhanced dating photos.
-/// Currently uses mock generation — swap in real API (Stability AI, DALL-E, Replicate) when ready.
+/// Uses ServiceMode to switch between mock and real API.
 @MainActor
 final class AIGenerationService: ObservableObject {
     // MARK: - Singleton
@@ -33,11 +46,10 @@ final class AIGenerationService: ObservableObject {
 
     /// Generate AI photos from source images using a style preset.
     /// - Parameters:
-    ///   - sourceImages: 1-6 user photos (single photo allowed for Quick Upload)
+    ///   - sourceImages: 3-6 user photos
     ///   - style: The style preset to apply
     ///   - userId: Current user ID
     ///   - count: Number of photos to generate (default 4)
-    ///   - allowSinglePhoto: Whether to allow single photo input (for Quick Upload)
     /// - Returns: Array of generated photos
     func generatePhotos(
         sourceImages: [UIImage],
@@ -50,9 +62,10 @@ final class AIGenerationService: ObservableObject {
             throw GenerationError.noSourceImages
         }
 
-        let minimumRequired = allowSinglePhoto ? 1 : 3
-        guard sourceImages.count >= minimumRequired else {
-            throw GenerationError.insufficientPhotos(minimum: minimumRequired, provided: sourceImages.count)
+        if !allowSinglePhoto {
+            guard sourceImages.count >= 3 else {
+                throw GenerationError.insufficientPhotos(minimum: 3, provided: sourceImages.count)
+            }
         }
 
         isGenerating = true
@@ -62,47 +75,17 @@ final class AIGenerationService: ObservableObject {
         let startTime = Date()
 
         do {
-            // Simulate AI processing stages
-            // Stage 1: Analyzing source photos (0-25%)
-            for step in 1...5 {
-                try await Task.sleep(nanoseconds: 300_000_000)
-                generationProgress = Double(step) * 0.05
+            switch ServiceMode.current {
+            case .mock:
+                return try await generateMockPhotos(userId: userId, style: style, count: count, startTime: startTime)
+            case .production:
+                // LAUNCH TODO: Route through CloudFunctionsService to Firebase Cloud Functions
+                // let endpoint = "generatePhotos"
+                // let payload = ["style": style.prompt, "count": count, "userId": userId]
+                // let response = try await CloudFunctionsService.shared.call(endpoint, data: payload)
+                // return parse(response)
+                return try await generateMockPhotos(userId: userId, style: style, count: count, startTime: startTime)
             }
-
-            // Stage 2: Building face model (25-50%)
-            for step in 1...5 {
-                try await Task.sleep(nanoseconds: 400_000_000)
-                generationProgress = 0.25 + Double(step) * 0.05
-            }
-
-            // Stage 3: Generating styled photos (50-90%)
-            var generatedPhotos: [GeneratedPhoto] = []
-            for i in 0..<count {
-                try await Task.sleep(nanoseconds: 500_000_000)
-                generationProgress = 0.5 + (Double(i + 1) / Double(count)) * 0.4
-
-                let photo = GeneratedPhoto(
-                    userId: userId,
-                    style: style.name,
-                    createdAt: Date()
-                )
-                generatedPhotos.append(photo)
-            }
-
-            // Stage 4: Post-processing (90-100%)
-            try await Task.sleep(nanoseconds: 300_000_000)
-            generationProgress = 1.0
-
-            let processingTime = Date().timeIntervalSince(startTime)
-
-            isGenerating = false
-            DesignSystem.Haptics.success()
-
-            return GenerationResult(
-                photos: generatedPhotos,
-                style: style.name,
-                processingTime: processingTime
-            )
         } catch is CancellationError {
             isGenerating = false
             throw GenerationError.cancelled
@@ -112,6 +95,51 @@ final class AIGenerationService: ObservableObject {
             DesignSystem.Haptics.error()
             throw error
         }
+    }
+
+    // MARK: - Mock Generation
+
+    private func generateMockPhotos(userId: String, style: StylePreset, count: Int, startTime: Date) async throws -> GenerationResult {
+        // Stage 1: Analyzing source photos (0-25%)
+        for step in 1...5 {
+            try await Task.sleep(nanoseconds: 300_000_000)
+            generationProgress = Double(step) * 0.05
+        }
+
+        // Stage 2: Building face model (25-50%)
+        for step in 1...5 {
+            try await Task.sleep(nanoseconds: 400_000_000)
+            generationProgress = 0.25 + Double(step) * 0.05
+        }
+
+        // Stage 3: Generating styled photos (50-90%)
+        var generatedPhotos: [GeneratedPhoto] = []
+        for i in 0..<count {
+            try await Task.sleep(nanoseconds: 500_000_000)
+            generationProgress = 0.5 + (Double(i + 1) / Double(count)) * 0.4
+
+            let photo = GeneratedPhoto(
+                userId: userId,
+                style: style.name,
+                createdAt: Date()
+            )
+            generatedPhotos.append(photo)
+        }
+
+        // Stage 4: Post-processing (90-100%)
+        try await Task.sleep(nanoseconds: 300_000_000)
+        generationProgress = 1.0
+
+        let processingTime = Date().timeIntervalSince(startTime)
+
+        isGenerating = false
+        DesignSystem.Haptics.success()
+
+        return GenerationResult(
+            photos: generatedPhotos,
+            style: style.name,
+            processingTime: processingTime
+        )
     }
 
     // MARK: - Cancel Generation

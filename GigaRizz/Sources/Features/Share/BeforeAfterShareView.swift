@@ -1,4 +1,3 @@
-import PostHog
 import SwiftUI
 
 // MARK: - Before/After Share View
@@ -310,7 +309,7 @@ struct BeforeAfterShareView: View {
         renderedImage = renderShareImage()
         showShareSheet = true
 
-        PostHogSDK.shared.capture("before_after_shared", properties: [
+        PostHogManager.shared.track("before_after_shared", properties: [
             "style": styleName,
             "method": "generic"
         ])
@@ -335,7 +334,7 @@ struct BeforeAfterShareView: View {
             shareGeneric()
         }
 
-        PostHogSDK.shared.capture("before_after_shared", properties: [
+        PostHogManager.shared.track("before_after_shared", properties: [
             "style": styleName,
             "method": "instagram"
         ])
@@ -351,7 +350,7 @@ struct BeforeAfterShareView: View {
             withAnimation { showCopied = false }
         }
 
-        PostHogSDK.shared.capture("before_after_saved", properties: ["style": styleName])
+        PostHogManager.shared.track("before_after_saved", properties: ["style": styleName])
     }
 
     private var shareCaption: String {

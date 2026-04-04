@@ -102,6 +102,67 @@ final class PostHogManager: ObservableObject {
         track("referral_code_shared")
     }
 
+    // MARK: - Funnel Events
+
+    func trackAppOpened() {
+        track("app_opened")
+    }
+
+    func trackSignInCompleted(method: String) {
+        track("sign_in_completed", properties: ["method": method])
+    }
+
+    func trackSignUpCompleted(method: String) {
+        track("sign_up_completed", properties: ["method": method])
+    }
+
+    func trackGenerationStarted(style: String) {
+        track("generation_started", properties: ["style": style])
+    }
+
+    func trackGenerationCompleted(style: String, photoCount: Int, processingTime: TimeInterval) {
+        track("generation_completed", properties: [
+            "style": style,
+            "photo_count": photoCount,
+            "processing_time_seconds": processingTime
+        ])
+    }
+
+    func trackCoachBioGenerated(platform: String, tone: String) {
+        track("coach_bio_generated", properties: ["platform": platform, "tone": tone])
+    }
+
+    func trackCoachOpenerGenerated(platform: String) {
+        track("coach_opener_generated", properties: ["platform": platform])
+    }
+
+    func trackMatchAdded() {
+        track("match_added")
+    }
+
+    func trackBackgroundReplaced(scene: String) {
+        track("background_replaced", properties: ["scene": scene])
+    }
+
+    func trackGalleryOpened() {
+        track("gallery_opened")
+    }
+
+    // MARK: - User Property Enrichment
+
+    /// Call after auth or subscription changes to attach user properties to all future events.
+    func enrichUserProperties(subscriptionTier: String, totalGenerations: Int, signUpDate: Date?) {
+        guard isInitialized else { return }
+        var props: [String: Any] = [
+            "subscription_tier": subscriptionTier,
+            "total_generations": totalGenerations
+        ]
+        if let date = signUpDate {
+            props["sign_up_date"] = ISO8601DateFormatter().string(from: date)
+        }
+        PostHogSDK.shared.capture("$set", properties: ["$set": props])
+    }
+
     // MARK: - Track Event
 
     func trackEvent(_ event: String, properties: [String: Any] = [:]) {

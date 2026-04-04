@@ -1,5 +1,8 @@
+import CoreImage
+import CoreImage.CIFilterBuiltins
 import PhotosUI
 import SwiftUI
+import Vision
 
 // MARK: - Background Scene
 
@@ -225,32 +228,20 @@ struct BackgroundReplacerView: View {
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
 
-            // Placeholder for result
-            ZStack {
-                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
-                    .fill(
-                        LinearGradient(
-                            colors: viewModel.selectedScene?.gradient ?? [DesignSystem.Colors.flameOrange, .orange],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+            if let resultImage = viewModel.resultImage {
+                Image(uiImage: resultImage)
+                    .resizable()
+                    .scaledToFill()
                     .frame(height: 300)
-
-                VStack(spacing: DesignSystem.Spacing.medium) {
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 60))
-                        .foregroundStyle(.white.opacity(0.7))
-                    Text("AI Background Replaced")
-                        .font(DesignSystem.Typography.callout)
-                        .foregroundStyle(.white)
-                }
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
+                    .cardShadow()
             }
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
-            .cardShadow()
 
             HStack(spacing: DesignSystem.Spacing.small) {
                 GRButton(title: "Save", icon: "square.and.arrow.down") {
+                    if let image = viewModel.resultImage {
+                        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                    }
                     DesignSystem.Haptics.success()
                 }
                 GRButton(title: "Try Another", icon: "arrow.counterclockwise", style: .secondary) {
@@ -278,6 +269,8 @@ final class BackgroundReplacerViewModel: ObservableObject {
     @Published var isProcessing = false
     @Published var progress: Double = 0
 
+    private let ciContext = CIContext()
+
     func loadPhoto() async {
         guard let item = photosPickerItem else { return }
         if let data = try? await item.loadTransferable(type: Data.self),
@@ -299,20 +292,123 @@ final class BackgroundReplacerViewModel: ObservableObject {
         progress = 0
     }
 
+    // MARK: - Real Vision-Based Background Replacement
+
     private func processImage() {
+        guard let photo = selectedPhoto, let scene = selectedScene else { return }
         isProcessing = true
         progress = 0
 
-        // Simulate AI processing
         Task {
-            for i in 0..<10 {
-                try? await Task.sleep(nanoseconds: 200_000_000)
-                progress = Double(i + 1) / 10.0
+            progress = 0.1
+
+            switch ServiceMode.current {
+            case .production, .mock:
+                // Vision segmentation works on-device in both modes — no API needed
+                if let result = await segmentAndComposite(photo: photo, scene: scene) {
+                    resultImage = result
+                    PostHogManager.shared.trackBackgroundReplaced(scene: scene.name)
+                } else {
+                    // Fallback: return original photo if segmentation fails
+                    resultImage = photo
+                }
             }
-            resultImage = selectedPhoto // Placeholder: return same image
+
             isProcessing = false
             DesignSystem.Haptics.success()
         }
+    }
+
+    /// Uses Apple Vision VNGeneratePersonSegmentationRequest to isolate the person,
+    /// then composites onto a gradient background matching the selected scene.
+    private func segmentAndComposite(photo: UIImage, scene: BackgroundScene) async -> UIImage? {
+        guard let cgImage = photo.cgImage else { return nil }
+
+        progress = 0.2
+
+        // 1. Create person segmentation request
+        let request = VNGeneratePersonSegmentationRequest()
+        request.qualityLevel = .balanced // Good quality without being too slow
+        request.outputPixelFormat = kCVPixelFormatType_OneComponent8
+
+        progress = 0.3
+
+        // 2. Run Vision request
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([request])
+        } catch {
+            return nil
+        }
+
+        progress = 0.5
+
+        // 3. Extract the mask
+        guard let observation = request.results?.first,
+              let maskBuffer = observation.pixelBuffer as CVPixelBuffer? else {
+            return nil
+        }
+
+        progress = 0.6
+
+        // 4. Convert mask to CIImage
+        let maskCI = CIImage(cvPixelBuffer: maskBuffer)
+        let originalCI = CIImage(cgImage: cgImage)
+
+        // Scale mask to match original image size
+        let scaleX = originalCI.extent.width / maskCI.extent.width
+        let scaleY = originalCI.extent.height / maskCI.extent.height
+        let scaledMask = maskCI.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+
+        progress = 0.7
+
+        // 5. Create gradient background matching the scene
+        let backgroundCI = createGradientBackground(
+            colors: scene.gradient,
+            size: originalCI.extent.size
+        )
+
+        progress = 0.8
+
+        // 6. Composite: person (from original) over gradient background using mask
+        guard let blendFilter = CIFilter(name: "CIBlendWithMask") else { return nil }
+        blendFilter.setValue(originalCI, forKey: kCIInputImageKey)
+        blendFilter.setValue(backgroundCI, forKey: kCIInputBackgroundImageKey)
+        blendFilter.setValue(scaledMask, forKey: kCIInputMaskImageKey)
+
+        guard let outputCI = blendFilter.outputImage else { return nil }
+
+        progress = 0.9
+
+        // 7. Render final image
+        guard let outputCG = ciContext.createCGImage(outputCI, from: originalCI.extent) else {
+            return nil
+        }
+
+        progress = 1.0
+        return UIImage(cgImage: outputCG)
+    }
+
+    /// Creates a CIImage gradient matching the scene's two colors.
+    private func createGradientBackground(colors: [Color], size: CGSize) -> CIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let gradientImage = renderer.image { context in
+            let cgContext = context.cgContext
+            let resolvedColors = colors.map { UIColor($0).cgColor }
+            guard let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: resolvedColors as CFArray,
+                locations: [0.0, 1.0]
+            ) else { return }
+            cgContext.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: 0, y: 0),
+                end: CGPoint(x: size.width, y: size.height),
+                options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+            )
+        }
+
+        return CIImage(image: gradientImage) ?? CIImage()
     }
 }
 
@@ -320,6 +416,6 @@ final class BackgroundReplacerViewModel: ObservableObject {
     NavigationStack {
         BackgroundReplacerView()
     }
-    .environmentObject(SubscriptionManager())
+    .environmentObject(SubscriptionManager.shared)
     .preferredColorScheme(.dark)
 }

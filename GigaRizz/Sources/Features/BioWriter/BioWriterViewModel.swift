@@ -1,4 +1,3 @@
-import PostHog
 import SwiftUI
 
 // MARK: - Supporting Types
@@ -137,7 +136,7 @@ final class BioWriterViewModel: ObservableObject {
         generatedBios = bios
         isGenerating = false
 
-        PostHogSDK.shared.capture("bio_generated", properties: [
+        PostHogManager.shared.track("bio_generated", properties: [
             "platform": selectedPlatform.rawValue,
             "traits": selectedTraits.map(\.rawValue),
             "interests": selectedInterests.map(\.rawValue),

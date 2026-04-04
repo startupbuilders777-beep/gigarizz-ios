@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Coach Service
 
 /// AI-powered dating coach service for bios, openers, and conversation tips.
-/// Uses mock responses — swap in OpenAI GPT-4o API when ready.
+/// Uses ServiceMode to switch between mock (local templates) and production (OpenAI via Cloud Functions).
 @MainActor
 final class CoachService: ObservableObject {
     // MARK: - Singleton
@@ -81,7 +81,19 @@ final class CoachService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
 
-        // Simulate API call
+        switch ServiceMode.current {
+        case .production:
+            // LAUNCH TODO: Call Firebase Cloud Function "generateBio"
+            // POST /generateBio { interests, tone, platform }
+            // Parse response JSON → String bio
+            return try await generateMockBio(tone: tone)
+
+        case .mock:
+            return try await generateMockBio(tone: tone)
+        }
+    }
+
+    private func generateMockBio(tone: BioTone) async throws -> String {
         try await Task.sleep(nanoseconds: 1_500_000_000)
 
         let bios: [BioTone: [String]] = [
@@ -118,6 +130,18 @@ final class CoachService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
 
+        switch ServiceMode.current {
+        case .production:
+            // LAUNCH TODO: Call Firebase Cloud Function "generateOpeningLines"
+            // POST /generateOpeningLines { matchName, platform, context }
+            return try await generateMockOpeningLines(matchName: matchName, context: context)
+
+        case .mock:
+            return try await generateMockOpeningLines(matchName: matchName, context: context)
+        }
+    }
+
+    private func generateMockOpeningLines(matchName: String, context: String?) async throws -> [String] {
         try await Task.sleep(nanoseconds: 1_200_000_000)
 
         let lines: [[String]] = [
@@ -144,6 +168,17 @@ final class CoachService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
 
+        switch ServiceMode.current {
+        case .production:
+            // LAUNCH TODO: Call Firebase Cloud Function "generateHingePrompts"
+            return try await generateMockHingePrompts()
+
+        case .mock:
+            return try await generateMockHingePrompts()
+        }
+    }
+
+    private func generateMockHingePrompts() async throws -> [(prompt: String, answer: String)] {
         try await Task.sleep(nanoseconds: 1_000_000_000)
 
         let prompts: [(String, String)] = [
@@ -170,6 +205,18 @@ final class CoachService: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
 
+        switch ServiceMode.current {
+        case .production:
+            // LAUNCH TODO: Call Firebase Cloud Function "suggestReply"
+            // POST /suggestReply { message, matchName, conversationContext }
+            return try await generateMockReplies()
+
+        case .mock:
+            return try await generateMockReplies()
+        }
+    }
+
+    private func generateMockReplies() async throws -> [String] {
         try await Task.sleep(nanoseconds: 800_000_000)
 
         let replies = [
