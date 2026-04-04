@@ -86,7 +86,8 @@ final class AIGenerationService: ObservableObject {
     private struct ReplicatePrediction: Codable { let id: String; let status: String; let output: [String]?; let error: String? }
 
     private func createPrediction(prompt: String, negativePrompt: String, imageData: String?, count: Int) async throws -> ReplicatePrediction {
-        var request = URLRequest(url: URL(string: "\(AIAPIConfig.replicateBaseURL)/predictions")!)
+        guard let url = URL(string: "\(AIAPIConfig.replicateBaseURL)/predictions") else { throw GenerationError.apiError("Invalid URL") }
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Token \(AIAPIConfig.apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -102,7 +103,7 @@ final class AIGenerationService: ObservableObject {
     }
 
     private func pollPrediction(id: String, startProgress: Double, endProgress: Double) async throws -> [String] {
-        let url = URL(string: "\(AIAPIConfig.replicateBaseURL)/predictions/\(id)")!
+        guard let url = URL(string: "\(AIAPIConfig.replicateBaseURL)/predictions/\(id)") else { throw GenerationError.apiError("Invalid URL") }
         var request = URLRequest(url: url)
         request.setValue("Token \(AIAPIConfig.apiKey)", forHTTPHeaderField: "Authorization")
         let maxAttempts = 60
