@@ -19,7 +19,7 @@ class StorageService:
     def __init__(self):
         settings = get_settings()
         kwargs = {
-            "region_name": settings.s3_region,
+            "region_name": settings.aws_region,
             "aws_access_key_id": settings.aws_access_key_id,
             "aws_secret_access_key": settings.aws_secret_access_key,
             "config": Config(signature_version="s3v4"),

@@ -23,6 +23,9 @@ struct GigaRizzApp: App {
     // MARK: - SDK Initialization
 
     init() {
+        // Skip all SDK init when running as a test host
+        guard !Self.isRunningTests else { return }
+
         // 1. Firebase
         FirebaseApp.configure()
 
@@ -35,6 +38,12 @@ struct GigaRizzApp: App {
         phConfig.captureApplicationLifecycleEvents = true
         phConfig.captureScreenViews = true
         PostHogSDK.shared.setup(phConfig)
+    }
+
+    /// Detect if the process is being launched as a test host.
+    private static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            || NSClassFromString("XCTestCase") != nil
     }
 
     var body: some Scene {

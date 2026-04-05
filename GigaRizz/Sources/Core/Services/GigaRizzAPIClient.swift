@@ -1,3 +1,4 @@
+import FirebaseAuth
 import Foundation
 
 /// Networking client for the GigaRizz FastAPI backend.
@@ -33,10 +34,31 @@ actor GigaRizzAPIClient {
 
     /// Get the current Firebase ID token for authenticated requests.
     private func authToken() async -> String? {
-        // In production, get from FirebaseAuth:
-        // try? await Auth.auth().currentUser?.getIDTokenResult().token
-        // For dev, return nil (backend accepts unauthenticated in dev mode)
+        #if DEBUG
+        // Dev mode: backend accepts unauthenticated requests
         return nil
+        #else
+        // Production: get Firebase ID token
+        do {
+            return try await withCheckedThrowingContinuation { continuation in
+                Task { @MainActor in
+                    guard let user = AuthManager.shared.currentUser else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    user.getIDToken { token, error in
+                        if let token {
+                            continuation.resume(returning: token)
+                        } else {
+                            continuation.resume(returning: nil)
+                        }
+                    }
+                }
+            }
+        } catch {
+            return nil
+        }
+        #endif
     }
 
     // MARK: - Feature Flags

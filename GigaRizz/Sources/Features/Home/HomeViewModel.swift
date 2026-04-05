@@ -101,25 +101,25 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Recent Generations
     
     private func loadRecentGenerations() {
-        // In production, fetch from Firestore. Mock data shown only in DEBUG builds.
-        let hasGenerated = UserDefaults.standard.bool(forKey: "hasGeneratedPhotos")
-        if hasGenerated && recentGenerations.isEmpty {
-            #if DEBUG
-            recentGenerations = [
-                RecentGeneration(
-                    id: "demo1",
-                    style: "Confident",
-                    date: Date().addingTimeInterval(-3600),
-                    photoCount: 5
-                ),
-                RecentGeneration(
-                    id: "demo2",
-                    style: "Adventurous",
-                    date: Date().addingTimeInterval(-86400),
-                    photoCount: 4
+        // Load from gallery persistent storage (shared with GalleryViewModel)
+        let photosKey = "gigarizz_generated_photos"
+        if let data = UserDefaults.standard.data(forKey: photosKey),
+           let photos = try? JSONDecoder().decode([GeneratedPhoto].self, from: data),
+           !photos.isEmpty {
+            // Group by style and take the most recent of each
+            let sorted = photos.sorted { $0.createdAt > $1.createdAt }
+            let grouped = Dictionary(grouping: sorted, by: { $0.style })
+            recentGenerations = grouped.prefix(5).compactMap { style, photos in
+                guard let latest = photos.first else { return nil }
+                return RecentGeneration(
+                    id: latest.id,
+                    style: style,
+                    date: latest.createdAt,
+                    photoCount: photos.count
                 )
-            ]
-            #endif
+            }.sorted { $0.date > $1.date }
+        } else {
+            recentGenerations = []
         }
     }
     

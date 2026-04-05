@@ -42,18 +42,66 @@ final class RizzCoachViewModel: ObservableObject {
     // MARK: - Init
 
     init() {
-        loadDemoData()
+        loadLocalData()
     }
 
     // MARK: - Data Loading
 
-    func loadDemoData() {
-        rizzScore = RizzScore.demo
-        weeklyReport = WeeklyRizzReport.demo
-        photoPerformances = PhotoPerformance.demoPerformances
-        bioStrength = BioStrength.demo
-        responseTimeStats = ResponseTimeStats.demo
-        dailyTip = DailyTip.demo
+    /// Load from local gallery data to derive scores, or fall back to demo in DEBUG.
+    private func loadLocalData() {
+        // Derive photo count from real gallery data
+        let photosKey = "gigarizz_generated_photos"
+        var photoCount = 0
+        var styleCount = 0
+        if let data = UserDefaults.standard.data(forKey: photosKey),
+           let photos = try? JSONDecoder().decode([GeneratedPhoto].self, from: data) {
+            photoCount = photos.count
+            styleCount = Set(photos.map { $0.style }).count
+        }
+
+        if photoCount > 0 {
+            // Build a real-ish score based on actual usage
+            let photoScore = min(100, 50 + photoCount * 3)
+            let bioScore = 65 // Will be updated when bio is analyzed by backend
+            let activityScore = min(100, 40 + photoCount * 5)
+            let overallScore = (photoScore * 35 + bioScore * 25 + activityScore * 20 + 60 * 15 + 70 * 10) / 100
+
+            rizzScore = RizzScore(
+                overallScore: overallScore,
+                categories: [
+                    RizzScoreCategory(name: "Photos", score: photoScore, weight: 0.35, icon: "photo.fill"),
+                    RizzScoreCategory(name: "Bio", score: bioScore, weight: 0.25, icon: "text.quote"),
+                    RizzScoreCategory(name: "Activity", score: activityScore, weight: 0.20, icon: "chart.line.uptrend.xyaxis"),
+                    RizzScoreCategory(name: "Response Time", score: 60, weight: 0.15, icon: "clock.fill"),
+                    RizzScoreCategory(name: "Prompts", score: 70, weight: 0.10, icon: "text.badge.star")
+                ],
+                previousScore: nil,
+                trend: .stable
+            )
+            photoPerformances = []
+            weeklyReport = nil
+            bioStrength = nil
+            responseTimeStats = nil
+            dailyTip = DailyTip.demo // Tips are always useful
+        } else {
+            #if DEBUG
+            // Demo data for previews/development only
+            rizzScore = RizzScore.demo
+            weeklyReport = WeeklyRizzReport.demo
+            photoPerformances = PhotoPerformance.demoPerformances
+            bioStrength = BioStrength.demo
+            responseTimeStats = ResponseTimeStats.demo
+            dailyTip = DailyTip.demo
+            #else
+            // Production: show empty state prompting user to generate photos
+            rizzScore = nil
+            weeklyReport = nil
+            photoPerformances = []
+            bioStrength = nil
+            responseTimeStats = nil
+            dailyTip = DailyTip.demo
+            #endif
+        }
         lastRefreshDate = Date()
     }
 
@@ -64,8 +112,16 @@ final class RizzCoachViewModel: ObservableObject {
 
         do {
             try await Task.sleep(nanoseconds: 800_000_000)
-            // In production: fetch from backend/local storage
-            loadDemoData()
+            let previousScore = rizzScore?.overallScore
+            loadLocalData()
+            if let prev = previousScore {
+                rizzScore = RizzScore(
+                    overallScore: rizzScore?.overallScore ?? 0,
+                    categories: rizzScore?.categories ?? [],
+                    previousScore: prev,
+                    trend: (rizzScore?.overallScore ?? 0) > prev ? .improving : .stable
+                )
+            }
             animateScoreIncrease()
             DesignSystem.Haptics.success()
         } catch {
@@ -82,8 +138,16 @@ final class RizzCoachViewModel: ObservableObject {
 
         do {
             try await Task.sleep(nanoseconds: 1_500_000_000)
-            // Aggregate from: photo scoring history, bio analysis, match activity
-            rizzScore = RizzScore.demo
+            let previousScore = rizzScore?.overallScore
+            loadLocalData()
+            if let prev = previousScore {
+                rizzScore = RizzScore(
+                    overallScore: rizzScore?.overallScore ?? 0,
+                    categories: rizzScore?.categories ?? [],
+                    previousScore: prev,
+                    trend: (rizzScore?.overallScore ?? 0) > prev ? .improving : .stable
+                )
+            }
             animateScoreIncrease()
             DesignSystem.Haptics.medium()
         } catch {

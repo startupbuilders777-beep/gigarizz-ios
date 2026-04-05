@@ -3,7 +3,11 @@ import SwiftUI
 
 @MainActor
 final class MatchesViewModel: ObservableObject {
+    #if DEBUG
     @Published var matches: [Match] = Match.demoMatches
+    #else
+    @Published var matches: [Match] = []
+    #endif
 
     var activeCount: Int { matches.filter { $0.status == .active }.count }
     var staleCount: Int { matches.filter { $0.status == .stale || $0.isStale }.count }

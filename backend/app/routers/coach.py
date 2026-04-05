@@ -34,7 +34,7 @@ async def generate_bio(
 ):
     """Generate an optimized dating profile bio."""
     # Moderate input
-    combined_text = " ".join(req.interests + [req.vibe or ""])
+    combined_text = " ".join(req.interests)
     if combined_text.strip():
         mod_result = await mod_svc.check_text(combined_text)
         if mod_result.get("flagged"):
@@ -45,7 +45,8 @@ async def generate_bio(
             interests=req.interests,
             tone=req.tone.value if req.tone else "witty",
             platform=req.platform.value if req.platform else "hinge",
-            vibe=req.vibe,
+            age=req.age,
+            gender=req.gender,
         )
         return BioResponse(
             bio=result["bio"],
@@ -71,7 +72,9 @@ async def generate_openers(
 
     try:
         openers = await coach.generate_openers(
-            profile_context=req.profile_context,
+            match_name="match",
+            platform="generic",
+            context=req.profile_context,
             count=req.count or 5,
         )
         return OpenersResponse(openers=openers)
@@ -110,8 +113,9 @@ async def suggest_reply(
 
     try:
         replies = await coach.suggest_replies(
-            conversation_context=req.conversation_context,
-            their_message=req.their_message,
+            message=req.their_message,
+            match_name="match",
+            conversation_context=" | ".join(req.conversation_context) if req.conversation_context else None,
         )
         return ReplyResponse(replies=replies)
     except Exception as e:

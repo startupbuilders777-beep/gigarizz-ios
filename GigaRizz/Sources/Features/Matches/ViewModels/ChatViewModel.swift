@@ -44,7 +44,11 @@ final class ChatViewModel: ObservableObject {
 
     init(match: Match, messages: [ChatMessage] = []) {
         self.match = match
+        #if DEBUG
         self.messages = messages.isEmpty ? ChatMessage.demoConversation : messages
+        #else
+        self.messages = messages
+        #endif
 
         // Generate initial suggestions if there's an unread message
         if hasUnreadMessages {

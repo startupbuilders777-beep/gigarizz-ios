@@ -172,8 +172,13 @@ final class GeneratedPhotosGalleryViewModel: ObservableObject {
            let photos = try? JSONDecoder().decode([GeneratedPhoto].self, from: data) {
             allPhotos = photos.map { GalleryPhotoItem(photo: $0, platformTag: inferPlatform(from: $0)) }
         } else {
-            // Load demo photos for preview
+            #if DEBUG
+            // Load demo photos for preview/development only
             loadDemoPhotos()
+            #else
+            // Production: start with empty gallery
+            allPhotos = []
+            #endif
         }
 
         // Load albums

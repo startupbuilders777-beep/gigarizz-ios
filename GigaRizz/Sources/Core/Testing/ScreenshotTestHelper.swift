@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if DEBUG
 /// Utility for generating marketing screenshots and automated visual testing.
 @MainActor
 final class ScreenshotTestHelper: ObservableObject {
@@ -55,6 +56,7 @@ final class ScreenshotTestHelper: ObservableObject {
     var totalScreenCount: Int { allScreenConfigs().count }
     func screens(for category: ScreenCategory) -> [ScreenConfig] { allScreenConfigs().filter { $0.category == category } }
 }
+#endif // DEBUG
 
 #if DEBUG
 struct ScreenshotGalleryView: View {

@@ -19,35 +19,22 @@ from app.services.storage_service import StorageService
 
 @lru_cache()
 def get_generation_service() -> GenerationService:
-    settings = get_settings()
-    return GenerationService(replicate_api_token=settings.replicate_api_token)
+    return GenerationService()
 
 
 @lru_cache()
 def get_coach_service() -> CoachService:
-    settings = get_settings()
-    return CoachService(openai_api_key=settings.openai_api_key)
+    return CoachService()
 
 
 @lru_cache()
 def get_storage_service() -> StorageService:
-    settings = get_settings()
-    return StorageService(
-        bucket_name=settings.s3_bucket_name,
-        aws_access_key_id=settings.aws_access_key_id,
-        aws_secret_access_key=settings.aws_secret_access_key,
-        endpoint_url=settings.s3_endpoint_url,
-        region_name=settings.aws_region,
-    )
+    return StorageService()
 
 
 @lru_cache()
 def get_moderation_service() -> ModerationService:
-    settings = get_settings()
-    return ModerationService(
-        openai_api_key=settings.openai_api_key,
-        enabled=settings.moderation_enabled,
-    )
+    return ModerationService()
 
 
 # --- Auth shortcut ---

@@ -100,7 +100,6 @@ struct GenerationResultView: View {
 
     private func generatedPhotoCard(photo: GeneratedPhoto, index: Int) -> some View {
         VStack(spacing: DesignSystem.Spacing.small) {
-            // Placeholder — in production this would load from photo.imageURL
             ZStack {
                 RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
                     .fill(
@@ -111,24 +110,46 @@ struct GenerationResultView: View {
                         )
                     )
 
-                VStack(spacing: DesignSystem.Spacing.medium) {
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 80, weight: .ultraLight))
-                        .foregroundStyle(.white.opacity(0.5))
-
-                    Text("AI Generated Photo")
-                        .font(DesignSystem.Typography.callout)
-                        .foregroundStyle(.white.opacity(0.7))
-
-                    Text("#\(index + 1)")
-                        .font(DesignSystem.Typography.scoreLarge)
-                        .foregroundStyle(.white)
+                if let url = photo.imageURL {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            placeholderContent(index: index)
+                        case .empty:
+                            ProgressView()
+                                .tint(.white)
+                        @unknown default:
+                            placeholderContent(index: index)
+                        }
+                    }
+                } else {
+                    placeholderContent(index: index)
                 }
             }
             .frame(height: 380)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
             .padding(.horizontal, DesignSystem.Spacing.large)
             .cardShadow()
+        }
+    }
+
+    private func placeholderContent(index: Int) -> some View {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            Image(systemName: "person.fill")
+                .font(.system(size: 80, weight: .ultraLight))
+                .foregroundStyle(.white.opacity(0.5))
+
+            Text("AI Generated Photo")
+                .font(DesignSystem.Typography.callout)
+                .foregroundStyle(.white.opacity(0.7))
+
+            Text("#\(index + 1)")
+                .font(DesignSystem.Typography.scoreLarge)
+                .foregroundStyle(.white)
         }
     }
 

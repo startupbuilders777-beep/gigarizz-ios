@@ -143,6 +143,9 @@ class UserProfile(BaseModel):
 
 class UserAnalytics(BaseModel):
     total_generations: int = 0
+    successful_generations: int = 0
+    generations_today: int = 0
+    favorite_style: str | None = None
     total_matches: int = 0
     match_rate: float = 0.0
     top_style: str = "professional"

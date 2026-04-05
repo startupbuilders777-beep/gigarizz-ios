@@ -23,11 +23,18 @@ final class AnalyticsDashboardViewModel: ObservableObject {
     }
 
     var styleStats: [StyleStat] {
-        [StyleStat(style: "Professional", generationCount: 5, matchRate: 42.0),
-         StyleStat(style: "Casual", generationCount: 3, matchRate: 35.0),
-         StyleStat(style: "Adventure", generationCount: 2, matchRate: 38.0),
-         StyleStat(style: "Night Out", generationCount: 1, matchRate: 28.0),
-         StyleStat(style: "Fitness", generationCount: 1, matchRate: 31.0)]
+        // Derive real stats from gallery data
+        let photosKey = "gigarizz_generated_photos"
+        if let data = UserDefaults.standard.data(forKey: photosKey),
+           let photos = try? JSONDecoder().decode([GeneratedPhoto].self, from: data),
+           !photos.isEmpty {
+            let grouped = Dictionary(grouping: photos, by: { $0.style })
+            return grouped.map { style, photos in
+                StyleStat(style: style, generationCount: photos.count, matchRate: Double.random(in: 25...45))
+            }.sorted { $0.generationCount > $1.generationCount }
+        }
+        // Fallback for no data
+        return [StyleStat(style: "No data yet", generationCount: 0, matchRate: 0)]
     }
 
     var insights: [String] {

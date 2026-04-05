@@ -37,8 +37,9 @@ async def create_generation(
     """
     settings = get_settings()
 
-    # Rate limit check (simple in-DB count)
+    # Rate limit check (simple in-DB count, daily max = 50)
     now = datetime.now(timezone.utc)
+    max_daily = 50
     result = await db.execute(
         select(GenerationJob).where(
             GenerationJob.user_id == user["uid"],
@@ -46,10 +47,10 @@ async def create_generation(
         )
     )
     today_jobs = result.scalars().all()
-    if len(today_jobs) >= settings.rate_limit_generations_per_day:
+    if len(today_jobs) >= max_daily:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail=f"Daily limit of {settings.rate_limit_generations_per_day} generations reached",
+            detail=f"Daily limit of {max_daily} generations reached",
         )
 
     # Moderate the prompt
@@ -67,8 +68,11 @@ async def create_generation(
         id=job_id,
         user_id=user["uid"],
         style=req.style.value,
-        prompt=req.prompt,
+        custom_prompt=req.prompt,
+        photo_count=req.photo_count,
+        source_image_urls=[req.source_image_url] if req.source_image_url else [],
         status="processing",
+        platform=req.platform,
     )
     db.add(job)
     await db.commit()
@@ -79,21 +83,23 @@ async def create_generation(
         if settings.webhook_base_url:
             webhook_url = f"{settings.webhook_base_url}/api/v1/generate/webhook"
 
-        prediction = await gen_svc.create_prediction(
-            prompt=gen_svc.STYLE_PROMPTS.get(req.style.value, req.prompt or "professional headshot"),
-            model=req.model or "flux_schnell",
+        prediction_id = await gen_svc.create_prediction(
+            job_id=job_id,
+            style=req.style.value,
+            source_image_urls=[req.source_image_url] if req.source_image_url else [],
+            photo_count=req.photo_count,
+            custom_prompt=req.prompt,
             webhook_url=webhook_url,
-            source_image_url=req.source_image_url,
         )
 
-        job.replicate_prediction_id = prediction.get("id")
+        job.replicate_prediction_id = prediction_id
         job.status = "processing"
         await db.commit()
 
     except Exception as e:
         logger.error("Failed to submit generation: %s", e)
         job.status = "failed"
-        job.error = str(e)
+        job.error_message = str(e)
         await db.commit()
         raise HTTPException(status_code=500, detail="Failed to start generation")
 
@@ -139,7 +145,7 @@ async def get_generation_status(
                 await db.commit()
             elif replicate_status == "failed":
                 job.status = "failed"
-                job.error = pred.get("error", "Generation failed")
+                job.error_message = pred.get("error", "Generation failed")
                 await db.commit()
             elif replicate_status == "processing":
                 logs = pred.get("logs", "")
@@ -163,8 +169,8 @@ async def get_generation_status(
         status=JobStatus(job.status),
         style=job.style,
         progress=job.progress,
-        result_urls=job.result_urls,
-        error=job.error,
+        result_urls=job.result_urls or [],
+        error=job.error_message,
         created_at=job.created_at,
         completed_at=job.completed_at,
     )
@@ -209,10 +215,10 @@ async def generation_webhook(
         job.completed_at = datetime.now(timezone.utc)
     elif prediction_status == "failed":
         job.status = "failed"
-        job.error = payload.get("error", "Generation failed")
+        job.error_message = payload.get("error", "Generation failed")
     elif prediction_status == "canceled":
         job.status = "failed"
-        job.error = "Generation was canceled"
+        job.error_message = "Generation was canceled"
 
     await db.commit()
     return {"status": "ok"}
@@ -246,5 +252,5 @@ async def cancel_generation(
             logger.warning("Failed to cancel Replicate prediction: %s", e)
 
     job.status = "failed"
-    job.error = "Canceled by user"
+    job.error_message = "Canceled by user"
     await db.commit()

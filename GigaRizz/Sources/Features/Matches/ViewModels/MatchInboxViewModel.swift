@@ -32,26 +32,42 @@ final class MatchInboxViewModel: ObservableObject {
     func loadMatches() {
         isLoading = true
 
-        #if DEBUG
-        // Demo data for previews and development
-        matches = Match.demoMatches.sorted { lhs, rhs in
-            if lhs.inboxSortPriority != rhs.inboxSortPriority {
-                return lhs.inboxSortPriority < rhs.inboxSortPriority
+        // Load persisted matches from UserDefaults
+        let matchesKey = "gigarizz_user_matches"
+        if let data = UserDefaults.standard.data(forKey: matchesKey),
+           let saved = try? JSONDecoder().decode([Match].self, from: data) {
+            matches = saved.sorted { lhs, rhs in
+                if lhs.inboxSortPriority != rhs.inboxSortPriority {
+                    return lhs.inboxSortPriority < rhs.inboxSortPriority
+                }
+                let lhsDate = lhs.lastMessageDate ?? lhs.matchedDate
+                let rhsDate = rhs.lastMessageDate ?? rhs.matchedDate
+                return lhsDate > rhsDate
             }
-            let lhsDate = lhs.lastMessageDate ?? lhs.matchedDate
-            let rhsDate = rhs.lastMessageDate ?? rhs.matchedDate
-            return lhsDate > rhsDate
+        } else {
+            #if DEBUG
+            // Demo data for previews and development
+            matches = Match.demoMatches.sorted { lhs, rhs in
+                if lhs.inboxSortPriority != rhs.inboxSortPriority {
+                    return lhs.inboxSortPriority < rhs.inboxSortPriority
+                }
+                let lhsDate = lhs.lastMessageDate ?? lhs.matchedDate
+                let rhsDate = rhs.lastMessageDate ?? rhs.matchedDate
+                return lhsDate > rhsDate
+            }
+            #else
+            // Production: start empty — user adds matches manually
+            matches = []
+            #endif
         }
 
-        // Seed demo messages for each match
+        // Seed demo messages for each match (debug only)
+        #if DEBUG
         for match in matches {
             if messagesCache[match.id] == nil {
                 messagesCache[match.id] = generateDemoMessages(for: match)
             }
         }
-        #else
-        // LAUNCH TODO: Fetch matches from Firestore
-        matches = []
         #endif
 
         // Simulate network delay

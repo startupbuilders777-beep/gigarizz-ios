@@ -43,7 +43,7 @@ async def get_current_user(
         email=db_user.email,
         display_name=db_user.display_name,
         tier=db_user.tier,
-        total_generations=db_user.total_generations,
+        total_generations=db_user.generation_count,
         created_at=db_user.created_at,
     )
 
