@@ -46,7 +46,7 @@ actor GigaRizzAPIClient {
                         continuation.resume(returning: nil)
                         return
                     }
-                    user.getIDToken { token, error in
+                    user.getIDToken { token, _ in
                         if let token {
                             continuation.resume(returning: token)
                         } else {
