@@ -31,19 +31,44 @@ class JobStatus(str, Enum):
     cancelled = "cancelled"
 
 
+class AIModelChoice(str, Enum):
+    """All AI models available for photo generation."""
+    flux_schnell = "flux_schnell"
+    flux_dev = "flux_dev"
+    flux_1_1_pro = "flux_1_1_pro"
+    sdxl = "sdxl"
+    sd3_medium = "sd3_medium"
+    fal_flux_schnell = "fal_flux_schnell"
+    fal_flux_dev = "fal_flux_dev"
+    fal_flux_pro = "fal_flux_pro"
+    dall_e_3 = "dall_e_3"
+    gpt_image_1 = "gpt_image_1"
+
+
 class GenerateRequest(BaseModel):
     style: GenerationStyle = GenerationStyle.professional
     prompt: str | None = None
-    model: str | None = None
+    model: AIModelChoice | None = AIModelChoice.flux_schnell
     source_image_url: str | None = None
     photo_count: int = Field(default=4, ge=1, le=8)
     platform: str = "tinder"
+
+
+class ModelInfo(BaseModel):
+    """AI model metadata for the model picker."""
+    id: str
+    name: str
+    provider: str
+    speed: str
+    quality: str
+    tier: str
 
 
 class GenerationJobResponse(BaseModel):
     job_id: str
     status: JobStatus
     style: str | None = None
+    model: str | None = None
     progress: float = 0.0
     created_at: datetime | None = None
     completed_at: datetime | None = None

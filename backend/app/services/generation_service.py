@@ -1,9 +1,10 @@
-"""Photo generation service using Replicate (SDXL/Flux) with webhook callbacks."""
+"""Photo generation service — multi-model engine supporting Replicate, fal.ai, and OpenAI."""
 
 from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from enum import Enum
 
 import httpx
 from nanoid import generate as nanoid
@@ -12,12 +13,67 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-# Replicate model versions for different quality tiers
-MODELS = {
-    "flux_schnell": "black-forest-labs/flux-schnell",  # Fast, good quality
-    "flux_dev": "black-forest-labs/flux-dev",  # Higher quality, slower
-    "sdxl": "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+
+# ── Supported Models ────────────────────────────────────────────────────────
+
+
+class AIModel(str, Enum):
+    """All generation models the backend can route to."""
+
+    # Replicate — Black Forest Labs Flux family
+    FLUX_SCHNELL = "flux_schnell"           # Fast, good quality (default)
+    FLUX_DEV = "flux_dev"                   # Higher quality, slower
+    FLUX_1_1_PRO = "flux_1_1_pro"           # Best quality Flux
+
+    # Replicate — Stability AI
+    SDXL = "sdxl"                           # Stable Diffusion XL
+    SD3_MEDIUM = "sd3_medium"               # Stable Diffusion 3
+
+    # fal.ai — fast inference (NanoBanana-compatible)
+    FAL_FLUX_SCHNELL = "fal_flux_schnell"   # Flux Schnell via fal.ai (fastest)
+    FAL_FLUX_DEV = "fal_flux_dev"           # Flux Dev via fal.ai
+    FAL_FLUX_PRO = "fal_flux_pro"           # Flux Pro via fal.ai
+
+    # OpenAI
+    DALL_E_3 = "dall_e_3"                   # DALL-E 3
+    GPT_IMAGE_1 = "gpt_image_1"            # GPT Image 1 (latest)
+
+
+# Replicate model identifiers
+REPLICATE_MODELS: dict[str, str] = {
+    AIModel.FLUX_SCHNELL: "black-forest-labs/flux-schnell",
+    AIModel.FLUX_DEV: "black-forest-labs/flux-dev",
+    AIModel.FLUX_1_1_PRO: "black-forest-labs/flux-1.1-pro",
+    AIModel.SDXL: "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+    AIModel.SD3_MEDIUM: "stability-ai/stable-diffusion-3-medium",
 }
+
+# fal.ai model identifiers
+FAL_MODELS: dict[str, str] = {
+    AIModel.FAL_FLUX_SCHNELL: "fal-ai/flux/schnell",
+    AIModel.FAL_FLUX_DEV: "fal-ai/flux/dev",
+    AIModel.FAL_FLUX_PRO: "fal-ai/flux-pro",
+}
+
+# OpenAI model identifiers
+OPENAI_MODELS: dict[str, str] = {
+    AIModel.DALL_E_3: "dall-e-3",
+    AIModel.GPT_IMAGE_1: "gpt-image-1",
+}
+
+# Human-readable info for the iOS model picker
+MODEL_CATALOG: list[dict] = [
+    {"id": "flux_schnell", "name": "Flux Schnell", "provider": "replicate", "speed": "fast", "quality": "good", "tier": "free"},
+    {"id": "flux_dev", "name": "Flux Dev", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus"},
+    {"id": "flux_1_1_pro", "name": "Flux 1.1 Pro", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold"},
+    {"id": "sdxl", "name": "SDXL", "provider": "replicate", "speed": "medium", "quality": "good", "tier": "free"},
+    {"id": "sd3_medium", "name": "SD3 Medium", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus"},
+    {"id": "fal_flux_schnell", "name": "Flux Schnell (fal)", "provider": "fal", "speed": "fastest", "quality": "good", "tier": "free"},
+    {"id": "fal_flux_dev", "name": "Flux Dev (fal)", "provider": "fal", "speed": "fast", "quality": "high", "tier": "plus"},
+    {"id": "fal_flux_pro", "name": "Flux Pro (fal)", "provider": "fal", "speed": "fast", "quality": "best", "tier": "gold"},
+    {"id": "dall_e_3", "name": "DALL-E 3", "provider": "openai", "speed": "medium", "quality": "high", "tier": "plus"},
+    {"id": "gpt_image_1", "name": "GPT Image 1", "provider": "openai", "speed": "medium", "quality": "best", "tier": "gold"},
+]
 
 # Style prompt templates for dating photos
 STYLE_PROMPTS: dict[str, str] = {
@@ -60,11 +116,16 @@ STYLE_PROMPTS: dict[str, str] = {
 
 
 class GenerationService:
-    """Handles AI photo generation via Replicate API."""
+    """Multi-model photo generation engine.
+
+    Routes requests to Replicate, fal.ai, or OpenAI based on the selected model.
+    """
 
     def __init__(self):
         self.settings = get_settings()
-        self.client = httpx.AsyncClient(
+
+        # Replicate client
+        self.replicate = httpx.AsyncClient(
             base_url="https://api.replicate.com/v1",
             headers={
                 "Authorization": f"Bearer {self.settings.replicate_api_token}",
@@ -74,6 +135,28 @@ class GenerationService:
             timeout=60.0,
         )
 
+        # fal.ai client
+        self.fal = httpx.AsyncClient(
+            base_url="https://queue.fal.run",
+            headers={
+                "Authorization": f"Key {self.settings.fal_key}",
+                "Content-Type": "application/json",
+            },
+            timeout=60.0,
+        )
+
+        # OpenAI client
+        self.openai = httpx.AsyncClient(
+            base_url="https://api.openai.com/v1",
+            headers={
+                "Authorization": f"Bearer {self.settings.openai_api_key}",
+                "Content-Type": "application/json",
+            },
+            timeout=120.0,
+        )
+
+    # ── Public API ──────────────────────────────────────────────────────
+
     async def create_prediction(
         self,
         job_id: str,
@@ -82,23 +165,73 @@ class GenerationService:
         photo_count: int = 4,
         custom_prompt: str | None = None,
         webhook_url: str | None = None,
+        model: str | None = None,
     ) -> str:
-        """Create a Replicate prediction for photo generation.
+        """Create a prediction using the requested model (or default).
 
-        Returns the Replicate prediction ID.
+        Returns a provider-specific prediction/request ID.
         """
-        # Build prompt
+        model_key = model or AIModel.FLUX_SCHNELL
         prompt = custom_prompt or STYLE_PROMPTS.get(style, STYLE_PROMPTS["professional"])
         prompt = prompt.replace("{subject}", "a person")
 
-        # Use Flux Schnell for fast generation
-        model = MODELS["flux_schnell"]
+        # Route to the correct provider
+        if model_key in FAL_MODELS:
+            return await self._create_fal(job_id, model_key, prompt, source_image_urls, photo_count)
+        elif model_key in OPENAI_MODELS:
+            return await self._create_openai(job_id, model_key, prompt, photo_count)
+        else:
+            # Default: Replicate
+            return await self._create_replicate(
+                job_id, model_key, prompt, source_image_urls, photo_count, webhook_url
+            )
 
-        payload = {
+    async def check_prediction(self, prediction_id: str, model: str | None = None) -> dict:
+        """Poll a prediction for status. Routes to correct provider."""
+        model_key = model or AIModel.FLUX_SCHNELL
+
+        if model_key in FAL_MODELS:
+            return await self._check_fal(prediction_id, model_key)
+        elif model_key in OPENAI_MODELS:
+            # OpenAI is synchronous — we stored results at creation time
+            return {"status": "succeeded", "id": prediction_id}
+        else:
+            return await self._check_replicate(prediction_id)
+
+    async def cancel_prediction(self, prediction_id: str, model: str | None = None) -> None:
+        """Cancel an in-progress prediction."""
+        model_key = model or AIModel.FLUX_SCHNELL
+
+        if model_key in FAL_MODELS:
+            try:
+                fal_model = FAL_MODELS[model_key]
+                await self.fal.put(f"/{fal_model}/requests/{prediction_id}/cancel")
+            except httpx.HTTPError:
+                logger.warning("Failed to cancel fal.ai request %s", prediction_id)
+        elif model_key not in OPENAI_MODELS:
+            try:
+                await self.replicate.post(f"/predictions/{prediction_id}/cancel")
+            except httpx.HTTPError:
+                logger.warning("Failed to cancel Replicate prediction %s", prediction_id)
+
+    def generate_job_id(self) -> str:
+        """Generate a URL-safe nanoid for job identification."""
+        return nanoid(size=21)
+
+    # ── Replicate Provider ──────────────────────────────────────────────
+
+    async def _create_replicate(
+        self, job_id: str, model_key: str, prompt: str,
+        source_image_urls: list[str], photo_count: int,
+        webhook_url: str | None,
+    ) -> str:
+        replicate_model = REPLICATE_MODELS.get(model_key, REPLICATE_MODELS[AIModel.FLUX_SCHNELL])
+
+        payload: dict = {
             "input": {
                 "prompt": prompt,
                 "num_outputs": min(photo_count, 4),
-                "aspect_ratio": "3:4",  # Portrait orientation for dating apps
+                "aspect_ratio": "3:4",
                 "output_format": "webp",
                 "output_quality": 90,
                 "go_fast": True,
@@ -109,54 +242,126 @@ class GenerationService:
             payload["webhook"] = webhook_url
             payload["webhook_events_filter"] = ["completed"]
 
-        # If we have source images, use img2img with face reference
         if source_image_urls:
             payload["input"]["image"] = source_image_urls[0]
 
-        response = await self.client.post(
-            f"/models/{model}/predictions",
-            json=payload,
-        )
+        response = await self.replicate.post(f"/models/{replicate_model}/predictions", json=payload)
         response.raise_for_status()
         data = response.json()
-
         prediction_id = data.get("id", "")
-        logger.info("Created prediction %s for job %s", prediction_id, job_id)
+        logger.info("Replicate prediction %s for job %s (model=%s)", prediction_id, job_id, model_key)
         return prediction_id
 
-    async def check_prediction(self, prediction_id: str) -> dict:
-        """Poll a Replicate prediction for status."""
-        response = await self.client.get(f"/predictions/{prediction_id}")
+    async def _check_replicate(self, prediction_id: str) -> dict:
+        response = await self.replicate.get(f"/predictions/{prediction_id}")
         response.raise_for_status()
         return response.json()
 
-    async def cancel_prediction(self, prediction_id: str) -> None:
-        """Cancel an in-progress prediction."""
-        try:
-            await self.client.post(f"/predictions/{prediction_id}/cancel")
-        except httpx.HTTPError:
-            logger.warning("Failed to cancel prediction %s", prediction_id)
+    # ── fal.ai Provider ─────────────────────────────────────────────────
 
-    async def wait_for_prediction(self, prediction_id: str, max_polls: int = 60) -> dict:
-        """Poll until prediction completes (up to ~5 minutes)."""
-        import asyncio
+    async def _create_fal(
+        self, job_id: str, model_key: str, prompt: str,
+        source_image_urls: list[str], photo_count: int,
+    ) -> str:
+        fal_model = FAL_MODELS[model_key]
 
-        for _ in range(max_polls):
-            result = await self.check_prediction(prediction_id)
-            status = result.get("status")
+        payload: dict = {
+            "prompt": prompt,
+            "num_images": min(photo_count, 4),
+            "image_size": {"width": 768, "height": 1024},  # 3:4 portrait
+            "output_format": "jpeg",
+            "enable_safety_checker": True,
+        }
 
-            if status == "succeeded":
-                return result
-            elif status in ("failed", "canceled"):
-                raise Exception(f"Prediction {status}: {result.get('error', 'Unknown')}")
+        if source_image_urls:
+            payload["image_url"] = source_image_urls[0]
 
-            await asyncio.sleep(5)
+        response = await self.fal.post(f"/{fal_model}", json=payload)
+        response.raise_for_status()
+        data = response.json()
+        request_id = data.get("request_id", "")
+        logger.info("fal.ai request %s for job %s (model=%s)", request_id, job_id, model_key)
+        return request_id
 
-        raise TimeoutError(f"Prediction {prediction_id} timed out")
+    async def _check_fal(self, request_id: str, model_key: str) -> dict:
+        fal_model = FAL_MODELS[model_key]
+        response = await self.fal.get(f"/{fal_model}/requests/{request_id}/status")
+        response.raise_for_status()
+        data = response.json()
 
-    def generate_job_id(self) -> str:
-        """Generate a URL-safe nanoid for job identification."""
-        return nanoid(size=21)
+        fal_status = data.get("status", "")
+
+        if fal_status == "COMPLETED":
+            # Fetch the actual result
+            result_resp = await self.fal.get(f"/{fal_model}/requests/{request_id}")
+            result_resp.raise_for_status()
+            result = result_resp.json()
+            images = result.get("images", [])
+            urls = [img.get("url", "") for img in images if img.get("url")]
+            return {"status": "succeeded", "output": urls, "id": request_id}
+        elif fal_status == "FAILED":
+            return {"status": "failed", "error": data.get("error", "fal.ai generation failed"), "id": request_id}
+        elif fal_status == "IN_QUEUE":
+            queue_pos = data.get("queue_position", 0)
+            return {"status": "processing", "logs": f"Queue position: {queue_pos}", "id": request_id}
+        else:
+            return {"status": "processing", "id": request_id}
+
+    # ── OpenAI Provider ─────────────────────────────────────────────────
+
+    async def _create_openai(
+        self, job_id: str, model_key: str, prompt: str, photo_count: int,
+    ) -> str:
+        """OpenAI image generation is synchronous — returns results immediately."""
+        openai_model = OPENAI_MODELS[model_key]
+
+        if openai_model == "gpt-image-1":
+            # GPT Image 1 API
+            payload = {
+                "model": "gpt-image-1",
+                "prompt": prompt,
+                "n": min(photo_count, 4),
+                "size": "1024x1536",  # Portrait
+                "quality": "high",
+            }
+            response = await self.openai.post("/images/generations", json=payload)
+        else:
+            # DALL-E 3
+            payload = {
+                "model": "dall-e-3",
+                "prompt": prompt,
+                "n": 1,  # DALL-E 3 only supports n=1
+                "size": "1024x1792",  # Portrait
+                "quality": "hd",
+                "style": "natural",
+            }
+            response = await self.openai.post("/images/generations", json=payload)
+
+        response.raise_for_status()
+        data = response.json()
+
+        # Store the result URLs in a predictable format
+        images = data.get("data", [])
+        urls = [img.get("url", "") for img in images if img.get("url")]
+
+        # For OpenAI we return a synthetic ID — the results are already available
+        synthetic_id = f"openai_{nanoid(size=12)}"
+        # We'll store results via the caller since OpenAI is synchronous
+        logger.info("OpenAI generation %s for job %s (model=%s), got %d images",
+                     synthetic_id, job_id, model_key, len(urls))
+        # Stash URLs on the instance so the router can grab them
+        self._openai_results[synthetic_id] = urls
+        return synthetic_id
+
+    _openai_results: dict[str, list[str]] = {}
+
+    def pop_openai_results(self, prediction_id: str) -> list[str] | None:
+        """Retrieve and remove stored OpenAI results."""
+        return self._openai_results.pop(prediction_id, None)
+
+    # ── Cleanup ─────────────────────────────────────────────────────────
 
     async def close(self):
-        await self.client.aclose()
+        await self.replicate.aclose()
+        await self.fal.aclose()
+        await self.openai.aclose()

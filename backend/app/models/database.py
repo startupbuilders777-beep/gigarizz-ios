@@ -19,6 +19,7 @@ class GenerationJob(Base):
     id = Column(String(21), primary_key=True)  # nanoid
     user_id = Column(String(128), nullable=False, index=True)
     style = Column(String(50), nullable=False)
+    model = Column(String(50), default="flux_schnell")
     custom_prompt = Column(Text, nullable=True)
     photo_count = Column(Integer, default=4)
     source_image_urls = Column(JSON, default=list)

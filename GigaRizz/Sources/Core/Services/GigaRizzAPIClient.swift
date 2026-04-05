@@ -87,8 +87,8 @@ actor GigaRizzAPIClient {
         let error: String?
     }
 
-    func submitGeneration(style: String, prompt: String? = nil, sourceImageUrl: String? = nil) async throws -> GenerationJobResponse {
-        let req = GenerateRequest(style: style, prompt: prompt, model: "flux_schnell", sourceImageUrl: sourceImageUrl)
+    func submitGeneration(style: String, prompt: String? = nil, model: String = "flux_schnell", sourceImageUrl: String? = nil) async throws -> GenerationJobResponse {
+        let req = GenerateRequest(style: style, prompt: prompt, model: model, sourceImageUrl: sourceImageUrl)
         return try await post("/api/v1/generate", body: req)
     }
 
@@ -98,6 +98,12 @@ actor GigaRizzAPIClient {
 
     func cancelGeneration(jobId: String) async throws {
         try await delete("/api/v1/generate/\(jobId)")
+    }
+
+    // MARK: - Models
+
+    func fetchModels() async throws -> [AIModel] {
+        try await get("/api/v1/generate/models")
     }
 
     // MARK: - Coach

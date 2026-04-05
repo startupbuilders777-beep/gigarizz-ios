@@ -13,8 +13,8 @@ from app.config import get_settings
 from app.deps import get_generation_service, get_moderation_service, get_storage_service
 from app.middleware.auth import verify_firebase_token
 from app.models.database import GenerationJob, get_db
-from app.models.schemas import GenerateRequest, GenerationJobResponse, JobStatus
-from app.services.generation_service import GenerationService
+from app.models.schemas import GenerateRequest, GenerationJobResponse, JobStatus, ModelInfo
+from app.services.generation_service import GenerationService, MODEL_CATALOG, OPENAI_MODELS
 from app.services.moderation_service import ModerationService
 from app.services.storage_service import StorageService
 
@@ -64,10 +64,12 @@ async def create_generation(
 
     # Create job record
     job_id = gen_svc.generate_job_id()
+    selected_model = req.model.value if req.model else "flux_schnell"
     job = GenerationJob(
         id=job_id,
         user_id=user["uid"],
         style=req.style.value,
+        model=selected_model,
         custom_prompt=req.prompt,
         photo_count=req.photo_count,
         source_image_urls=[req.source_image_url] if req.source_image_url else [],
@@ -90,10 +92,20 @@ async def create_generation(
             photo_count=req.photo_count,
             custom_prompt=req.prompt,
             webhook_url=webhook_url,
+            model=selected_model,
         )
 
         job.replicate_prediction_id = prediction_id
         job.status = "processing"
+
+        # OpenAI models return results synchronously
+        openai_urls = gen_svc.pop_openai_results(prediction_id)
+        if openai_urls:
+            job.status = "completed"
+            job.result_urls = openai_urls
+            job.progress = 1.0
+            job.completed_at = datetime.now(timezone.utc)
+
         await db.commit()
 
     except Exception as e:
@@ -105,10 +117,18 @@ async def create_generation(
 
     return GenerationJobResponse(
         job_id=job_id,
-        status=JobStatus.processing,
+        status=JobStatus(job.status),
         style=req.style,
+        model=selected_model,
         created_at=job.created_at,
+        result_urls=job.result_urls or [],
     )
+
+
+@router.get("/models", response_model=list[ModelInfo])
+async def list_models():
+    """List all available AI models for photo generation."""
+    return [ModelInfo(**m) for m in MODEL_CATALOG]
 
 
 @router.get("/{job_id}", response_model=GenerationJobResponse)
@@ -129,10 +149,10 @@ async def get_generation_status(
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    # Poll Replicate if still processing
+    # Poll Replicate / fal.ai if still processing
     if job.status == "processing" and job.replicate_prediction_id:
         try:
-            pred = await gen_svc.check_prediction(job.replicate_prediction_id)
+            pred = await gen_svc.check_prediction(job.replicate_prediction_id, model=job.model)
             replicate_status = pred.get("status", "")
 
             if replicate_status == "succeeded":
@@ -168,6 +188,7 @@ async def get_generation_status(
         job_id=job.id,
         status=JobStatus(job.status),
         style=job.style,
+        model=job.model,
         progress=job.progress,
         result_urls=job.result_urls or [],
         error=job.error_message,
@@ -247,7 +268,7 @@ async def cancel_generation(
 
     if job.replicate_prediction_id:
         try:
-            await gen_svc.cancel_prediction(job.replicate_prediction_id)
+            await gen_svc.cancel_prediction(job.replicate_prediction_id, model=job.model)
         except Exception as e:
             logger.warning("Failed to cancel Replicate prediction: %s", e)
 

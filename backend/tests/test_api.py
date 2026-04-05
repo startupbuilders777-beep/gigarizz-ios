@@ -117,6 +117,29 @@ async def test_delete_user_data(client: AsyncClient):
 
 
 @pytest.mark.asyncio
+async def test_list_models(client: AsyncClient):
+    """GET /api/v1/generate/models returns available AI models."""
+    resp = await client.get("/api/v1/generate/models")
+    assert resp.status_code == 200
+    models = resp.json()
+    assert isinstance(models, list)
+    assert len(models) == 10  # 5 Replicate + 3 fal + 2 OpenAI
+    # Verify shape
+    for m in models:
+        assert "id" in m
+        assert "name" in m
+        assert "provider" in m
+        assert "speed" in m
+        assert "quality" in m
+        assert "tier" in m
+        assert m["provider"] in ("replicate", "fal", "openai")
+        assert m["tier"] in ("free", "plus", "gold")
+    # flux_schnell should be first and free
+    assert models[0]["id"] == "flux_schnell"
+    assert models[0]["tier"] == "free"
+
+
+@pytest.mark.asyncio
 async def test_create_generation_returns_job(client: AsyncClient):
     """POST /api/v1/generate creates a job and returns 202.
 

@@ -3,15 +3,19 @@ import UIKit
 
 // MARK: - Service Mode
 
-/// Switch to `.production` when Cloud Functions are deployed.
+/// Switch to `.production` when backend is deployed.
 /// In `.mock`, the app returns demo photos with simulated progress.
-/// In `.production`, it calls Firebase Cloud Functions for real AI generation.
+/// In `.production`, it calls the GigaRizz backend for real AI generation.
 enum ServiceMode {
     case mock
     case production
 
-    // LAUNCH TODO: Switch to .production when Cloud Functions are deployed
+    /// Uses mock in DEBUG, production in release builds.
+    #if DEBUG
     static let current: ServiceMode = .mock
+    #else
+    static let current: ServiceMode = .production
+    #endif
 }
 
 // MARK: - AI Generation Service
@@ -56,6 +60,7 @@ final class AIGenerationService: ObservableObject {
         style: StylePreset,
         userId: String,
         count: Int = 4,
+        model: AIModel = AIModel.default,
         allowSinglePhoto: Bool = false
     ) async throws -> GenerationResult {
         guard !sourceImages.isEmpty else {
@@ -79,7 +84,7 @@ final class AIGenerationService: ObservableObject {
             case .mock:
                 return try await generateMockPhotos(userId: userId, style: style, count: count, startTime: startTime)
             case .production:
-                return try await generateViaBackend(userId: userId, style: style, count: count, startTime: startTime)
+                return try await generateViaBackend(userId: userId, style: style, count: count, model: model, startTime: startTime)
             }
         } catch is CancellationError {
             isGenerating = false
@@ -139,12 +144,13 @@ final class AIGenerationService: ObservableObject {
 
     // MARK: - Backend Generation
 
-    private func generateViaBackend(userId: String, style: StylePreset, count: Int, startTime: Date) async throws -> GenerationResult {
+    private func generateViaBackend(userId: String, style: StylePreset, count: Int, model: AIModel, startTime: Date) async throws -> GenerationResult {
         // 1. Submit job to backend
         generationProgress = 0.05
         let job = try await GigaRizzAPIClient.shared.submitGeneration(
             style: style.name.lowercased().replacingOccurrences(of: " ", with: "_"),
-            prompt: style.prompt
+            prompt: style.prompt,
+            model: model.id
         )
 
         // 2. Poll for completion

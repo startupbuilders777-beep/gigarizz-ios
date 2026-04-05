@@ -11,6 +11,8 @@ final class GenerateViewModel: ObservableObject {
     @Published var selectedPhotos: [SelectedPhotoItem] = []
     @Published var photosPickerItems: [PhotosPickerItem] = []
     @Published var selectedStyle: StylePreset?
+    @Published var selectedModel: AIModel = AIModel.default
+    @Published var availableModels: [AIModel] = AIModel.defaultModels
     @Published var generatedPhotos: [GeneratedPhoto] = []
     @Published var isLoadingPhotos = false
     @Published var isGenerating = false
@@ -49,6 +51,22 @@ final class GenerateViewModel: ObservableObject {
             return "Creating magic ✨"
         } else {
             return "Almost done!"
+        }
+    }
+
+    // MARK: - Load Available Models
+
+    func loadModels() async {
+        do {
+            let models = try await GigaRizzAPIClient.shared.fetchModels()
+            if !models.isEmpty {
+                availableModels = models
+            }
+        } catch {
+            // Keep defaults if backend unreachable
+            #if DEBUG
+            print("[GenerateVM] Failed to fetch models: \(error)")
+            #endif
         }
     }
 
@@ -102,7 +120,8 @@ final class GenerateViewModel: ObservableObject {
             let result = try await aiService.generatePhotos(
                 sourceImages: images,
                 style: style,
-                userId: userId
+                userId: userId,
+                model: selectedModel
             )
 
             // Track progress from service
@@ -161,6 +180,7 @@ final class GenerateViewModel: ObservableObject {
         selectedPhotos = []
         photosPickerItems = []
         selectedStyle = nil
+        selectedModel = AIModel.default
         generatedPhotos = []
         generationProgress = 0
         showResults = false
