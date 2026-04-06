@@ -19,6 +19,10 @@ final class FeatureFlagManager: ObservableObject {
         case colorGrade = "enable_color_grade"
         case poseLibrary = "enable_pose_library"
         case introOffer = "enable_intro_offer"
+        case batchGeneration = "enable_batch_generation"
+        case premiumModels = "enable_premium_models"
+        case photorealisticModels = "enable_photorealistic_models"
+        case artisticModels = "enable_artistic_models"
         case promoBanner = "show_promo_banner"
     }
 
@@ -39,9 +43,14 @@ final class FeatureFlagManager: ObservableObject {
         var enableColorGrade: Bool
         var enablePoseLibrary: Bool
         var enableIntroOffer: Bool
+        var enableBatchGeneration: Bool
+        var enablePremiumModels: Bool
+        var enablePhotorealisticModels: Bool
+        var enableArtisticModels: Bool
         var maxFreeGenerations: Int
         var maxPlusGenerations: Int
         var maxGoldGenerations: Int
+        var maxBatchModels: Int
         var showPromoBanner: Bool
         var minAppVersion: String
 
@@ -55,9 +64,14 @@ final class FeatureFlagManager: ObservableObject {
             case enableColorGrade = "enable_color_grade"
             case enablePoseLibrary = "enable_pose_library"
             case enableIntroOffer = "enable_intro_offer"
+            case enableBatchGeneration = "enable_batch_generation"
+            case enablePremiumModels = "enable_premium_models"
+            case enablePhotorealisticModels = "enable_photorealistic_models"
+            case enableArtisticModels = "enable_artistic_models"
             case maxFreeGenerations = "max_free_generations"
             case maxPlusGenerations = "max_plus_generations"
             case maxGoldGenerations = "max_gold_generations"
+            case maxBatchModels = "max_batch_models"
             case showPromoBanner = "show_promo_banner"
             case minAppVersion = "min_app_version"
         }
@@ -72,9 +86,14 @@ final class FeatureFlagManager: ObservableObject {
             enableColorGrade: true,
             enablePoseLibrary: true,
             enableIntroOffer: true,
+            enableBatchGeneration: true,
+            enablePremiumModels: true,
+            enablePhotorealisticModels: true,
+            enableArtisticModels: true,
             maxFreeGenerations: 3,
             maxPlusGenerations: 30,
             maxGoldGenerations: 999,
+            maxBatchModels: 4,
             showPromoBanner: false,
             minAppVersion: "1.0.0"
         )
@@ -110,6 +129,10 @@ final class FeatureFlagManager: ObservableObject {
         case .colorGrade: return flags.enableColorGrade
         case .poseLibrary: return flags.enablePoseLibrary
         case .introOffer: return flags.enableIntroOffer
+        case .batchGeneration: return flags.enableBatchGeneration
+        case .premiumModels: return flags.enablePremiumModels
+        case .photorealisticModels: return flags.enablePhotorealisticModels
+        case .artisticModels: return flags.enableArtisticModels
         case .promoBanner: return flags.showPromoBanner
         }
     }
@@ -122,6 +145,9 @@ final class FeatureFlagManager: ObservableObject {
         default: return flags.maxFreeGenerations
         }
     }
+
+    /// Max models allowed in a batch generation.
+    var maxBatchModels: Int { flags.maxBatchModels }
 
     /// Fetch latest flags from server. Falls back to cache on failure.
     func refresh() async {

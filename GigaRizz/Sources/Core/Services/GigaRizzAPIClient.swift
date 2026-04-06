@@ -106,6 +106,27 @@ actor GigaRizzAPIClient {
         try await get("/api/v1/generate/models")
     }
 
+    // MARK: - Batch Generation
+
+    struct BatchGenerateRequest: Codable {
+        let style: String
+        let prompt: String?
+        let models: [String]
+        let sourceImageUrl: String?
+        let photoCount: Int
+    }
+
+    struct BatchGenerationResponse: Codable {
+        let batchId: String
+        let jobs: [GenerationJobResponse]
+        let totalModels: Int
+    }
+
+    func submitBatchGeneration(style: String, prompt: String? = nil, models: [String], photoCount: Int = 2, sourceImageUrl: String? = nil) async throws -> BatchGenerationResponse {
+        let req = BatchGenerateRequest(style: style, prompt: prompt, models: models, sourceImageUrl: sourceImageUrl, photoCount: photoCount)
+        return try await post("/api/v1/generate/batch", body: req)
+    }
+
     // MARK: - Coach
 
     struct BioRequest: Codable {

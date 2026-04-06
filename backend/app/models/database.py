@@ -29,6 +29,7 @@ class GenerationJob(Base):
     error_message = Column(Text, nullable=True)
     platform = Column(String(20), default="tinder")
     replicate_prediction_id = Column(String(100), nullable=True)
+    batch_id = Column(String(50), nullable=True, index=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     completed_at = Column(DateTime, nullable=True)
 

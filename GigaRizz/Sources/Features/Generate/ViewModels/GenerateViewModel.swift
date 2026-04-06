@@ -21,6 +21,10 @@ final class GenerateViewModel: ObservableObject {
     @Published var showResults = false
     @Published var errorMessage: String?
 
+    // Batch mode
+    @Published var batchMode = false
+    @Published var batchModels: Set<String> = []
+
     // MARK: - Services
 
     private let aiService = AIGenerationService.shared
@@ -185,5 +189,52 @@ final class GenerateViewModel: ObservableObject {
         generationProgress = 0
         showResults = false
         errorMessage = nil
+        batchMode = false
+        batchModels = []
+    }
+
+    // MARK: - Batch Generate
+
+    func batchGenerate(userId: String, subscriptionManager: SubscriptionManager) async {
+        guard canGenerate, !batchModels.isEmpty else { return }
+
+        guard subscriptionManager.canGeneratePhoto else {
+            showPaywall = true
+            return
+        }
+
+        guard let style = selectedStyle else { return }
+
+        isGenerating = true
+        errorMessage = nil
+
+        do {
+            let response = try await GigaRizzAPIClient.shared.submitBatchGeneration(
+                style: style.id,
+                prompt: style.prompt,
+                models: Array(batchModels),
+                photoCount: 1,
+                sourceImageUrl: nil
+            )
+
+            // Record usage for each model in batch
+            for _ in response.jobs {
+                subscriptionManager.incrementPhotoUsage()
+            }
+
+            stylePresetManager.recordUsage(style)
+            showResults = true
+
+            PostHogManager.shared.track("batch_generation_completed", properties: [
+                "total_models": response.totalModels,
+                "batch_id": response.batchId,
+                "style": style.name
+            ])
+        } catch {
+            errorMessage = error.localizedDescription
+            DesignSystem.Haptics.error()
+        }
+
+        isGenerating = false
     }
 }

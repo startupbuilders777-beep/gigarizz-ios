@@ -13,7 +13,7 @@ from app.config import get_settings
 from app.deps import get_generation_service, get_moderation_service, get_storage_service
 from app.middleware.auth import verify_firebase_token
 from app.models.database import GenerationJob, get_db
-from app.models.schemas import GenerateRequest, GenerationJobResponse, JobStatus, ModelInfo
+from app.models.schemas import GenerateRequest, GenerationJobResponse, JobStatus, ModelInfo, BatchGenerateRequest, BatchGenerationResponse
 from app.services.generation_service import GenerationService, MODEL_CATALOG, OPENAI_MODELS
 from app.services.moderation_service import ModerationService
 from app.services.storage_service import StorageService
@@ -129,6 +129,112 @@ async def create_generation(
 async def list_models():
     """List all available AI models for photo generation."""
     return [ModelInfo(**m) for m in MODEL_CATALOG]
+
+
+@router.post("/batch", response_model=BatchGenerationResponse, status_code=status.HTTP_202_ACCEPTED)
+async def create_batch_generation(
+    req: BatchGenerateRequest,
+    user: dict = Depends(verify_firebase_token),
+    gen_svc: GenerationService = Depends(get_generation_service),
+    mod_svc: ModerationService = Depends(get_moderation_service),
+    db: AsyncSession = Depends(get_db),
+):
+    """Submit batch generation across multiple AI models.
+
+    Creates one job per model, returns all job IDs for parallel polling.
+    This lets users compare outputs from different models side-by-side.
+    """
+    settings = get_settings()
+
+    # Rate limit
+    now = datetime.now(timezone.utc)
+    result = await db.execute(
+        select(GenerationJob).where(
+            GenerationJob.user_id == user["uid"],
+            GenerationJob.created_at >= now.replace(hour=0, minute=0, second=0),
+        )
+    )
+    today_jobs = result.scalars().all()
+    max_daily = 50
+    remaining = max_daily - len(today_jobs)
+    if remaining < len(req.models):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Only {remaining} generations remaining today (requested {len(req.models)})",
+        )
+
+    # Moderate prompt
+    if req.prompt:
+        mod_result = await mod_svc.check_text(req.prompt)
+        if mod_result.get("flagged"):
+            raise HTTPException(status_code=400, detail="Content policy violation in prompt")
+
+    batch_id = gen_svc.generate_job_id()
+    jobs_out: list[GenerationJobResponse] = []
+
+    for model_choice in req.models:
+        model_str = model_choice.value
+        job_id = gen_svc.generate_job_id()
+        job = GenerationJob(
+            id=job_id,
+            user_id=user["uid"],
+            style=req.style.value,
+            model=model_str,
+            custom_prompt=req.prompt,
+            photo_count=req.photo_count,
+            source_image_urls=[req.source_image_url] if req.source_image_url else [],
+            status="processing",
+            platform=req.platform,
+            batch_id=batch_id,
+        )
+        db.add(job)
+        await db.flush()
+
+        try:
+            webhook_url = None
+            if settings.webhook_base_url:
+                webhook_url = f"{settings.webhook_base_url}/api/v1/generate/webhook"
+
+            prediction_id = await gen_svc.create_prediction(
+                job_id=job_id,
+                style=req.style.value,
+                source_image_urls=[req.source_image_url] if req.source_image_url else [],
+                photo_count=req.photo_count,
+                custom_prompt=req.prompt,
+                webhook_url=webhook_url,
+                model=model_str,
+            )
+            job.replicate_prediction_id = prediction_id
+
+            # Handle synchronous OpenAI results
+            openai_urls = gen_svc.pop_openai_results(prediction_id)
+            if openai_urls:
+                job.status = "completed"
+                job.result_urls = openai_urls
+                job.progress = 1.0
+                job.completed_at = datetime.now(timezone.utc)
+
+        except Exception as e:
+            logger.error("Batch job %s (model=%s) failed: %s", job_id, model_str, e)
+            job.status = "failed"
+            job.error_message = str(e)
+
+        jobs_out.append(GenerationJobResponse(
+            job_id=job_id,
+            status=JobStatus(job.status),
+            style=req.style.value,
+            model=model_str,
+            created_at=job.created_at,
+            result_urls=job.result_urls or [],
+        ))
+
+    await db.commit()
+
+    return BatchGenerationResponse(
+        batch_id=batch_id,
+        jobs=jobs_out,
+        total_models=len(req.models),
+    )
 
 
 @router.get("/{job_id}", response_model=GenerationJobResponse)

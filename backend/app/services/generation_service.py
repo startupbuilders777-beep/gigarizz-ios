@@ -24,15 +24,23 @@ class AIModel(str, Enum):
     FLUX_SCHNELL = "flux_schnell"           # Fast, good quality (default)
     FLUX_DEV = "flux_dev"                   # Higher quality, slower
     FLUX_1_1_PRO = "flux_1_1_pro"           # Best quality Flux
+    FLUX_1_1_PRO_ULTRA = "flux_1_1_pro_ultra"  # Ultra-high-res Flux
 
     # Replicate — Stability AI
     SDXL = "sdxl"                           # Stable Diffusion XL
     SD3_MEDIUM = "sd3_medium"               # Stable Diffusion 3
 
+    # Replicate — Photorealistic specialists
+    REALVIS_XL = "realvis_xl"               # RealVisXL — hyper-photorealistic
+    PLAYGROUND_V3 = "playground_v3"         # Playground v3 — artistic + real
+    IDEOGRAM_3 = "ideogram_3"              # Ideogram 3 — text + photorealism
+
     # fal.ai — fast inference (NanoBanana-compatible)
     FAL_FLUX_SCHNELL = "fal_flux_schnell"   # Flux Schnell via fal.ai (fastest)
     FAL_FLUX_DEV = "fal_flux_dev"           # Flux Dev via fal.ai
     FAL_FLUX_PRO = "fal_flux_pro"           # Flux Pro via fal.ai
+    FAL_SDXL_LIGHTNING = "fal_sdxl_lightning"  # SDXL Lightning — 4-step ultra-fast
+    FAL_RECRAFT_V3 = "fal_recraft_v3"       # Recraft V3 — design-quality photos
 
     # OpenAI
     DALL_E_3 = "dall_e_3"                   # DALL-E 3
@@ -44,8 +52,12 @@ REPLICATE_MODELS: dict[str, str] = {
     AIModel.FLUX_SCHNELL: "black-forest-labs/flux-schnell",
     AIModel.FLUX_DEV: "black-forest-labs/flux-dev",
     AIModel.FLUX_1_1_PRO: "black-forest-labs/flux-1.1-pro",
+    AIModel.FLUX_1_1_PRO_ULTRA: "black-forest-labs/flux-1.1-pro-ultra",
     AIModel.SDXL: "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
     AIModel.SD3_MEDIUM: "stability-ai/stable-diffusion-3-medium",
+    AIModel.REALVIS_XL: "adirik/realvisxl-v3.0-turbo:1577d0dac4482a46b48c5d3befc6ec1e",
+    AIModel.PLAYGROUND_V3: "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24",
+    AIModel.IDEOGRAM_3: "ideogram-ai/ideogram-v2-turbo",
 }
 
 # fal.ai model identifiers
@@ -53,6 +65,8 @@ FAL_MODELS: dict[str, str] = {
     AIModel.FAL_FLUX_SCHNELL: "fal-ai/flux/schnell",
     AIModel.FAL_FLUX_DEV: "fal-ai/flux/dev",
     AIModel.FAL_FLUX_PRO: "fal-ai/flux-pro",
+    AIModel.FAL_SDXL_LIGHTNING: "fal-ai/fast-sdxl",
+    AIModel.FAL_RECRAFT_V3: "fal-ai/recraft-v3",
 }
 
 # OpenAI model identifiers
@@ -61,18 +75,27 @@ OPENAI_MODELS: dict[str, str] = {
     AIModel.GPT_IMAGE_1: "gpt-image-1",
 }
 
-# Human-readable info for the iOS model picker
+# Human-readable info for the iOS model picker — grouped by category
 MODEL_CATALOG: list[dict] = [
-    {"id": "flux_schnell", "name": "Flux Schnell", "provider": "replicate", "speed": "fast", "quality": "good", "tier": "free"},
-    {"id": "flux_dev", "name": "Flux Dev", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus"},
-    {"id": "flux_1_1_pro", "name": "Flux 1.1 Pro", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold"},
-    {"id": "sdxl", "name": "SDXL", "provider": "replicate", "speed": "medium", "quality": "good", "tier": "free"},
-    {"id": "sd3_medium", "name": "SD3 Medium", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus"},
-    {"id": "fal_flux_schnell", "name": "Flux Schnell (fal)", "provider": "fal", "speed": "fastest", "quality": "good", "tier": "free"},
-    {"id": "fal_flux_dev", "name": "Flux Dev (fal)", "provider": "fal", "speed": "fast", "quality": "high", "tier": "plus"},
-    {"id": "fal_flux_pro", "name": "Flux Pro (fal)", "provider": "fal", "speed": "fast", "quality": "best", "tier": "gold"},
-    {"id": "dall_e_3", "name": "DALL-E 3", "provider": "openai", "speed": "medium", "quality": "high", "tier": "plus"},
-    {"id": "gpt_image_1", "name": "GPT Image 1", "provider": "openai", "speed": "medium", "quality": "best", "tier": "gold"},
+    # --- Free tier ---
+    {"id": "flux_schnell", "name": "Flux Schnell", "provider": "replicate", "speed": "fast", "quality": "good", "tier": "free", "category": "fast"},
+    {"id": "sdxl", "name": "SDXL", "provider": "replicate", "speed": "medium", "quality": "good", "tier": "free", "category": "classic"},
+    {"id": "fal_flux_schnell", "name": "Flux Schnell (fal)", "provider": "fal", "speed": "fastest", "quality": "good", "tier": "free", "category": "fast"},
+    {"id": "fal_sdxl_lightning", "name": "SDXL Lightning", "provider": "fal", "speed": "fastest", "quality": "good", "tier": "free", "category": "fast"},
+    # --- Plus tier ---
+    {"id": "flux_dev", "name": "Flux Dev", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus", "category": "balanced"},
+    {"id": "sd3_medium", "name": "SD3 Medium", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus", "category": "classic"},
+    {"id": "fal_flux_dev", "name": "Flux Dev (fal)", "provider": "fal", "speed": "fast", "quality": "high", "tier": "plus", "category": "balanced"},
+    {"id": "fal_recraft_v3", "name": "Recraft V3", "provider": "fal", "speed": "fast", "quality": "high", "tier": "plus", "category": "artistic"},
+    {"id": "dall_e_3", "name": "DALL-E 3", "provider": "openai", "speed": "medium", "quality": "high", "tier": "plus", "category": "classic"},
+    {"id": "playground_v3", "name": "Playground v3", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus", "category": "artistic"},
+    # --- Gold tier ---
+    {"id": "flux_1_1_pro", "name": "Flux 1.1 Pro", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "premium"},
+    {"id": "flux_1_1_pro_ultra", "name": "Flux Pro Ultra", "provider": "replicate", "speed": "slow", "quality": "ultra", "tier": "gold", "category": "premium"},
+    {"id": "fal_flux_pro", "name": "Flux Pro (fal)", "provider": "fal", "speed": "fast", "quality": "best", "tier": "gold", "category": "premium"},
+    {"id": "realvis_xl", "name": "RealVisXL", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "photorealistic"},
+    {"id": "ideogram_3", "name": "Ideogram 3", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "photorealistic"},
+    {"id": "gpt_image_1", "name": "GPT Image 1", "provider": "openai", "speed": "medium", "quality": "best", "tier": "gold", "category": "premium"},
 ]
 
 # Style prompt templates for dating photos

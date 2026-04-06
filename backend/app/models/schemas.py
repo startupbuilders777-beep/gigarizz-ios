@@ -36,11 +36,17 @@ class AIModelChoice(str, Enum):
     flux_schnell = "flux_schnell"
     flux_dev = "flux_dev"
     flux_1_1_pro = "flux_1_1_pro"
+    flux_1_1_pro_ultra = "flux_1_1_pro_ultra"
     sdxl = "sdxl"
     sd3_medium = "sd3_medium"
+    realvis_xl = "realvis_xl"
+    playground_v3 = "playground_v3"
+    ideogram_3 = "ideogram_3"
     fal_flux_schnell = "fal_flux_schnell"
     fal_flux_dev = "fal_flux_dev"
     fal_flux_pro = "fal_flux_pro"
+    fal_sdxl_lightning = "fal_sdxl_lightning"
+    fal_recraft_v3 = "fal_recraft_v3"
     dall_e_3 = "dall_e_3"
     gpt_image_1 = "gpt_image_1"
 
@@ -62,6 +68,24 @@ class ModelInfo(BaseModel):
     speed: str
     quality: str
     tier: str
+    category: str = "classic"
+
+
+class BatchGenerateRequest(BaseModel):
+    """Generate photos across multiple models simultaneously."""
+    style: GenerationStyle = GenerationStyle.professional
+    prompt: str | None = None
+    models: list[AIModelChoice] = Field(min_length=1, max_length=6)
+    source_image_url: str | None = None
+    photo_count: int = Field(default=2, ge=1, le=4)
+    platform: str = "tinder"
+
+
+class BatchGenerationResponse(BaseModel):
+    """Response containing all jobs from a batch generation."""
+    batch_id: str
+    jobs: list[GenerationJobResponse]
+    total_models: int
 
 
 class GenerationJobResponse(BaseModel):
@@ -147,9 +171,14 @@ class FeatureFlags(BaseModel):
     enable_color_grade: bool = True
     enable_pose_library: bool = True
     enable_intro_offer: bool = True
+    enable_batch_generation: bool = True
+    enable_premium_models: bool = True
+    enable_photorealistic_models: bool = True
+    enable_artistic_models: bool = True
     max_free_generations: int = 3
     max_plus_generations: int = 30
     max_gold_generations: int = 999
+    max_batch_models: int = 4
     show_promo_banner: bool = False
     min_app_version: str = "1.0.0"
 

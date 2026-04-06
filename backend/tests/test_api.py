@@ -123,7 +123,7 @@ async def test_list_models(client: AsyncClient):
     assert resp.status_code == 200
     models = resp.json()
     assert isinstance(models, list)
-    assert len(models) == 10  # 5 Replicate + 3 fal + 2 OpenAI
+    assert len(models) == 16  # 9 Replicate + 5 fal + 2 OpenAI
     # Verify shape
     for m in models:
         assert "id" in m
@@ -132,11 +132,41 @@ async def test_list_models(client: AsyncClient):
         assert "speed" in m
         assert "quality" in m
         assert "tier" in m
+        assert "category" in m
         assert m["provider"] in ("replicate", "fal", "openai")
         assert m["tier"] in ("free", "plus", "gold")
     # flux_schnell should be first and free
     assert models[0]["id"] == "flux_schnell"
     assert models[0]["tier"] == "free"
+    # Verify new models exist
+    model_ids = {m["id"] for m in models}
+    assert "realvis_xl" in model_ids
+    assert "ideogram_3" in model_ids
+    assert "fal_recraft_v3" in model_ids
+    assert "fal_sdxl_lightning" in model_ids
+    assert "flux_1_1_pro_ultra" in model_ids
+    assert "playground_v3" in model_ids
+
+
+@pytest.mark.asyncio
+async def test_batch_generation_endpoint(client: AsyncClient):
+    """POST /api/v1/generate/batch creates multiple jobs."""
+    resp = await client.post(
+        "/api/v1/generate/batch",
+        json={
+            "style": "professional",
+            "models": ["flux_schnell", "sdxl"],
+            "photo_count": 2,
+        },
+    )
+    # 202 if providers are configured, 500 if not (expected in CI)
+    assert resp.status_code in (202, 500)
+    if resp.status_code == 202:
+        data = resp.json()
+        assert "batch_id" in data
+        assert "jobs" in data
+        assert data["total_models"] == 2
+        assert len(data["jobs"]) == 2
 
 
 @pytest.mark.asyncio

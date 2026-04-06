@@ -54,9 +54,14 @@ class Settings(BaseSettings):
     flag_enable_color_grade: bool = True
     flag_enable_pose_library: bool = True
     flag_enable_intro_offer: bool = True
+    flag_enable_batch_generation: bool = True
+    flag_enable_premium_models: bool = True
+    flag_enable_photorealistic_models: bool = True
+    flag_enable_artistic_models: bool = True
     flag_max_free_generations: int = 3
     flag_max_plus_generations: int = 30
     flag_max_gold_generations: int = 999
+    flag_max_batch_models: int = 4
     flag_show_promo_banner: bool = False
     flag_min_app_version: str = "1.0.0"
 
