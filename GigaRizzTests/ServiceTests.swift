@@ -139,9 +139,14 @@ final class PersistenceTests: XCTestCase {
             enableColorGrade: true,
             enablePoseLibrary: false,
             enableIntroOffer: true,
+            enableBatchGeneration: false,
+            enablePremiumModels: true,
+            enablePhotorealisticModels: true,
+            enableArtisticModels: false,
             maxFreeGenerations: 10,
             maxPlusGenerations: 100,
             maxGoldGenerations: 5000,
+            maxBatchModels: 2,
             showPromoBanner: true,
             minAppVersion: "3.0.0"
         )
