@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigaRizz — AI Dating Photos | Get More Matches</title>
+
+<!-- Meta Tags -->
+<meta name="description" content="GigaRizz transforms your selfies into stunning dating profile photos with 16 AI models. Includes AI dating coach, style presets, and professional editing. Download free on iOS.">
+<meta name="keywords" content="AI dating photos, dating profile pictures, AI photo generator, dating coach, profile optimizer, dating app photos">
+<meta name="author" content="GigaRizz">
+<meta name="theme-color" content="#08080F">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gigarizz.app">
+<meta property="og:title" content="GigaRizz — AI Photos That Get Matches">
+<meta property="og:description" content="Transform selfies into stunning dating profile photos with 16 AI models. AI dating coach included. Free on iOS.">
+<meta property="og:image" content="https://gigarizz.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="GigaRizz">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@gigarizz">
+<meta name="twitter:title" content="GigaRizz — AI Photos That Get Matches">
+<meta name="twitter:description" content="Transform selfies into stunning dating profile photos with 16 AI models. AI dating coach included.">
+<meta name="twitter:image" content="https://gigarizz.app/twitter-card.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<style>
+  :root {
+    --bg: #08080F;
+    --surface: #141422;
+    --surface-hover: #1a1a30;
+    --gold: #FFD700;
+    --flame: #FF6B35;
+    --text: #F5F5F7;
+    --text-secondary: #A0A0B0;
+    --platinum: #E5E4E2;
+    --rose-gold: #B76E79;
+    --success: #00E676;
+    --border: rgba(255, 215, 0, 0.1);
+    --glow-gold: rgba(255, 215, 0, 0.15);
+    --glow-flame: rgba(255, 107, 53, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(8, 8, 15, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, var(--flame), var(--gold));
+    border-radius: 20px;
+    color: var(--bg) !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--glow-flame);
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, var(--glow-gold) 0%, var(--glow-flame) 30%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--gold) 20%, var(--flame) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--flame), #FF8F35);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: transparent;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 14px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    background: rgba(255, 215, 0, 0.05);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 64px;
+    position: relative;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .hero-stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* === FEATURES === */
+  .features {
+    padding: 120px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 540px;
+    margin-bottom: 56px;
+    line-height: 1.5;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    padding: 32px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(255, 215, 0, 0.25);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .feature-card .feature-tag {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* === BEFORE/AFTER === */
+  .before-after {
+    padding: 120px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ba-showcase {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 56px;
+    flex-wrap: wrap;
+  }
+
+  .ba-card {
+    width: 280px;
+    height: 380px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  .ba-card-before {
+    background: linear-gradient(145deg, #1a1a28, #111120);
+    border: 1px solid rgba(160, 160, 176, 0.15);
+  }
+
+  .ba-card-after {
+    background: linear-gradient(145deg, #1a1a35, #12122d);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.08);
+  }
+
+  .ba-card-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .ba-card-before .ba-card-label { color: var(--text-secondary); }
+  .ba-card-after .ba-card-label { color: var(--gold); }
+
+  .ba-placeholder {
+    width: 120px;
+    height: 160px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 2px dashed rgba(255, 255, 255, 0.08);
+  }
+
+  .ba-card-after .ba-placeholder {
+    border-color: rgba(255, 215, 0, 0.2);
+    background: rgba(255, 215, 0, 0.03);
+  }
+
+  .ba-arrow-big {
+    font-size: 36px;
+    color: var(--flame);
+  }
+
+  .ba-metrics {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-top: 48px;
+  }
+
+  .ba-metric {
+    text-align: center;
+  }
+
+  .ba-metric-value {
+    font-size: 40px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--success), #00C853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ba-metric-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* === PRICING === */
+  .pricing {
+    padding: 120px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 56px;
+  }
+
+  .pricing-card {
+    padding: 40px 32px;
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    text-align: left;
+    position: relative;
+    transition: transform 0.3s;
+  }
+
+  .pricing-card:hover { transform: translateY(-4px); }
+
+  .pricing-card.featured {
+    border-color: var(--gold);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.08);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    padding: 4px 14px;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pricing-tier {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .pricing-price {
+    font-size: 44px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -2px;
+  }
+
+  .pricing-card.featured .pricing-price {
+    color: var(--gold);
+  }
+
+  .pricing-period {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+
+  .pricing-features li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .pricing-features li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .pricing-features li.disabled {
+    opacity: 0.4;
+  }
+
+  .pricing-features li.disabled::before {
+    content: '—';
+    color: var(--text-secondary);
+  }
+
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .pricing-btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text);
+  }
+
+  .pricing-btn-outline:hover {
+    border-color: var(--gold);
+  }
+
+  .pricing-btn-primary {
+    background: linear-gradient(135deg, var(--flame), #FF8F35);
+    color: white;
+  }
+
+  .pricing-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+  }
+
+  .pricing-btn-gold {
+    background: linear-gradient(135deg, var(--gold), #FFC107);
+    color: var(--bg);
+  }
+
+  .pricing-btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+  }
+
+  /* === SOCIAL PROOF === */
+  .social-proof {
+    padding: 120px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 56px;
+  }
+
+  .testimonial {
+    padding: 28px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .testimonial-stars {
+    color: var(--gold);
+    font-size: 16px;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .testimonial-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--surface-hover), var(--surface));
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .testimonial-name {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .testimonial-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .press-logos {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 56px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .press-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: -0.5px;
+  }
+
+  /* === FINAL CTA === */
+  .final-cta {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--glow-flame) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .final-cta p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  /* === FOOTER === */
+  footer {
+    padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    max-width: 260px;
+  }
+
+  .footer-brand-name {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 48px;
+  }
+
+  .footer-col h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .footer-col a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--text); }
+
+  .footer-bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-social a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-social a:hover { color: var(--gold); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    nav { padding: 12px 16px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 16px 60px; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .hero-stat-value { font-size: 24px; }
+    .ba-showcase { flex-direction: column; align-items: center; }
+    .ba-arrow-big { transform: rotate(90deg); }
+    .ba-metrics { flex-direction: column; gap: 20px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; }
+    .footer-links { flex-direction: column; gap: 24px; }
+    .press-logos { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">GigaRizz</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="https://apps.apple.com/app/gigarizz" class="nav-cta">Download Free</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🔥 Now with 16 AI Models</div>
+  <h1>
+    AI Photos That<br>
+    <span class="gradient-text">Get You Matches</span>
+  </h1>
+  <p class="hero-sub">
+    Transform your selfies into stunning dating profile pictures with 16 AI models. 
+    Plus, get an AI dating coach for bios, openers, and replies.
+  </p>
+  <div class="hero-cta-row">
+    <a href="https://apps.apple.com/app/gigarizz" class="btn-primary">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Download on the App Store
+    </a>
+    <a href="#features" class="btn-secondary">See How It Works →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-value">16</div>
+      <div class="hero-stat-label">AI Models</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">6</div>
+      <div class="hero-stat-label">Style Presets</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">&lt;30s</div>
+      <div class="hero-stat-label">Per Generation</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">4.8★</div>
+      <div class="hero-stat-label">App Store Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Everything You Need to<br>Win at Dating Apps</h2>
+  <p class="section-sub">Studio-quality photos, AI coaching, and professional editing — all in one app.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📸</div>
+      <h3>16 AI Photo Models</h3>
+      <p>The largest selection of AI models in any dating-focused app. Each model has a different aesthetic — compare them all side-by-side to find your best look.</p>
+      <span class="feature-tag">Core Feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Batch Model Comparison</h3>
+      <p>Run the same photo through every model simultaneously and rank results. It's like having 16 photographers competing for your business.</p>
+      <span class="feature-tag">Gold Feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>AI Dating Coach</h3>
+      <p>Bio writer, personalized openers, and reply suggestions that keep conversations going. No more staring at a blank message box.</p>
+      <span class="feature-tag">Plus Feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>Style Presets</h3>
+      <p>Professional Headshot, Golden Hour, Adventure, Night Out, Urban Explorer, Beach & Travel — every preset is optimized for dating apps.</p>
+      <span class="feature-tag">Plus Feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3>Professional Editing Suite</h3>
+      <p>Face enhancement, background replacer, color grading, expression coaching, and pose library — Hollywood-grade tools made simple.</p>
+      <span class="feature-tag">Gold Feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>AI Photo Ranking</h3>
+      <p>Upload your current profile and our AI tells you exactly which photos are working and which ones are costing you matches.</p>
+      <span class="feature-tag">Plus Feature</span>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE/AFTER -->
+<section class="before-after" id="results">
+  <div class="section-label">Results</div>
+  <h2 class="section-title">Same Person. AI-Enhanced Photos.</h2>
+  <p class="section-sub" style="margin-left: auto; margin-right: auto;">From bathroom selfie to magazine cover. GigaRizz doesn't change who you are — it shows the best version of you.</p>
+
+  <div class="ba-showcase">
+    <div class="ba-card ba-card-before">
+      <div class="ba-card-label">Before</div>
+      <div class="ba-placeholder"></div>
+      <div style="font-size: 13px; color: var(--text-secondary);">Regular selfie</div>
+    </div>
+    <div class="ba-arrow-big">→</div>
+    <div class="ba-card ba-card-after">
+      <div class="ba-card-label">After</div>
+      <div class="ba-placeholder"></div>
+      <div style="font-size: 13px; color: var(--gold);">AI-enhanced</div>
+    </div>
+  </div>
+
+  <div class="ba-metrics">
+    <div class="ba-metric">
+      <div class="ba-metric-value">+340%</div>
+      <div class="ba-metric-label">More Profile Views</div>
+    </div>
+    <div class="ba-metric">
+      <div class="ba-metric-value">+215%</div>
+      <div class="ba-metric-label">More Matches</div>
+    </div>
+    <div class="ba-metric">
+      <div class="ba-metric-value">+180%</div>
+      <div class="ba-metric-label">More Conversations</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Invest in Your Dating Life</h2>
+  <p class="section-sub" style="margin-left: auto; margin-right: auto;">Less than the cost of one mediocre coffee date. Cancel anytime.</p>
+
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="pricing-card">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price">$0</div>
+      <div class="pricing-period">Forever free</div>
+      <ul class="pricing-features">
+        <li>3 AI models</li>
+        <li>5 generations per month</li>
+        <li>Basic editing tools</li>
+        <li class="disabled">AI Dating Coach</li>
+        <li class="disabled">Batch comparison</li>
+        <li class="disabled">Full editing suite</li>
+      </ul>
+      <a href="https://apps.apple.com/app/gigarizz" class="pricing-btn pricing-btn-outline">Get Started Free</a>
+    </div>
+
+    <!-- Plus -->
+    <div class="pricing-card featured">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-tier">Plus</div>
+      <div class="pricing-price">$4.99</div>
+      <div class="pricing-period">per month</div>
+      <ul class="pricing-features">
+        <li>All 16 AI models</li>
+        <li>100 generations per month</li>
+        <li>AI Dating Coach</li>
+        <li>All style presets</li>
+        <li>Photo ranking</li>
+        <li class="disabled">Batch comparison</li>
+      </ul>
+      <a href="https://apps.apple.com/app/gigarizz" class="pricing-btn pricing-btn-primary">Start Plus — $4.99/mo</a>
+    </div>
+
+    <!-- Gold -->
+    <div class="pricing-card">
+      <div class="pricing-tier" style="color: var(--gold);">Gold ✦</div>
+      <div class="pricing-price" style="color: var(--gold);">$14.99</div>
+      <div class="pricing-period">per month</div>
+      <ul class="pricing-features">
+        <li>All 16 AI models</li>
+        <li>Unlimited generations</li>
+        <li>Advanced dating coach</li>
+        <li>Batch model comparison</li>
+        <li>Full editing suite</li>
+        <li>Priority processing</li>
+      </ul>
+      <a href="https://apps.apple.com/app/gigarizz" class="pricing-btn pricing-btn-gold">Go Gold — $14.99/mo</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof" id="reviews">
+  <div class="section-label">Reviews</div>
+  <h2 class="section-title">People Are Getting Results</h2>
+  <p class="section-sub" style="margin-left: auto; margin-right: auto;">Real users. Real matches. Real results.</p>
+
+  <div class="testimonials">
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"I went from 2 matches a week to 15. The AI models produce photos that look genuinely like me, just in way better lighting and settings. The dating coach bio writer is also insanely good."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">M</div>
+        <div>
+          <div class="testimonial-name">Marcus T.</div>
+          <div class="testimonial-detail">Gold subscriber · 3 months</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"The batch comparison feature is a game-changer. I ran my selfie through all 16 models and the differences were wild. Found my perfect look in minutes. Worth every penny of Gold."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">S</div>
+        <div>
+          <div class="testimonial-name">Sarah K.</div>
+          <div class="testimonial-detail">Gold subscriber · 2 months</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Honestly felt awkward about AI photos until I tried this. The results look natural — not like those uncanny AI headshots. My Hinge profile has never performed this well."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">J</div>
+        <div>
+          <div class="testimonial-name">James R.</div>
+          <div class="testimonial-detail">Plus subscriber · 4 months</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"The Golden Hour preset is EVERYTHING. I used to pay a photographer $300 for shots like these. Now I generate them in 30 seconds. The openers feature helped me land a second date within a week."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">A</div>
+        <div>
+          <div class="testimonial-name">Amira L.</div>
+          <div class="testimonial-detail">Plus subscriber · 5 months</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Deleted and re-created my Bumble with GigaRizz photos. Within 48 hours I had more matches than my previous 3 months combined. The photo ranking tool showed me my old main photo was actually my worst."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">D</div>
+        <div>
+          <div class="testimonial-name">Derek W.</div>
+          <div class="testimonial-detail">Gold subscriber · 1 month</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"As someone who hates taking photos, this is a lifesaver. Upload three awkward selfies → get back professional-looking dating photos. The expression coach feature alone is worth the subscription."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">K</div>
+        <div>
+          <div class="testimonial-name">Kevin P.</div>
+          <div class="testimonial-detail">Plus subscriber · 2 months</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="press-logos">
+    <span class="press-logo">TechCrunch</span>
+    <span class="press-logo">The Verge</span>
+    <span class="press-logo">Mashable</span>
+    <span class="press-logo">Product Hunt</span>
+    <span class="press-logo">Wired</span>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Stop Swiping With<br><span style="background: linear-gradient(135deg, var(--gold), var(--flame)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Bad Photos</span></h2>
+  <p>Join thousands of people who upgraded their dating profile with AI.</p>
+  <div class="hero-cta-row" style="position: relative;">
+    <a href="https://apps.apple.com/app/gigarizz" class="btn-primary">Download GigaRizz Free →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-brand-name">GigaRizz</div>
+      <p>AI-powered dating photos and coaching. Transform your dating profile with 16 AI models, professional editing, and smart coaching — all in one app.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#reviews">Reviews</a>
+        <a href="https://apps.apple.com/app/gigarizz">Download</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/about">About</a>
+        <a href="/press">Press Kit</a>
+        <a href="/blog">Blog</a>
+        <a href="mailto:hello@gigarizz.app">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/cookies">Cookie Policy</a>
+        <a href="/gdpr">GDPR</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 GigaRizz. All rights reserved.</p>
+    <div class="footer-social">
+      <a href="https://x.com/gigarizz">Twitter/X</a>
+      <a href="https://instagram.com/gigarizz">Instagram</a>
+      <a href="https://tiktok.com/@gigarizz">TikTok</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

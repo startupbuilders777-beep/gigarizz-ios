@@ -545,13 +545,6 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
-		6E16DFC744F2BE9655588908 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
 		755024109D4AA85C21BA9FD5 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -816,7 +809,6 @@
 		D6A6AF1CF0C1380E818FF9C3 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				6E16DFC744F2BE9655588908 /* ViewModels */,
 				05C7DEFE013180F372097384 /* Views */,
 				8DEC8FFD9A522719D74AC123 /* OnboardingView.swift */,
 				7205071B34388A56BC061ADB /* OnboardingViewModel.swift */,

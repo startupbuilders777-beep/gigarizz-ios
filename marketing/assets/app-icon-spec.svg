@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GigaRizz App Icon Specification
+  Size: 1024x1024 (App Store requirement)
+  Design: Flame/fire icon with gold gradient on ultra-dark background
+  Corner radius: Applied by iOS automatically (use square asset)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background gradient: deep dark with subtle purple -->
+    <radialGradient id="bgGrad" cx="50%" cy="60%" r="70%">
+      <stop offset="0%" stop-color="#1A1A2E"/>
+      <stop offset="100%" stop-color="#08080F"/>
+    </radialGradient>
+
+    <!-- Gold gradient for the flame core -->
+    <linearGradient id="goldFlame" x1="0%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="35%" stop-color="#FFD700"/>
+      <stop offset="70%" stop-color="#FFF4B8"/>
+      <stop offset="100%" stop-color="#FFD700"/>
+    </linearGradient>
+
+    <!-- Outer flame gradient: orange to gold -->
+    <linearGradient id="outerFlame" x1="20%" y1="100%" x2="60%" y2="0%">
+      <stop offset="0%" stop-color="#E63900"/>
+      <stop offset="40%" stop-color="#FF6B35"/>
+      <stop offset="80%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FFC107"/>
+    </linearGradient>
+
+    <!-- Inner glow gradient -->
+    <radialGradient id="innerGlow" cx="50%" cy="55%" r="35%">
+      <stop offset="0%" stop-color="#FFF4B8" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#FFD700" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ambient glow behind flame -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#FF6B35" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Subtle noise filter for texture -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Background fill -->
+  <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid pattern for luxury feel -->
+  <g opacity="0.03">
+    <line x1="256" y1="0" x2="256" y2="1024" stroke="#FFD700" stroke-width="1"/>
+    <line x1="512" y1="0" x2="512" y2="1024" stroke="#FFD700" stroke-width="1"/>
+    <line x1="768" y1="0" x2="768" y2="1024" stroke="#FFD700" stroke-width="1"/>
+    <line x1="0" y1="256" x2="1024" y2="256" stroke="#FFD700" stroke-width="1"/>
+    <line x1="0" y1="512" x2="1024" y2="512" stroke="#FFD700" stroke-width="1"/>
+    <line x1="0" y1="768" x2="1024" y2="768" stroke="#FFD700" stroke-width="1"/>
+  </g>
+
+  <!-- Ambient glow behind the flame -->
+  <ellipse cx="512" cy="520" rx="320" ry="350" fill="url(#ambientGlow)" filter="url(#softGlow)"/>
+
+  <!-- Outer flame shape — large, dramatic -->
+  <path d="
+    M 512 180
+    C 520 240, 620 300, 660 400
+    C 690 470, 710 520, 700 580
+    C 720 540, 750 490, 740 560
+    C 760 500, 780 530, 760 620
+    C 740 720, 680 780, 620 820
+    C 580 850, 540 860, 512 860
+    C 484 860, 444 850, 404 820
+    C 344 780, 284 720, 264 620
+    C 244 530, 264 500, 284 560
+    C 274 490, 296 540, 324 580
+    C 314 520, 334 470, 364 400
+    C 404 300, 504 240, 512 180
+    Z
+  " fill="url(#outerFlame)" filter="url(#glow)"/>
+
+  <!-- Middle flame layer -->
+  <path d="
+    M 512 260
+    C 518 310, 590 370, 620 440
+    C 640 490, 650 530, 645 570
+    C 660 540, 670 510, 665 580
+    C 650 660, 610 720, 570 760
+    C 548 780, 530 785, 512 785
+    C 494 785, 476 780, 454 760
+    C 414 720, 374 660, 359 580
+    C 354 510, 364 540, 379 570
+    C 374 530, 384 490, 404 440
+    C 434 370, 506 310, 512 260
+    Z
+  " fill="url(#goldFlame)" opacity="0.9"/>
+
+  <!-- Inner flame core — brightest -->
+  <path d="
+    M 512 380
+    C 516 410, 560 450, 575 500
+    C 585 530, 588 560, 582 590
+    C 575 640, 555 680, 535 710
+    C 525 720, 518 722, 512 722
+    C 506 722, 499 720, 489 710
+    C 469 680, 449 640, 442 590
+    C 436 560, 439 530, 449 500
+    C 464 450, 508 410, 512 380
+    Z
+  " fill="#FFF4B8" opacity="0.7"/>
+
+  <!-- Central bright spot -->
+  <ellipse cx="512" cy="560" rx="35" ry="60" fill="#FFFFFF" opacity="0.3"/>
+
+  <!-- Inner glow overlay -->
+  <ellipse cx="512" cy="540" rx="200" ry="250" fill="url(#innerGlow)"/>
+
+  <!-- Small spark particles -->
+  <g opacity="0.6">
+    <circle cx="420" cy="320" r="4" fill="#FFD700"/>
+    <circle cx="600" cy="340" r="3" fill="#FFF4B8"/>
+    <circle cx="380" cy="420" r="3" fill="#FFD700"/>
+    <circle cx="650" cy="410" r="2.5" fill="#FFC107"/>
+    <circle cx="460" cy="260" r="2" fill="#FFF4B8"/>
+    <circle cx="570" cy="280" r="2.5" fill="#FFD700"/>
+  </g>
+
+  <!-- Bottom gold bar accent -->
+  <rect x="362" y="890" width="300" height="4" rx="2" fill="#FFD700" opacity="0.4"/>
+
+  <!-- "GR" monogram subtly embossed (optional, very subtle) -->
+  <g opacity="0.06" transform="translate(512, 950)" text-anchor="middle">
+    <text font-family="system-ui, -apple-system, 'Helvetica Neue', sans-serif" font-size="48" font-weight="800" fill="#FFD700" letter-spacing="8">GIGARIZZ</text>
+  </g>
+</svg>

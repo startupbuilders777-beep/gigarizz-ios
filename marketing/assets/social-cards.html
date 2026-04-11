@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigaRizz — Social Media Card Templates</title>
+<style>
+  :root {
+    --bg: #08080F;
+    --surface: #141422;
+    --gold: #FFD700;
+    --flame: #FF6B35;
+    --text: #F5F5F7;
+    --text-secondary: #A0A0B0;
+    --platinum: #E5E4E2;
+    --rose-gold: #B76E79;
+    --success: #00E676;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a12;
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    padding: 40px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .page-sub {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 48px;
+  }
+
+  .card-section {
+    margin-bottom: 56px;
+  }
+
+  .card-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .card-dimensions {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  /* === TWITTER/X CARD — 1200x675 === */
+  .twitter-card {
+    width: 600px;
+    height: 337px;
+    background: var(--bg);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  .twitter-card-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+  }
+
+  .twitter-card-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image:
+      linear-gradient(var(--gold) 1px, transparent 1px),
+      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .twitter-card-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    gap: 36px;
+  }
+
+  .twitter-card-left {
+    flex: 1;
+  }
+
+  .twitter-card-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .twitter-card-title {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+
+  .twitter-card-title .gradient {
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .twitter-card-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .twitter-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    background: linear-gradient(135deg, var(--flame), #FF8F35);
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .twitter-card-right {
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  .twitter-phone-mini {
+    width: 120px;
+    height: 220px;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 40px rgba(255, 215, 0, 0.06);
+    transform: rotate(3deg);
+    margin-left: 10px;
+  }
+
+  .twitter-phone-notch {
+    width: 48px;
+    height: 12px;
+    background: var(--bg);
+    border-radius: 0 0 8px 8px;
+    margin: 0 auto;
+  }
+
+  .twitter-phone-screen {
+    padding: 6px 8px;
+  }
+
+  .twitter-mini-title {
+    font-size: 8px;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 6px 0;
+  }
+
+  .twitter-mini-photo {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(145deg, #1a1a30, #0d0d1a);
+    border-radius: 8px;
+    margin: 0 auto 6px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+  }
+
+  .twitter-mini-btn {
+    display: block;
+    width: 80px;
+    margin: 0 auto;
+    padding: 4px;
+    background: linear-gradient(135deg, var(--flame), var(--gold));
+    border-radius: 6px;
+    text-align: center;
+    font-size: 6px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .twitter-mini-dots {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 6px;
+  }
+
+  .twitter-mini-dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.3);
+  }
+
+  .twitter-mini-dots span:first-child { background: var(--gold); }
+
+  /* === INSTAGRAM STORY — 1080x1920 === */
+  .ig-story {
+    width: 270px;
+    height: 480px;
+    background: var(--bg);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  .ig-story-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(255, 107, 53, 0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%);
+  }
+
+  .ig-story-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .ig-fire {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .ig-title {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .ig-title .gradient {
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ig-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 24px;
+    max-width: 200px;
+  }
+
+  .ig-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .ig-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255, 215, 0, 0.06);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ig-feature-icon { font-size: 18px; flex-shrink: 0; }
+
+  .ig-cta {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--flame), var(--gold));
+    border-radius: 14px;
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    margin-top: auto;
+  }
+
+  .ig-swipe-up {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* === PRODUCT HUNT THUMBNAIL — 240x240 === */
+  .ph-thumb {
+    width: 240px;
+    height: 240px;
+    background: var(--bg);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+  }
+
+  .ph-thumb-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.2) 0%, transparent 60%);
+  }
+
+  .ph-thumb-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .ph-fire {
+    font-size: 52px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.4));
+  }
+
+  .ph-name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+
+  .ph-tagline {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .ph-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--flame), var(--gold));
+  }
+
+  /* === REDDIT POST BANNER — 1200x628 === */
+  .reddit-banner {
+    width: 600px;
+    height: 314px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  .reddit-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(255, 107, 53, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+  }
+
+  .reddit-grid-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image:
+      linear-gradient(var(--gold) 1px, transparent 1px),
+      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .reddit-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    gap: 32px;
+  }
+
+  .reddit-left {
+    flex: 1;
+  }
+
+  .reddit-tagline {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .reddit-title {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+
+  .reddit-title .gradient {
+    background: linear-gradient(135deg, var(--gold), var(--flame));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .reddit-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 18px;
+    max-width: 320px;
+  }
+
+  .reddit-stats {
+    display: flex;
+    gap: 20px;
+  }
+
+  .reddit-stat {
+    text-align: center;
+  }
+
+  .reddit-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .reddit-stat-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .reddit-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .reddit-comparison-card {
+    width: 100px;
+    height: 140px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .reddit-before {
+    background: linear-gradient(145deg, #1a1a28, #111120);
+    border: 1px solid rgba(160, 160, 176, 0.15);
+    color: var(--text-secondary);
+  }
+
+  .reddit-after {
+    background: linear-gradient(145deg, #1a1a35, #12122d);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+  }
+
+  .reddit-comparison-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+
+  .reddit-after .reddit-comparison-placeholder {
+    border-color: rgba(255, 215, 0, 0.2);
+    background: rgba(255, 215, 0, 0.03);
+  }
+
+  .reddit-arrow {
+    font-size: 18px;
+    color: var(--flame);
+  }
+
+  /* === SHARED === */
+  .export-instructions {
+    margin-top: 48px;
+    padding: 24px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border, rgba(255,215,0,0.1));
+    max-width: 600px;
+  }
+
+  .export-instructions h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .export-instructions p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .export-instructions code {
+    background: rgba(255,215,0,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--gold);
+  }
+</style>
+</head>
+<body>
+
+<h1>GigaRizz — Social Media Cards</h1>
+<p class="page-sub">Screenshot each card at the specified dimensions for social media assets.</p>
+
+<!-- TWITTER/X LAUNCH CARD -->
+<div class="card-section">
+  <div class="card-label">Twitter / X Launch Announcement</div>
+  <div class="card-dimensions">1200 × 675px (shown at 50% scale)</div>
+
+  <div class="twitter-card">
+    <div class="twitter-card-bg"></div>
+    <div class="twitter-card-grid"></div>
+    <div class="twitter-card-content">
+      <div class="twitter-card-left">
+        <div class="twitter-card-badge">🔥 Now Available on iOS</div>
+        <div class="twitter-card-title">
+          AI Photos That<br><span class="gradient">Get You Matches</span>
+        </div>
+        <div class="twitter-card-sub">
+          16 AI models. Dating coach. Professional editing.<br>
+          Transform your selfies into stunning dating profile photos.
+        </div>
+        <div class="twitter-card-cta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Download Free on App Store
+        </div>
+      </div>
+      <div class="twitter-card-right">
+        <div class="twitter-phone-mini">
+          <div class="twitter-phone-notch"></div>
+          <div class="twitter-phone-screen">
+            <div class="twitter-mini-title">GigaRizz</div>
+            <div class="twitter-mini-photo"></div>
+            <div class="twitter-mini-btn">✦ Generate</div>
+            <div class="twitter-mini-dots">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTAGRAM STORY -->
+<div class="card-section">
+  <div class="card-label">Instagram Story</div>
+  <div class="card-dimensions">1080 × 1920px (shown at 25% scale)</div>
+
+  <div class="ig-story">
+    <div class="ig-story-bg"></div>
+    <div class="ig-story-content">
+      <div class="ig-fire">🔥</div>
+      <div class="ig-title">
+        Your Photos<br><span class="gradient">Upgraded</span>
+      </div>
+      <div class="ig-subtitle">
+        16 AI models transform your selfies into dating app gold.
+      </div>
+      <div class="ig-features">
+        <div class="ig-feature">
+          <span class="ig-feature-icon">📸</span>
+          <span>16 AI Photo Models</span>
+        </div>
+        <div class="ig-feature">
+          <span class="ig-feature-icon">💬</span>
+          <span>AI Dating Coach</span>
+        </div>
+        <div class="ig-feature">
+          <span class="ig-feature-icon">✨</span>
+          <span>Pro Editing Suite</span>
+        </div>
+      </div>
+      <div class="ig-cta">Download Free →</div>
+      <div class="ig-swipe-up">Swipe Up · App Store</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT HUNT THUMBNAIL -->
+<div class="card-section">
+  <div class="card-label">Product Hunt Thumbnail</div>
+  <div class="card-dimensions">240 × 240px (shown at 1:1 scale)</div>
+
+  <div class="ph-thumb">
+    <div class="ph-thumb-bg"></div>
+    <div class="ph-thumb-content">
+      <div class="ph-fire">🔥</div>
+      <div class="ph-name">GigaRizz</div>
+      <div class="ph-tagline">AI Photos That Get Matches</div>
+    </div>
+    <div class="ph-bar"></div>
+  </div>
+</div>
+
+<!-- REDDIT POST BANNER -->
+<div class="card-section">
+  <div class="card-label">Reddit Post Banner</div>
+  <div class="card-dimensions">1200 × 628px (shown at 50% scale)</div>
+
+  <div class="reddit-banner">
+    <div class="reddit-bg"></div>
+    <div class="reddit-grid-overlay"></div>
+    <div class="reddit-content">
+      <div class="reddit-left">
+        <div class="reddit-tagline">AI-Powered Dating Photos</div>
+        <div class="reddit-title">
+          Stop Swiping With<br><span class="gradient">Bad Photos</span>
+        </div>
+        <div class="reddit-desc">
+          Transform selfies into magazine-quality dating profile pictures. 16 AI models compete to find your best look. Free on iOS.
+        </div>
+        <div class="reddit-stats">
+          <div class="reddit-stat">
+            <div class="reddit-stat-value">16</div>
+            <div class="reddit-stat-label">AI Models</div>
+          </div>
+          <div class="reddit-stat">
+            <div class="reddit-stat-value">30s</div>
+            <div class="reddit-stat-label">Per Photo</div>
+          </div>
+          <div class="reddit-stat">
+            <div class="reddit-stat-value">Free</div>
+            <div class="reddit-stat-label">To Start</div>
+          </div>
+        </div>
+      </div>
+      <div class="reddit-right">
+        <div class="reddit-comparison-card reddit-before">
+          <div class="reddit-comparison-placeholder"></div>
+          <span>Before</span>
+        </div>
+        <div class="reddit-arrow">→</div>
+        <div class="reddit-comparison-card reddit-after">
+          <div class="reddit-comparison-placeholder"></div>
+          <span>After</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT INSTRUCTIONS -->
+<div class="export-instructions">
+  <h3>Export Instructions</h3>
+  <p>
+    Each card is rendered at a reduced scale for preview. To export at full resolution, use a headless browser with the correct viewport size:<br><br>
+    <strong>Twitter/X:</strong> <code>1200 × 675</code><br>
+    <strong>Instagram Story:</strong> <code>1080 × 1920</code><br>
+    <strong>Product Hunt:</strong> <code>240 × 240</code><br>
+    <strong>Reddit:</strong> <code>1200 × 628</code><br><br>
+    Use <code>puppeteer</code> or Safari Web Inspector to capture each card element at full resolution with <code>deviceScaleFactor: 2</code> for retina assets.
+  </p>
+</div>
+
+</body>
+</html>

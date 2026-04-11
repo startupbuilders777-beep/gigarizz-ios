@@ -1,0 +1,239 @@
+{
+  "appStoreConnect": {
+    "appName": "GigaRizz: AI Dating Photos",
+    "bundleId": "app.gigarizz.ios",
+    "sku": "GIGARIZZ_IOS_001",
+    "primaryCategory": "PHOTO_AND_VIDEO",
+    "secondaryCategory": "LIFESTYLE",
+    "contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT"
+  },
+  "localizations": {
+    "en-US": {
+      "name": "GigaRizz: AI Dating Photos",
+      "subtitle": "AI Photos That Get Matches",
+      "promotionalText": "NEW: 16 AI models now available — compare them side-by-side and pick your best look. Plus, meet your AI Dating Coach for bios, openers, and reply suggestions that actually work.",
+      "description": "Stop swiping with photos that don't do you justice.\n\nGigaRizz is the AI-powered dating photo studio that transforms your selfies into stunning, magazine-quality profile pictures — the kind that make people stop mid-swipe. Choose from 16 cutting-edge AI models, each with a different aesthetic, and instantly see which version of you gets the most attention.\n\nYOUR AI PHOTO STUDIO\nUpload a few casual photos and watch 16 AI models compete to create your most attractive look. Professional headshots. Golden hour magic. Adventure shots. Night-out energy. Every style preset is designed specifically for dating app profiles — because a hiking photo hits different than a bathroom selfie.\n\nBATCH MODEL COMPARISON\nWhy settle for one AI when you can audition sixteen? GigaRizz lets you run the same photo through every model simultaneously, then rank the results side-by-side. It's like having 16 professional photographers competing for your business.\n\nAI DATING COACH\nGreat photos are just the beginning. Your built-in dating coach writes bios that sound like you (but wittier), generates personalized openers based on someone's profile, and suggests replies that keep conversations going. No more staring at a blank message box.\n\nPROFESSIONAL EDITING SUITE\n• Face Enhancement — Subtle, natural improvements. No uncanny valley.\n• Background Replacer — Swap boring backgrounds for interesting ones.\n• Color Grading — Hollywood-grade color science for every mood.\n• Expression Coach — AI guidance to capture your most attractive expressions.\n• Pose Library — Curated poses proven to perform on dating apps.\n• Photo Ranking — AI-powered analysis of which photos will get the most right-swipes.\n\nSTYLE PRESETS BUILT FOR DATING\nEvery preset is designed with one goal: making you more attractive on dating apps.\n→ Professional Headshot — Clean, confident, LinkedIn-meets-Hinge energy\n→ Golden Hour — Warm, sun-kissed, effortlessly attractive\n→ Adventure — Show you're interesting without trying too hard\n→ Night Out — Social, fun, well-dressed\n→ Urban Explorer — City backdrop, main character vibes\n→ Beach & Travel — Vacation you, but make it tasteful\n\n30-STEP LUXURY ONBOARDING\nGigaRizz doesn't just hand you tools — it walks you through a premium experience designed to learn your face, understand your style, and deliver results that actually look like you.\n\nSUBSCRIPTION TIERS\nFree — Try 3 AI models, 5 generations/month, basic editing\nPlus ($4.99/mo) — All 16 models, 100 generations/month, dating coach, all style presets\nGold ($14.99/mo) — Unlimited generations, priority processing, batch comparison, full editing suite, advanced coach features\n\nPRIVACY FIRST\nYour photos are processed securely and never shared. We don't store originals after processing. Your dating life is your business — we just make it better.\n\nDownload GigaRizz. Get better photos. Get more matches.",
+      "keywords": "AI photos,dating photos,profile pics,photo editor,dating coach,AI generator,selfie,match,rizz,glow",
+      "whatsNew": "What's New in GigaRizz 1.1:\n\n🔥 16 AI MODELS — We doubled our model lineup. Each one produces a different aesthetic — find the one that makes you look your absolute best.\n\n⚡ BATCH COMPARISON — Run any photo through all 16 models at once and compare results side-by-side.\n\n💬 DATING COACH 2.0 — Smarter bios, better openers, and reply suggestions that match your style.\n\n🎨 NEW STYLE PRESETS — Added Urban Explorer and Beach & Travel presets.\n\n📸 PHOTO RANKING — AI tells you which photos are working and which are costing you matches.\n\n🛠 Performance improvements and bug fixes.",
+      "privacyPolicyUrl": "https://gigarizz.app/privacy",
+      "supportUrl": "https://gigarizz.app/support",
+      "marketingUrl": "https://gigarizz.app"
+    },
+    "en-GB": {
+      "name": "GigaRizz: AI Dating Photos",
+      "subtitle": "AI Photos That Get Matches",
+      "promotionalText": "NEW: 16 AI models now available — compare them side-by-side and pick your best look. Plus, meet your AI Dating Coach for bios, openers, and reply suggestions that actually work.",
+      "keywords": "AI photos,dating photos,profile pics,photo editor,dating coach,AI generator,selfie,match,rizz,glow"
+    },
+    "es-ES": {
+      "name": "GigaRizz: Fotos IA para Citas",
+      "subtitle": "Fotos IA Que Consiguen Matches",
+      "promotionalText": "NUEVO: 16 modelos de IA disponibles — compáralos y elige tu mejor look. Además, conoce a tu Coach de Citas IA para bios, aperturas y respuestas que funcionan.",
+      "keywords": "fotos IA,fotos citas,foto perfil,editor fotos,coach citas,generador IA,selfie,match,rizz,estilo"
+    },
+    "fr-FR": {
+      "name": "GigaRizz: Photos IA Rencontres",
+      "subtitle": "Photos IA Pour Plus de Matchs",
+      "promotionalText": "NOUVEAU : 16 modèles IA disponibles — comparez-les côte à côte et choisissez votre meilleur look. Découvrez votre Coach Rencontres IA pour des bios, accroches et réponses qui marchent.",
+      "keywords": "photos IA,photos rencontres,photo profil,éditeur photo,coach rencontres,générateur IA,selfie,match"
+    },
+    "de-DE": {
+      "name": "GigaRizz: KI Dating-Fotos",
+      "subtitle": "KI-Fotos Für Mehr Matches",
+      "promotionalText": "NEU: 16 KI-Modelle verfügbar — vergleiche sie nebeneinander und wähle deinen besten Look. Dazu dein KI-Dating-Coach für Bios, Opener und Antworten, die wirklich funktionieren.",
+      "keywords": "KI Fotos,Dating Fotos,Profilbild,Foto Editor,Dating Coach,KI Generator,Selfie,Match,Rizz,Stil"
+    },
+    "ja": {
+      "name": "GigaRizz: AIデート写真",
+      "subtitle": "AIが撮るマッチング写真",
+      "promotionalText": "NEW: 16のAIモデルが利用可能 — 並べて比較して最高の自分を選べます。AIデートコーチでプロフィール、最初のメッセージ、返信を作成。",
+      "keywords": "AI写真,デート写真,プロフ写真,写真編集,デートコーチ,AI生成,自撮り,マッチ,出会い,写真加工"
+    },
+    "pt-BR": {
+      "name": "GigaRizz: Fotos IA p/ Dating",
+      "subtitle": "Fotos IA Que Geram Matches",
+      "promotionalText": "NOVO: 16 modelos de IA disponíveis — compare lado a lado e escolha seu melhor visual. Conheça seu Coach de Dating IA para bios, aberturas e respostas que realmente funcionam.",
+      "keywords": "fotos IA,fotos dating,foto perfil,editor fotos,coach dating,gerador IA,selfie,match,rizz,estilo"
+    },
+    "ko": {
+      "name": "GigaRizz: AI 데이팅 사진",
+      "subtitle": "매치를 만드는 AI 사진",
+      "promotionalText": "NEW: 16개 AI 모델 사용 가능 — 나란히 비교하고 최고의 모습을 선택하세요. AI 데이팅 코치로 프로필, 첫 메시지, 답장을 작성하세요.",
+      "keywords": "AI사진,데이팅사진,프로필사진,사진편집,데이팅코치,AI생성,셀피,매치,소개팅,프로필"
+    }
+  },
+  "ageRating": {
+    "kidsAgeBand": null,
+    "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+    "contests": "NONE",
+    "gamblingAndContests": false,
+    "gambling": false,
+    "frequentIntenseCartoonOrFantasyViolence": false,
+    "frequentIntenseRealisticViolence": false,
+    "frequentIntenseSexualContentOrNudity": false,
+    "frequentIntenseMatureOrSuggestiveThemes": false,
+    "infrequentMildCartoonOrFantasyViolence": false,
+    "infrequentMildRealisticViolence": false,
+    "infrequentMildSexualContentOrNudity": false,
+    "infrequentMildMatureOrSuggestiveThemes": true,
+    "infrequentMildProfanityOrCrudeHumor": false,
+    "infrequentMildHorrorOrFearThemes": false,
+    "infrequentMildMedicalOrTreatmentInfo": false,
+    "infrequentMildSimulatedGambling": false,
+    "unrestrictedWebAccess": false,
+    "calculatedRating": "12+"
+  },
+  "appPrivacy": {
+    "dataTypes": [
+      {
+        "dataType": "PHOTOS",
+        "purposes": ["APP_FUNCTIONALITY"],
+        "dataProtection": ["DATA_NOT_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Photos uploaded for AI processing. Originals deleted after generation."
+      },
+      {
+        "dataType": "EMAIL_ADDRESS",
+        "purposes": ["APP_FUNCTIONALITY"],
+        "dataProtection": ["DATA_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Used for account creation and communication."
+      },
+      {
+        "dataType": "USER_ID",
+        "purposes": ["APP_FUNCTIONALITY"],
+        "dataProtection": ["DATA_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Internal user identifier for account management."
+      },
+      {
+        "dataType": "PURCHASE_HISTORY",
+        "purposes": ["APP_FUNCTIONALITY"],
+        "dataProtection": ["DATA_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Subscription status tracked via RevenueCat."
+      },
+      {
+        "dataType": "PRODUCT_INTERACTION",
+        "purposes": ["ANALYTICS"],
+        "dataProtection": ["DATA_NOT_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Anonymous feature usage and engagement metrics."
+      },
+      {
+        "dataType": "CRASH_DATA",
+        "purposes": ["APP_FUNCTIONALITY"],
+        "dataProtection": ["DATA_NOT_LINKED_TO_YOU"],
+        "collection": "COLLECTED",
+        "notes": "Crash reports for stability improvements."
+      }
+    ]
+  },
+  "subscriptions": {
+    "subscriptionGroupName": "GigaRizz Premium",
+    "subscriptionGroupId": "gigarizz_premium_group",
+    "products": [
+      {
+        "productId": "gigarizz_plus_monthly",
+        "referenceName": "GigaRizz Plus — Monthly",
+        "type": "AUTO_RENEWABLE",
+        "duration": "P1M",
+        "price": {
+          "USD": 4.99,
+          "EUR": 4.99,
+          "GBP": 3.99,
+          "JPY": 700,
+          "KRW": 6500,
+          "BRL": 24.90
+        },
+        "features": [
+          "All 16 AI models",
+          "100 generations per month",
+          "AI Dating Coach",
+          "All style presets",
+          "Standard processing speed"
+        ]
+      },
+      {
+        "productId": "gigarizz_gold_monthly",
+        "referenceName": "GigaRizz Gold — Monthly",
+        "type": "AUTO_RENEWABLE",
+        "duration": "P1M",
+        "price": {
+          "USD": 14.99,
+          "EUR": 14.99,
+          "GBP": 11.99,
+          "JPY": 2100,
+          "KRW": 19500,
+          "BRL": 74.90
+        },
+        "features": [
+          "All 16 AI models",
+          "Unlimited generations",
+          "Priority processing",
+          "Batch model comparison",
+          "Full editing suite",
+          "Advanced dating coach features",
+          "Early access to new models"
+        ]
+      },
+      {
+        "productId": "gigarizz_plus_yearly",
+        "referenceName": "GigaRizz Plus — Yearly",
+        "type": "AUTO_RENEWABLE",
+        "duration": "P1Y",
+        "price": {
+          "USD": 39.99,
+          "EUR": 39.99,
+          "GBP": 34.99,
+          "JPY": 5800,
+          "KRW": 55000,
+          "BRL": 199.90
+        },
+        "features": [
+          "All Plus features",
+          "33% savings vs monthly"
+        ]
+      },
+      {
+        "productId": "gigarizz_gold_yearly",
+        "referenceName": "GigaRizz Gold — Yearly",
+        "type": "AUTO_RENEWABLE",
+        "duration": "P1Y",
+        "price": {
+          "USD": 119.99,
+          "EUR": 119.99,
+          "GBP": 99.99,
+          "JPY": 17800,
+          "KRW": 159000,
+          "BRL": 599.90
+        },
+        "features": [
+          "All Gold features",
+          "33% savings vs monthly"
+        ]
+      }
+    ]
+  },
+  "reviewInformation": {
+    "contactFirstName": "[FIRST_NAME]",
+    "contactLastName": "[LAST_NAME]",
+    "contactEmail": "review@gigarizz.app",
+    "contactPhone": "[PHONE_NUMBER]",
+    "notes": "Demo account credentials for review:\nEmail: reviewer@gigarizz.app\nPassword: [SET_BEFORE_SUBMISSION]\n\nThe app requires photo upload to demonstrate AI generation. Sample photos are pre-loaded in the demo account. The subscription paywall can be bypassed with the demo account (Gold tier access)."
+  },
+  "urls": {
+    "privacyPolicyUrl": "https://gigarizz.app/privacy",
+    "termsOfServiceUrl": "https://gigarizz.app/terms",
+    "supportUrl": "https://gigarizz.app/support",
+    "marketingUrl": "https://gigarizz.app",
+    "pressKitUrl": "https://gigarizz.app/press"
+  },
+  "buildSettings": {
+    "minimumOsVersion": "17.0",
+    "supportedDevices": ["iPhone", "iPad"],
+    "supportsGameCenter": false,
+    "supportsAppClips": false,
+    "exportsEncryption": false
+  }
+}

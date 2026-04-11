@@ -24,12 +24,17 @@ class ModerationService:
         if not self.enabled:
             return {"flagged": False, "categories": {}}
 
-        response = await self.client.moderations.create(input=text)
-        result = response.results[0]
-        return {
-            "flagged": result.flagged,
-            "categories": {k: v for k, v in result.categories.model_dump().items() if v},
-        }
+        try:
+            response = await self.client.moderations.create(input=text)
+            result = response.results[0]
+            return {
+                "flagged": result.flagged,
+                "categories": {k: v for k, v in result.categories.model_dump().items() if v},
+            }
+        except Exception as e:
+            logger.error("Text moderation failed: %s", e)
+            # Fail open in dev; in production flip to fail closed
+            return {"flagged": False, "categories": {}}
 
     async def check_image_url(self, image_url: str) -> dict:
         """Check an image URL for policy violations using GPT-4o vision."""

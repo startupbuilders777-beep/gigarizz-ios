@@ -126,9 +126,15 @@ async def create_generation(
 
 
 @router.get("/models", response_model=list[ModelInfo])
-async def list_models():
-    """List all available AI models for photo generation."""
-    return [ModelInfo(**m) for m in MODEL_CATALOG]
+async def list_models(category: str | None = None):
+    """List all available AI models for photo generation.
+
+    Optionally filter by category: fast, classic, balanced, artistic, premium, photorealistic
+    """
+    models = [ModelInfo(**m) for m in MODEL_CATALOG]
+    if category:
+        models = [m for m in models if m.category == category]
+    return models
 
 
 @router.post("/batch", response_model=BatchGenerationResponse, status_code=status.HTTP_202_ACCEPTED)

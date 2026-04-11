@@ -28,7 +28,7 @@ class StorageService:
             kwargs["endpoint_url"] = settings.s3_endpoint_url
 
         self.s3 = boto3.client("s3", **kwargs)
-        self.bucket = settings.s3_bucket
+        self.bucket = settings.s3_bucket_name
 
     def upload_bytes(self, key: str, data: bytes, content_type: str = "image/webp") -> str:
         """Upload bytes to S3 and return the public URL."""
@@ -45,7 +45,7 @@ class StorageService:
         settings = get_settings()
         if settings.s3_endpoint_url:
             return f"{settings.s3_endpoint_url}/{self.bucket}/{key}"
-        return f"https://{self.bucket}.s3.{settings.s3_region}.amazonaws.com/{key}"
+        return f"https://{self.bucket}.s3.{settings.aws_region}.amazonaws.com/{key}"
 
     def generate_presigned_upload(self, key: str, content_type: str = "image/jpeg", expires: int = 3600) -> dict:
         """Generate a presigned URL for client-side upload."""
