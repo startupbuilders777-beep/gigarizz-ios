@@ -8,6 +8,7 @@ from fastapi import Depends
 
 from app.config import Settings, get_settings
 from app.middleware.auth import verify_firebase_token
+from app.services.audit_service import AuditService
 from app.services.coach_service import CoachService
 from app.services.generation_service import GenerationService
 from app.services.moderation_service import ModerationService
@@ -35,6 +36,11 @@ def get_storage_service() -> StorageService:
 @lru_cache()
 def get_moderation_service() -> ModerationService:
     return ModerationService()
+
+
+@lru_cache()
+def get_audit_service() -> AuditService:
+    return AuditService()
 
 
 # --- Auth shortcut ---

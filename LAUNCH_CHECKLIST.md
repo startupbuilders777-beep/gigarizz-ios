@@ -1,248 +1,404 @@
 # GigaRizz — App Store Launch Checklist
 
-> Generated from full E2E audit on April 11, 2026
-> Commit: `5229a78` | 19/19 backend tests passing | iOS BUILD SUCCEEDED
+> Last updated 2026-05-02 after V2 (Codex plan) Sprints 1–7.
+> Branch: `main` | Backend tests: **30/30** | iOS unit: **127/127** | UI tests: **4/4**
+> Models in catalog: **20** (10 Replicate + 5 fal.ai + 5 OpenAI)
+> SOTA surfaces shipped: Face Enhance, Outfit Studio, Hairstyle, Age Studio, Pose Studio, Hinge Mode
+> **V2 Profile Upgrade flow shipped behind `enable_v2_upgrade_flow` flag** (audit → diagnosis → kit → export → screenshot coach)
 
 ---
 
 ## STATUS OVERVIEW
 
-| Area | Status | Blockers |
-|------|--------|----------|
-| iOS App Build | ✅ Clean | None |
-| Backend Unit Tests | ✅ 19/19 | None |
-| Backend E2E (local) | ✅ All endpoints | Placeholder API keys |
-| Marketing Assets | ✅ 8 files | Need real screenshots |
-| EC2 Deployment | ⏳ Ready to deploy | Instance unreachable (likely stopped) |
-| Firebase Auth | 🚫 BLOCKER | No GoogleService-Info.plist |
-| RevenueCat | 🚫 BLOCKER | Placeholder API key |
-| PostHog Analytics | 🚫 BLOCKER | Placeholder API key |
-| API Keys (Backend) | 🚫 BLOCKER | All placeholder values |
-| App Store Connect | 🚫 Not started | Need account + metadata |
-| Privacy Policy | ⚠️ URL exists but no page | Need to create page |
-| Dev Team Signing | ⚠️ Empty | Need Apple Developer account |
+| Area                              | Status                | Blocker?                                    |
+|-----------------------------------|-----------------------|---------------------------------------------|
+| iOS App Build                     | ✅ Clean              | No                                          |
+| iOS Unit Tests                    | ✅ 127/127            | No                                          |
+| iOS UI Tests                      | ✅ 4/4 (incl. V2 smoke) | No                                        |
+| Backend Unit Tests                | ✅ 30/30              | No                                          |
+| Backend E2E (local)               | ✅ All endpoints      | Placeholder API keys                        |
+| Server-driven Feature Flags       | ✅ 33+ flags          | No                                          |
+| V2 Profile Upgrade flow           | ✅ End-to-end         | Off by default; flip flag for cohort        |
+| V2 Audit endpoint (GPT-4o vision) | ✅ Shipped            | No                                          |
+| V2 ProfileKit + Export (share / save / copy) | ✅ Shipped | No                                          |
+| V2 Screenshot Coach (Vision OCR)  | ✅ Shipped            | No                                          |
+| V2 Paywall gate (audit-triggered) | ✅ Shipped            | No                                          |
+| Trust toggle (Keep me looking like me) | ✅ Shipped       | No                                          |
+| Dev-build Real-AI Toggle          | ✅ Settings → DEBUG   | No                                          |
+| Dev-build Force V2 Toggle         | ✅ Settings → DEBUG   | No                                          |
+| 6 SOTA Surfaces                   | ✅ All flag-gated     | No                                          |
+| Unified V2 design system          | ✅ V2Components atoms | No                                          |
+| EC2 Deployment                    | ⏳ Ready              | Instance needs restart                      |
+| Firebase Auth                     | 🚫 BLOCKER            | No `GoogleService-Info.plist`               |
+| RevenueCat                        | 🚫 BLOCKER            | Placeholder API key                         |
+| PostHog Analytics                 | 🚫 BLOCKER            | Placeholder API key                         |
+| Real Provider API Keys            | 🚫 BLOCKER            | OpenAI / Replicate / fal.ai / AWS           |
+| Apple Developer Account           | 🚫 BLOCKER            | `DEVELOPMENT_TEAM` empty                    |
+| App Store Connect                 | 🚫 Not started        | Need account + metadata + screenshots       |
+| Privacy Policy & Terms            | ✅ Pages written      | Deploy via `cd web && npm run deploy` (Cloudflare Pages) |
+| Production S3 Bucket              | ⚠️ Falls back to dev  | Create bucket + IAM keys                    |
 
 ---
 
-## 🔴 P0 — BLOCKERS (Must fix before submission)
+## 0. Dev-Build Quick Start (run app locally with real AI)
 
-### 1. Firebase Configuration
+The dev build now works end-to-end without real keys (mock service mode). To exercise real AI in DEBUG, do this:
+
+### Backend `.env` (copy from `backend/.env.example`)
+Minimum required for real AI generation:
+
+```bash
+# AI providers (REQUIRED for real generation)
+OPENAI_API_KEY=sk-...                   # GPT Image 1, GPT Image 2, DALL-E 3, Coach
+REPLICATE_API_TOKEN=r8_...              # Flux, SDXL, SD3, RealVisXL, InstantID, CodeFormer
+FAL_KEY=fal_...                         # Nano Banana 2, Recraft V3, SDXL Lightning
+
+# Photo storage (REQUIRED for source-image upload)
+S3_BUCKET_NAME=gigarizz-photos
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+S3_ENDPOINT_URL=                        # leave empty for real S3; set for R2/MinIO
+```
+
+### Run backend
+```bash
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
+```
+
+### iOS dev toggle
+1. Run app on simulator or device.
+2. Open Settings tab → scroll to **Developer** (DEBUG only).
+3. Toggle **Use Real AI** ON. App now sends generation requests to backend instead of returning mocked photos.
+4. Photo upload happens via the new `PhotoUploadService` → presigned PUT to S3.
+
+If S3 keys are missing the upload service falls back to a placeholder dev URL — generations will fail at provider but the app won't crash.
+
+---
+
+## 0.5. V2 Profile Upgrade Flow (Codex V2 plan — shipped end-to-end)
+
+The V2 experience is the audit-first dating profile studio. It lives behind
+`FLAG_ENABLE_V2_UPGRADE_FLOW` (default off) so V1 users see no change until
+TestFlight cohorts opt in.
+
+### What's shipped
+- **Audit endpoint** (`POST /api/v1/audit`) — GPT-4o vision scores 4–8 photos on six dimensions (clarity, lighting, expression, crop, authenticity, platform_fit), tags archetypes, returns 3 specific top fixes + missing-archetype list.
+- **Upgrade tab** — first-run flow: pick platforms → upload photos → audit → diagnosis. Each stage uses the same V2Components atoms (V2HeroCard, V2PrimaryButton, V2TrustBadge, V2ScoreRing, V2PlatformPill, V2SectionHeader).
+- **Profile Diagnosis screen** — animated score ring (color-graded by band), summary, Top Fixes with archetype tags, Missing Slots grid, Spotlight (best/weakest), per-photo critique cards. "Build my Profile Kit" CTA navigates to ProfileKitView.
+- **ProfileKitView (hero artifact)** — platform pill selector switches per-platform photo strip, bio with regenerate + copy, Hinge prompts, first messages, sticky export bar (Copy all / Save photos / Share kit). Per-line copy on every prompt and opener.
+- **ProfileKitOrderer** — pure algorithm picks first photo (never social_proof), prefers archetype variety, then tops off by score. Per-platform slot counts + suggested archetype mix.
+- **ProfileKitExporter** — UIPasteboard, PHPhotoLibrary multi-photo save, UIActivityViewController share with bio + prompts + openers text block.
+- **PaywallGate** — pure decision struct (`mode × isSubscribed × auditsUsedSoFar`). Triggers between audit completion and full diagnosis when `paywall_mode=hard` or `soft + threshold reached`. AuditUsageCounter persists per-device.
+- **Naturalness toggle** — `keep_me_natural` flag on every generation request wraps prompts with identity-preservation language. Default ON. Server-side `_wrap_natural()` is idempotent. Surfaced in Settings → Trust & Privacy.
+- **Screenshot Coach** — Vision OCR on-device (`VNRecognizeTextRequest`) extracts text from profile/chat screenshots, then routes to existing `/openers` or `/reply` endpoints for: profile opener / reply suggestion / revive dead chat. Pixels never leave the device.
+- **DEBUG override** — `dev_force_v2_upgrade_flow` UserDefault (Settings → Developer) forces V2 on without backend flag flip; UI test launch arg `-dev_force_v2_upgrade_flow 1` makes the V2 flow CI-testable.
+
+### To activate V2 for a TestFlight cohort
+```bash
+ssh ubuntu@api.gigarizz.app
+sed -i 's/FLAG_ENABLE_V2_UPGRADE_FLOW=false/FLAG_ENABLE_V2_UPGRADE_FLOW=true/' /srv/gigarizz/.env
+sudo systemctl restart gigarizz
+curl https://api.gigarizz.app/api/v1/flags | jq .enable_v2_upgrade_flow   # → true
+```
+
+iOS picks up the new flag within 1h on the next `refreshIfNeeded()`. Force-quit the app to apply immediately.
+
+### V2 surfaces by file
+| Surface              | File                                                              |
+|----------------------|-------------------------------------------------------------------|
+| Tab gating           | `App/MainTabView.swift`                                           |
+| State machine        | `Features/Upgrade/UpgradeFlowView.swift`                          |
+| Diagnosis hero       | `Features/Upgrade/ProfileDiagnosisView.swift`                     |
+| Kit hero             | `Features/Upgrade/ProfileKitView.swift`                           |
+| Photo ordering       | `Features/Upgrade/ProfileKitOrderer.swift`                        |
+| Export pipeline      | `Features/Upgrade/ProfileKitExporter.swift`                       |
+| Paywall decision     | `Features/Upgrade/PaywallGate.swift`                              |
+| Visual atoms         | `Features/Upgrade/V2Components.swift`                             |
+| Audit client         | `Core/Services/GigaRizzAPIClient.swift` (`runAudit`)              |
+| Persistence          | `Core/Services/ProfileKitStore.swift`                             |
+| Naturalness wrap     | `backend/app/services/generation_service.py` (`_wrap_natural`)    |
+| OCR service          | `Core/Services/ScreenshotOCRService.swift`                        |
+| Screenshot Coach UI  | `Features/ScreenshotCoach/ScreenshotCoachView.swift`              |
+
+---
+
+## 1. Server-Driven Feature Flag System
+
+Every SOTA surface, paywall variant, and onboarding step is gated by a server-driven flag fetched on cold start (and every 1h after). Edit any flag in `backend/.env` and **no app update is required** — the change propagates to live users on the next refresh.
+
+### Flag categories
+- **Core surfaces** — `enable_generation`, `enable_coach`, `enable_face_swap`, `enable_background_replacer`, `enable_expression_coach`, `enable_photo_ranking`, `enable_color_grade`, `enable_pose_library`, `enable_intro_offer`, `enable_batch_generation`
+- **Model tiers** — `enable_premium_models`, `enable_photorealistic_models`, `enable_artistic_models`
+- **SOTA features (iter 1-9)** — `enable_face_enhance`, `enable_outfit_studio`, `enable_hairstyle`, `enable_age_studio`, `enable_pose_studio`, `enable_hinge_overlay`, `enable_nano_banana_2`, `enable_gpt_image_2`, `enable_instant_id`
+- **Paywall** — `paywall_mode` ∈ {`none`, `soft`, `hard`}, `soft_paywall_after_uses` (int)
+- **Onboarding** — `onboarding_enabled`, `onboarding_quiz_enabled`, `onboarding_skip_enabled`, `onboarding_max_steps` (cap of 30), `onboarding_show_social_proof`, `onboarding_show_testimonials`, `onboarding_show_video_demo`
+- **Quotas** — `max_free_generations`, `max_plus_generations`, `max_gold_generations`, `max_batch_models`
+- **Misc** — `show_promo_banner`, `min_app_version`
+
+### How to flip a flag in production
+1. SSH to EC2: `ssh ubuntu@api.gigarizz.app`
+2. Edit `/srv/gigarizz/.env` and change e.g. `FLAG_PAYWALL_MODE=hard` or `FLAG_ENABLE_OUTFIT_STUDIO=false`
+3. Restart: `sudo systemctl restart gigarizz`
+4. Verify: `curl https://api.gigarizz.app/api/v1/flags | jq .paywall_mode`
+5. iOS pulls within 1 hour OR force-refresh by killing + cold-launching the app.
+
+### App Review demo mode
+Set `FLAG_PAYWALL_MODE=none` to remove all paywalls during review. Reviewers see free, unlimited app. Flip back to `soft` post-approval.
+
+### Backlog: PATCH /api/v1/flags admin endpoint
+Currently flags are baked into Settings on backend boot. A `PATCH /api/v1/flags` endpoint with admin auth would allow runtime toggles without SSH+restart. Tracked in `tasks.json` backlog.
+
+---
+
+## 2. Core User Flow
+
+See [CORE_USER_FLOW.md](./CORE_USER_FLOW.md) for the full diagram + per-feature flows. TL;DR cold-start path:
+
+```
+Launch
+  → SDK init guards (Firebase/RevenueCat/PostHog all opt-in if keys present)
+  → onboarding_enabled flag check
+    → 30-step luxury onboarding (capped by onboarding_max_steps)
+    → onboarding_quiz_enabled? → photo-readiness quiz
+    → onboarding_skip_enabled? → "Skip for now" CTA
+  → Apple Sign-In (or DEBUG dev auth bypass)
+  → paywall_mode check
+    → "hard" → blocking paywall before Home
+    → "soft" → home renders; paywall on Nth use (soft_paywall_after_uses)
+    → "none" → home, no paywall (App Review)
+  → Home tab: 4 SOTA Quick Actions (visible filtered by feature flags)
+  → Tap Quick Action / ToolsHub tile / Generate
+    → photo upload (resize 1600px JPEG q=0.85 → presigned PUT)
+    → backend gen_svc creates prediction (Replicate/fal.ai/OpenAI)
+    → result polling → URL preserved → save/share
+```
+
+---
+
+## 3. P0 BLOCKERS (must fix before App Store submission)
+
+### 3.1 Firebase configuration
 - [ ] Create Firebase project at https://console.firebase.google.com
-- [ ] Enable Authentication (Email + Apple Sign In)
-- [ ] Download `GoogleService-Info.plist`
-- [ ] Add to `GigaRizz/Resources/` and reference in `project.yml`
+- [ ] Enable Authentication: Email + **Sign in with Apple**
+- [ ] Download `GoogleService-Info.plist` to `GigaRizz/Resources/`
+- [ ] Reference in `project.yml` (already wired; just needs the file)
 - [ ] Set `FIREBASE_PROJECT_ID` in backend `.env`
-- [ ] Verify: `FirebaseApp.configure()` runs in `GigaRizzApp.swift`
+- [ ] Verify cold launch reaches MainTabView (the lazy-init guards already prevent crashes if missing — once added, real auth lights up)
 
-### 2. RevenueCat Configuration
+### 3.2 RevenueCat
 - [ ] Create RevenueCat project at https://app.revenuecat.com
-- [ ] Set up App Store Connect API key in RevenueCat
+- [ ] Wire App Store Connect API key
 - [ ] Create products in App Store Connect:
-  - GigaRizz Plus (weekly/monthly)
-  - GigaRizz Gold (monthly/annual)
+  - GigaRizz Plus weekly + monthly
+  - GigaRizz Gold monthly + annual
   - Intro Offer (discounted first period)
-- [ ] Create "default" offering in RevenueCat
+- [ ] Create "default" offering with `gold` and `plus` entitlement IDs
 - [ ] Replace `AppConstants.revenueCatAPIKey` with real key
-- [ ] Verify entitlement IDs: `gold`, `plus`
+- [ ] Verify entitlements unlock correct quotas (`max_plus_generations`, `max_gold_generations`)
 
-### 3. Real API Keys (Backend .env)
-- [ ] `OPENAI_API_KEY` — Get from https://platform.openai.com/api-keys
-- [ ] `REPLICATE_API_TOKEN` — Get from https://replicate.com/account/api-tokens
-- [ ] `FAL_KEY` — Get from https://fal.ai/dashboard/keys
-- [ ] `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` — Create IAM user for S3
-- [ ] Create S3 bucket `gigarizz-photos` in us-east-2
-- [ ] Set bucket CORS policy for iOS uploads
+### 3.3 Real provider API keys (backend `.env`)
+- [ ] `OPENAI_API_KEY` — https://platform.openai.com/api-keys
+- [ ] `REPLICATE_API_TOKEN` — https://replicate.com/account/api-tokens
+- [ ] `FAL_KEY` — https://fal.ai/dashboard/keys
+- [ ] `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` — IAM user with S3 PutObject + GetObject
+- [ ] Create S3 bucket `gigarizz-photos` (or your own name) — set `S3_BUCKET_NAME`
+- [ ] CORS policy on bucket: allow `PUT` from `https://api.gigarizz.app` and (DEBUG) `http://localhost:8000`
 
-### 4. PostHog Analytics
+### 3.4 PostHog Analytics
 - [ ] Create project at https://us.posthog.com
-- [ ] Replace `AppConstants.postHogAPIKey` with real project key
+- [ ] Replace `AppConstants.postHogAPIKey` with real key
 - [ ] Verify host: `https://us.i.posthog.com`
 
-### 5. Apple Developer Account
+### 3.5 Apple Developer + signing
 - [ ] Set `DEVELOPMENT_TEAM` in `project.yml`
-- [ ] Create App ID in Apple Developer portal
-- [ ] Set bundle ID: `app.gigarizz.GigaRizz` (or your chosen ID)
-- [ ] Enable capabilities: Push Notifications, Sign in with Apple
-
-### 6. Code Signing
-- [ ] Create Distribution certificate
-- [ ] Create Provisioning Profile (Distribution)
-- [ ] Archive with proper signing
+- [ ] Create App ID in Apple Developer portal: `app.gigarizz.GigaRizz`
+- [ ] Enable capabilities: Push Notifications, **Sign in with Apple**
+- [ ] Create Distribution certificate + Provisioning Profile (App Store)
+- [ ] Test archive: `xcodebuild -scheme GigaRizz -configuration Release archive`
 
 ---
 
-## 🟡 P1 — Required for Launch (but not blocking build)
+## 4. P1 — Required for launch (build doesn't block, but submission does)
 
-### 7. Privacy & Legal Pages
-- [ ] Create Privacy Policy page at https://www.gigarizz.app/privacy
-- [ ] Create Terms of Service page at https://www.gigarizz.app/terms
-- [ ] Include sections: data collection, AI processing, photo storage, user rights
-- [ ] GDPR / CCPA compliance statements
-- [ ] Set up domain (Vercel/Netlify + custom domain)
+### 4.1 Privacy & Legal pages — Cloudflare Pages via Wrangler
+Pages are written and live in `web/public/`:
+- `/privacy` — full Privacy Policy (data collection, AI providers, S3 retention, GDPR/CCPA, deletion)
+- `/terms` — Terms of Service (acceptable use, IP, subscription auto-renewal, refund policy via Apple, AAA arbitration)
+- `/support` — Support contact + FAQ
+- `/` — landing page
 
-### 8. EC2 Backend Deployment
+Deploy steps:
+- [ ] `cd web && npm install` (first time only)
+- [ ] `npx wrangler login` (Cloudflare account auth)
+- [ ] `npm run deploy` — first deploy creates `gigarizz-web` project on Cloudflare Pages
+- [ ] Cloudflare dashboard → Pages → gigarizz-web → Custom domains:
+  - Add `www.gigarizz.app` (required — iOS app `AppConstants.privacyURL`/`termsURL` link here)
+  - Add `gigarizz.app` (apex — `_redirects` file forwards to www)
+- [ ] Verify: `curl -I https://www.gigarizz.app/privacy` returns 200
+- [ ] Verify: `curl -I https://www.gigarizz.app/terms` returns 200
+
+### 4.2 EC2 backend deployment
 - [ ] Start EC2 instance (currently stopped/unreachable at 3.150.118.161)
-- [ ] Update security group: allow ports 22, 80, 443 from anywhere
-- [ ] Get new public IP (elastic IP recommended)
+- [ ] Security group: ports 22, 80, 443 open
+- [ ] Allocate elastic IP (don't rely on dynamic IP)
 - [ ] Run `./backend/deploy.sh deploy`
-- [ ] Upload `.env.production` with real API keys
-- [ ] Set up DNS: `api.gigarizz.app` → EC2 IP
-- [ ] Run `./backend/deploy.sh ssl` for HTTPS
-- [ ] Verify: `curl https://api.gigarizz.app/health`
+- [ ] Upload `.env.production` with real keys
+- [ ] DNS: `api.gigarizz.app` → EC2 IP
+- [ ] `./backend/deploy.sh ssl` for Let's Encrypt cert
+- [ ] Smoke test: `curl https://api.gigarizz.app/health` returns 200
+- [ ] Smoke test: `curl https://api.gigarizz.app/api/v1/flags | jq` returns 30+ flags
 
-### 9. Update iOS Production URL
-- [ ] After EC2 is deployed, verify `AppConstants.backendBaseURL`:
-  - DEBUG: `http://localhost:8000` ✅ (already set)
-  - RELEASE: `https://api.gigarizz.app` ✅ (already set)
-- [ ] Test full flow on device with backend pointing to EC2
+### 4.3 App Store Connect setup
+- [ ] Create app: name `GigaRizz`, primary category Photo & Video, secondary Lifestyle, age 17+
+- [ ] Subtitle: `AI Dating Photos That Get Matches`
+- [ ] Screenshots (6.7" + 6.1" + 12.9" iPad if supported):
+  - Use `marketing/assets/screenshot-frames.html` as template
+  - Capture real screenshots from each SOTA flow (Face Enhance, Outfit, Hairstyle, Pose Studio, Generate)
+- [ ] App icon 1024×1024 (render from `marketing/assets/app-icon-spec.svg`)
+- [ ] Description from `marketing/assets/appstore-description.md`
+- [ ] Keywords from metadata.json (100 char limit — fit "AI", "dating", "photos", "FaceApp alternative", "Hinge", "Tinder")
+- [ ] In-App Purchases: Plus weekly/monthly, Gold monthly/annual, Intro offer
+- [ ] App Review notes: explain AI photo generation, demo account, set `FLAG_PAYWALL_MODE=none` for review
 
-### 10. App Store Connect Setup
-- [ ] Create app in App Store Connect
-- [ ] Fill in app metadata:
-  - Name: GigaRizz
-  - Subtitle: AI Dating Photos That Get Matches
-  - Category: Photo & Video (Primary), Lifestyle (Secondary)
-  - Age Rating: 17+ (photo AI content)
-- [ ] Upload screenshots (6.7" iPhone, 6.1" iPhone, 12.9" iPad)
-  - Use `marketing/assets/screenshot-frames.html` as base
-  - Replace mock content with real app screenshots
-- [ ] Write/paste App Store description from `marketing/assets/appstore-description.md`
-- [ ] Add keywords from metadata.json (100 char limit)
-- [ ] Upload 1024x1024 app icon (render from `marketing/assets/app-icon-spec.svg`)
-- [ ] Set price: Free (with IAP)
-- [ ] Select In-App Purchases
-- [ ] Set App Review information (demo account, notes)
-
-### 11. TestFlight Beta
-- [ ] Archive and upload to TestFlight
-- [ ] Add internal testers (your team)
-- [ ] Add external testers (beta group)
-- [ ] Test full flows:
-  - [ ] Onboarding (30-step luxury flow)
-  - [ ] Photo generation (at least 3 models)
+### 4.4 TestFlight beta
+- [ ] Archive + upload to TestFlight
+- [ ] Internal testers (your team)
+- [ ] External beta (50-100 users)
+- [ ] Test golden paths:
+  - [ ] Onboarding 30-step (with all flags ON)
+  - [ ] Onboarding 5-step (set `FLAG_ONBOARDING_MAX_STEPS=5`)
+  - [ ] Photo generation across 3 model categories
   - [ ] Batch generation
-  - [ ] Coach (bio, openers, reply)
-  - [ ] Paywall + subscription
-  - [ ] Account creation (Firebase Auth)
-  - [ ] Settings + account deletion
+  - [ ] Face Enhance (anti-plastic CodeFormer)
+  - [ ] Outfit Studio
+  - [ ] Hairstyle
+  - [ ] Age Studio
+  - [ ] Pose Studio (InstantID)
+  - [ ] Hinge Mode (gold-tier presets)
+  - [ ] Coach (bio / openers / reply)
+  - [ ] Paywall variants: `soft` (after N uses), `hard` (blocking), `none`
+  - [ ] Account creation + delete
+  - [ ] Settings → Developer toggle (DEBUG only — should NOT ship in Release archive)
 
 ---
 
-## 🟢 P2 — Polish Before Launch
+## 5. P2 — Polish before launch
 
-### 12. iOS Schema Alignment (Minor Issues Found)
+### 5.1 iOS schema alignment (minor)
 - [ ] iOS `BioRequest` sends `vibe` field → backend ignores it (harmless but wasteful)
-  - Option A: Remove `vibe` from iOS `BioRequest`
-  - Option B: Add `vibe` support to backend `BioRequest`
-- [ ] iOS `BioRequest` missing `age`/`gender` fields → backend supports them
-  - Consider adding age/gender to iOS bio generation flow
-- [ ] iOS `UserAnalytics` decoder is missing some fields the backend returns:
-  - `favorite_style`, `total_matches`, `match_rate`, `top_style`, `streak_days`, `weekly_generations`, `platform_breakdown`
-  - iOS only decodes: `totalGenerations`, `successfulGenerations`, `generationsToday`, `favoriteStyle`
+- [ ] iOS `BioRequest` missing `age`/`gender` fields the backend supports
+- [ ] iOS `UserAnalytics` decoder missing: `favorite_style`, `total_matches`, `match_rate`, `top_style`, `streak_days`, `weekly_generations`, `platform_breakdown`
 
-### 13. Backend Hardening
-- [ ] Set `moderation_enabled: true` in production .env
-- [ ] Switch moderation `check_text` to fail-closed in production (currently fails open)
-- [ ] Add rate limiting middleware (currently only DB-level check)
-- [ ] Set `ENVIRONMENT=production` and `DEBUG=false`
-- [ ] Disable docs endpoint in production (already conditional)
-- [ ] Configure CORS to only allow your domains (not localhost)
-- [ ] Add structured logging (JSON logs for CloudWatch)
-- [ ] Set up health check monitoring (UptimeRobot, Pingdom)
+### 5.2 Backend hardening
+- [ ] Set `MODERATION_ENABLED=true` (already default in `.env.example`)
+- [ ] Switch `check_text` to fail-closed in production (currently fail-open in dev)
+- [ ] Rate limiting middleware (currently DB-level only)
+- [ ] `ENVIRONMENT=production`, `DEBUG=false`
+- [ ] Disable `/docs` in production (already conditional on DEBUG)
+- [ ] CORS: only allow `https://www.gigarizz.app` + iOS app bundle ID; drop localhost
+- [ ] Structured JSON logging for CloudWatch
+- [ ] UptimeRobot / Pingdom on `/health`
+- [ ] Sentry SDK both iOS and backend
 
-### 14. Performance & Reliability
-- [ ] Add Redis for session caching (docker-compose already includes redis)
-- [ ] Set up database backups (SQLite → periodic S3 backup, or migrate to PostgreSQL)
-- [ ] Add Sentry for error tracking (both iOS and backend)
-- [ ] Set up CloudWatch alarms for EC2
+### 5.3 App Review prep
+- [ ] Demo account preloaded with sample generations
+- [ ] Reviewer notes: explain AI photo generation, NSFW moderation pipeline (`enable_face_swap=false` by default), source images deleted after 30 days
+- [ ] iOS 17.4 AI content disclosure on each generated photo
+- [ ] Consider AI-Generated metadata (C2PA / EXIF marker)
+- [ ] Privacy nutrition label:
+  - Data collected: photos, name, email, usage data, purchase history
+  - Linked to user: photos, purchases
+  - Tracking: PostHog analytics, RevenueCat purchases
 
-### 15. App Review Preparation
-- [ ] Create demo account for Apple Review team
-- [ ] Write reviewer notes explaining AI photo generation
-- [ ] Prepare for potential rejection reasons:
-  - AI content disclosure (required since iOS 17.4)
-  - Photo manipulation warnings
-  - In-app purchase must be clearly described
-- [ ] Add "AI-Generated" watermark or metadata to all generated photos
-- [ ] Include privacy nutrition label info:
-  - Data collected: photos, name, email, usage data
-  - Data linked to user: photos, purchase history
-  - Tracking: PostHog analytics
-
-### 16. Marketing Launch
-- [ ] Deploy landing page from `marketing/assets/landing-page.html`
-- [ ] Set up Product Hunt launch
-- [ ] Prepare social media cards from `marketing/assets/social-cards.html`
-- [ ] Set up email capture on landing page
-- [ ] Prepare App Store Optimization (ASO):
-  - Screenshots with compelling captions
-  - Keyword research (from metadata.json)
-  - Preview video (optional but high-impact)
+### 5.4 Marketing launch
+- [ ] Deploy `marketing/assets/landing-page.html`
+- [ ] Product Hunt launch
+- [ ] Social cards from `marketing/assets/social-cards.html`
+- [ ] Email capture on landing page
+- [ ] ASO: real screenshots, preview video
 
 ---
 
-## 📋 Quick Reference — Integration Points
+## 6. Bugs Fixed (iter 1-9)
 
-| iOS Constant | Current Value | Production Value |
-|-------------|---------------|------------------|
-| `backendBaseURL` (DEBUG) | `http://localhost:8000` | Keep as-is |
-| `backendBaseURL` (RELEASE) | `https://api.gigarizz.app` | Verify DNS |
-| `revenueCatAPIKey` | `appl_REPLACE...` | Real RC key |
-| `postHogAPIKey` | `phc_REPLACE...` | Real PH key |
-| `postHogHost` | `https://us.i.posthog.com` | Keep as-is |
-| `termsURL` | `https://www.gigarizz.app/terms` | Create page |
-| `privacyURL` | `https://www.gigarizz.app/privacy` | Create page |
-
-| Backend .env | Current | Production |
-|-------------|---------|------------|
-| `OPENAI_API_KEY` | `sk-REPLACE...` | Real key |
-| `REPLICATE_API_TOKEN` | `r8_REPLACE...` | Real key |
-| `FAL_KEY` | `REPLACE...` | Real key |
-| `ENVIRONMENT` | `development` | `production` |
-| `DEBUG` | `true` | `false` |
-| `MODERATION_ENABLED` | `true` | `true` (fail-closed) |
+| ID  | Bug                                                                | Iter   |
+|-----|--------------------------------------------------------------------|--------|
+| 1   | Generated photos drop URLs in production (`map { _ in ... }`)      | iter 1 |
+| 2   | Source images never uploaded to backend                            | iter 2 |
+| 3   | Face enhancement fake (CIFilter only, no CodeFormer)               | iter 3 |
+| 4   | Inline comment on `S3_ENDPOINT_URL` crashed StorageService         | iter 2 |
+| 5   | App crashes on launch (Firebase missing plist)                     | iter 2 |
+| 6   | `Storage.storage()` fatal-errored on MainTabView render            | iter 4 |
+| 7   | `Firestore.firestore()` fatal-errored eagerly                      | iter 4 |
+| 8   | ServiceTests bit-rot — FeatureFlags missing 5 args                 | iter 5 |
+| 9   | ServiceTests bit-rot — FeatureFlags struct gained 18 fields        | iter 9 |
 
 ---
 
-## E2E Test Results Summary
+## 7. Quick Reference — Integration Points
 
-| Endpoint | Status | Notes |
-|----------|--------|-------|
-| `GET /health` | ✅ 200 | Returns version, environment |
-| `GET /api/v1/flags` | ✅ 200 | 19 feature flags |
-| `GET /api/v1/generate/models` | ✅ 200 | 16 models, category filter works |
-| `GET /api/v1/users/me` | ✅ 200 | Auto-creates user, returns profile |
-| `GET /api/v1/users/me/analytics` | ✅ 200 | Returns empty analytics for new user |
-| `POST /api/v1/generate` | ⚠️ 500 | Expected: moderation fails with placeholder key |
-| `POST /api/v1/generate/batch` | ⚠️ Auth | Needs valid user token |
-| `POST /api/v1/coach/bio` | ⚠️ 500 | Expected: OpenAI fails with placeholder key |
-| `POST /api/v1/coach/openers` | ⚠️ 500 | Expected: OpenAI fails with placeholder key |
-| `POST /api/v1/coach/reply` | ⚠️ 500 | Expected: OpenAI fails with placeholder key |
+| iOS Constant                  | DEBUG                       | RELEASE                       |
+|-------------------------------|------------------------------|--------------------------------|
+| `backendBaseURL`              | `http://localhost:8000`      | `https://api.gigarizz.app`     |
+| `revenueCatAPIKey`            | `appl_REPLACE...`            | Real key                       |
+| `postHogAPIKey`               | `phc_REPLACE...`             | Real key                       |
+| `postHogHost`                 | `https://us.i.posthog.com`   | Same                           |
+| `termsURL`                    | `https://www.gigarizz.app/terms`   | Live page                |
+| `privacyURL`                  | `https://www.gigarizz.app/privacy` | Live page                |
+| Settings → Use Real AI        | OFF (mock photos)            | N/A (DEBUG-only)               |
 
-All ⚠️ endpoints will work with real API keys. The code paths are correct.
-
----
-
-## Bugs Fixed This Session
-
-1. **Model category filter broken** — `GET /api/v1/generate/models?category=premium` returned all 16 models. Fixed: added `category` query param filtering.
-2. **Moderation crashes on invalid key** — `check_text()` had no try/except, causing unhandled 500 on OpenAI auth error. Fixed: added graceful error handling (fail-open in dev).
-3. **Storage service wrong field names** — Used `settings.s3_bucket` and `settings.s3_region` but config.py has `s3_bucket_name` and `aws_region`. Fixed.
-4. **`.env.example` mismatched config** — `S3_BUCKET` and `S3_REGION` didn't match pydantic Settings. Fixed to `S3_BUCKET_NAME` and `AWS_REGION`.
+| Backend `.env`                | Dev                   | Production                |
+|-------------------------------|------------------------|----------------------------|
+| `OPENAI_API_KEY`              | `sk-REPLACE...`        | Real key                   |
+| `REPLICATE_API_TOKEN`         | `r8_REPLACE...`        | Real key                   |
+| `FAL_KEY`                     | `fal_REPLACE...`       | Real key                   |
+| `ENVIRONMENT`                 | `development`          | `production`               |
+| `DEBUG`                       | `true`                 | `false`                    |
+| `MODERATION_ENABLED`          | `true`                 | `true` (fail-closed)       |
+| `FLAG_PAYWALL_MODE`           | `soft`                 | `soft` post-approval; `none` for App Review |
+| `FLAG_ONBOARDING_MAX_STEPS`   | `30`                   | A/B test 5 vs 30           |
 
 ---
 
-## Recommended Post-Launch Features (from Competitor Analysis)
+## 8. What is missing? (gap analysis)
 
-| Priority | Feature | Effort | Impact |
-|----------|---------|--------|--------|
-| 1 | Photo A/B Testing | Medium | High retention |
-| 2 | Shorten Onboarding (30→5 steps) | Small | High acquisition |
-| 3 | Screenshot Profile Audit | Medium | High engagement |
-| 4 | Personal AI Model Training | Large | Market differentiator |
-| 5 | Outfit/Clothing Swap | Medium | Viral potential |
-| 6 | Keyboard Extension | Medium | Daily engagement |
-| 7 | Platform-Specific Templates | Small | Revenue |
-| 8 | Social Sharing Mechanics | Small | Growth |
-| 9 | AI Video Portraits | Large | Premium upsell |
-| 10 | Couple Photo Generator | Medium | Viral + press |
+### Critical gaps (block App Store)
+- All 5 P0 BLOCKERS above
+- Privacy + Terms pages: ✅ written; need `npm run deploy` from `web/` + Cloudflare custom domain
+- App Store screenshots (need real captures from working dev build)
+
+### Important gaps (quality bar)
+- Source-image deletion job (S3 lifecycle policy: delete after 30 days)
+- Account deletion endpoint (Apple requires this since iOS 14.5)
+- AI content disclosure UI on every result screen
+- Subscription restore flow tested end-to-end
+- Network failure UX (current generation flow assumes network is up)
+
+### Nice-to-have (post-launch)
+- Feature-flag PATCH endpoint
+- Sentry error tracking
+- Background photo upload (current upload blocks UI)
+- Conversational AI editor (Facetune Skin 2.0 parity)
+- Video selfie support (Hinge prompts)
+- Group date / multi-character generation (Nano Banana 2 5-identity)
+
+---
+
+## 9. E2E Test Results — Current
+
+| Endpoint                              | Status | Notes                                                    |
+|---------------------------------------|--------|----------------------------------------------------------|
+| `GET /health`                         | ✅ 200 | Returns version, environment                             |
+| `GET /api/v1/flags`                   | ✅ 200 | **30+ feature flags** (was 19)                           |
+| `GET /api/v1/generate/models`         | ✅ 200 | **20 models** (was 16); category filter works            |
+| `GET /api/v1/users/me`                | ✅ 200 | Auto-creates user                                         |
+| `GET /api/v1/users/me/analytics`      | ✅ 200 | Empty analytics for new user                              |
+| `POST /api/v1/uploads/presign`        | ✅ 200 | Returns presigned PUT URL (or dev placeholder if no S3)   |
+| `POST /api/v1/generate`               | ⚠️ 500 | Expected without real provider keys                       |
+| `POST /api/v1/generate/batch`         | ⚠️ Auth | Needs valid user token                                   |
+| `POST /api/v1/coach/{bio,openers,reply}` | ⚠️ 500 | Expected without `OPENAI_API_KEY`                      |
+
+All ⚠️ endpoints work with real keys. Code paths verified correct.

@@ -123,6 +123,8 @@ struct AIModel: Identifiable, Equatable, Codable {
         AIModel(id: "fal_recraft_v3", name: "Recraft V3", provider: "fal", speed: "fast", quality: "high", tier: "plus", category: "artistic"),
         AIModel(id: "dall_e_3", name: "DALL-E 3", provider: "openai", speed: "medium", quality: "high", tier: "plus", category: "classic"),
         AIModel(id: "playground_v3", name: "Playground v3", provider: "replicate", speed: "medium", quality: "high", tier: "plus", category: "artistic"),
+        AIModel(id: "instant_id", name: "InstantID", provider: "replicate", speed: "medium", quality: "high", tier: "plus", category: "photorealistic"),
+        AIModel(id: "face_restore", name: "Face Restore", provider: "replicate", speed: "fast", quality: "high", tier: "plus", category: "photorealistic"),
         // Gold tier
         AIModel(id: "flux_1_1_pro", name: "Flux 1.1 Pro", provider: "replicate", speed: "medium", quality: "best", tier: "gold", category: "premium"),
         AIModel(id: "flux_1_1_pro_ultra", name: "Flux Pro Ultra", provider: "replicate", speed: "slow", quality: "ultra", tier: "gold", category: "premium"),
@@ -130,6 +132,8 @@ struct AIModel: Identifiable, Equatable, Codable {
         AIModel(id: "realvis_xl", name: "RealVisXL", provider: "replicate", speed: "medium", quality: "best", tier: "gold", category: "photorealistic"),
         AIModel(id: "ideogram_3", name: "Ideogram 3", provider: "replicate", speed: "medium", quality: "best", tier: "gold", category: "photorealistic"),
         AIModel(id: "gpt_image_1", name: "GPT Image 1", provider: "openai", speed: "medium", quality: "best", tier: "gold", category: "premium"),
+        AIModel(id: "nano_banana_2", name: "Nano Banana 2", provider: "fal", speed: "fast", quality: "ultra", tier: "gold", category: "premium"),
+        AIModel(id: "gpt_image_2", name: "GPT Image 2", provider: "openai", speed: "medium", quality: "ultra", tier: "gold", category: "premium"),
     ]
 
     static let `default` = defaultModels[0]

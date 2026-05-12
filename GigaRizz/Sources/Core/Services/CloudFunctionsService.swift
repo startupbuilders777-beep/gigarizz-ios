@@ -1,3 +1,4 @@
+import FirebaseCore
 import FirebaseFirestore
 import Foundation
 
@@ -10,7 +11,19 @@ final class CloudFunctionsService: ObservableObject {
     @Published var isProcessing = false
     @Published var lastError: String?
 
-    private let db = Firestore.firestore()
+    /// Lazy + Firebase-guarded so dev builds without GoogleService-Info.plist
+    /// don't crash when this singleton is first constructed.
+    private var db: Firestore? {
+        guard FirebaseApp.app() != nil else { return nil }
+        return Firestore.firestore()
+    }
+
+    private func requireDB() throws -> Firestore {
+        guard let db else {
+            throw CloudFunctionsError.networkError("Firebase isn't configured.")
+        }
+        return db
+    }
 
     init() {}
 
@@ -37,13 +50,13 @@ final class CloudFunctionsService: ObservableObject {
             "photoCount": photoCount, "status": "queued", "createdAt": FieldValue.serverTimestamp(),
             "platform": "ios", "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         ]
-        let docRef = try await db.collection("generation_jobs").addDocument(data: jobData)
+        let docRef = try await requireDB().collection("generation_jobs").addDocument(data: jobData)
         isProcessing = false
         return GenerationJob(id: docRef.documentID, userId: userId, style: style, photoCount: photoCount, status: .queued, createdAt: Date())
     }
 
     func checkJobStatus(jobId: String) async throws -> GenerationJob {
-        let doc = try await db.collection("generation_jobs").document(jobId).getDocument()
+        let doc = try await requireDB().collection("generation_jobs").document(jobId).getDocument()
         guard let data = doc.data() else { throw CloudFunctionsError.jobNotFound }
         return GenerationJob(
             id: doc.documentID, userId: data["userId"] as? String ?? "", style: data["style"] as? String ?? "",
@@ -82,7 +95,7 @@ final class CloudFunctionsService: ObservableObject {
     }
 
     func fetchUserAnalytics(userId: String) async throws -> UserAnalytics {
-        let doc = try await db.collection("user_analytics").document(userId).getDocument()
+        let doc = try await requireDB().collection("user_analytics").document(userId).getDocument()
         if let data = doc.data() {
             return UserAnalytics(
                 totalGenerations: data["totalGenerations"] as? Int ?? 0, totalMatches: data["totalMatches"] as? Int ?? 0,
@@ -106,7 +119,7 @@ final class CloudFunctionsService: ObservableObject {
 
     func moderateContent(imageURL: String, userId: String) async throws -> ModerationResult {
         let data: [String: Any] = ["imageURL": imageURL, "userId": userId, "timestamp": FieldValue.serverTimestamp()]
-        let docRef = try await db.collection("moderation_queue").addDocument(data: data)
+        let docRef = try await requireDB().collection("moderation_queue").addDocument(data: data)
         return ModerationResult(id: docRef.documentID, status: .approved, confidence: 0.98, flags: [])
     }
 
@@ -114,7 +127,7 @@ final class CloudFunctionsService: ObservableObject {
 
     func deleteUserData(userId: String) async throws {
         isProcessing = true
-        try await db.collection("deletion_requests").addDocument(data: [
+        try await requireDB().collection("deletion_requests").addDocument(data: [
             "userId": userId, "requestedAt": FieldValue.serverTimestamp(), "status": "pending",
             "collections": ["generation_jobs", "user_photos", "user_analytics", "matches", "user_settings"]
         ])
@@ -126,7 +139,7 @@ final class CloudFunctionsService: ObservableObject {
 
     func fetchFeatureFlags() async -> [String: Any] {
         do {
-            let doc = try await db.collection("config").document("feature_flags").getDocument()
+            let doc = try await requireDB().collection("config").document("feature_flags").getDocument()
             return doc.data() ?? defaultFeatureFlags
         } catch { return defaultFeatureFlags }
     }

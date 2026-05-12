@@ -36,9 +36,13 @@ final class PhotoModelTests: XCTestCase {
     }
 
     func testUserPhoto_equatable() {
-        let photo1 = UserPhoto(id: "same-id", userId: "u1")
-        let photo2 = UserPhoto(id: "same-id", userId: "u1")
-        let photo3 = UserPhoto(id: "diff-id", userId: "u1")
+        // Pin createdAt so the synthesized Equatable doesn't compare against
+        // sub-millisecond Date() differences when the two instances are
+        // constructed in the same statement.
+        let pinnedDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let photo1 = UserPhoto(id: "same-id", userId: "u1", createdAt: pinnedDate)
+        let photo2 = UserPhoto(id: "same-id", userId: "u1", createdAt: pinnedDate)
+        let photo3 = UserPhoto(id: "diff-id", userId: "u1", createdAt: pinnedDate)
         XCTAssertEqual(photo1, photo2)
         XCTAssertNotEqual(photo1, photo3)
     }

@@ -26,24 +26,62 @@ struct GigaRizzApp: App {
         // Skip all SDK init when running as a test host
         guard !Self.isRunningTests else { return }
 
-        // 1. Firebase
-        FirebaseApp.configure()
+        // 1. Firebase — only configure when GoogleService-Info.plist is bundled.
+        //    Skipping this guard caused the app to hard-crash on launch in dev
+        //    builds without Firebase set up. Auth flows fall back to the dev
+        //    user when Firebase isn't available.
+        if Bundle.main.url(forResource: "GoogleService-Info", withExtension: "plist") != nil {
+            FirebaseApp.configure()
+        } else {
+            #if DEBUG
+            print("[GigaRizz] GoogleService-Info.plist not found — skipping Firebase configure (dev mode)")
+            #endif
+        }
 
-        // 2. RevenueCat
-        Purchases.logLevel = .debug
-        Purchases.configure(withAPIKey: AppConstants.revenueCatAPIKey)
+        // 2. RevenueCat — skip when key is the placeholder (would log noisy errors).
+        if !AppConstants.revenueCatAPIKey.contains("REPLACE_WITH") {
+            Purchases.logLevel = .debug
+            Purchases.configure(withAPIKey: AppConstants.revenueCatAPIKey)
+        }
 
-        // 3. PostHog
-        let phConfig = PostHogConfig(apiKey: AppConstants.postHogAPIKey, host: AppConstants.postHogHost)
-        phConfig.captureApplicationLifecycleEvents = true
-        phConfig.captureScreenViews = true
-        PostHogSDK.shared.setup(phConfig)
+        // 3. PostHog — skip when key is the placeholder.
+        if !AppConstants.postHogAPIKey.contains("REPLACE_WITH") {
+            let phConfig = PostHogConfig(apiKey: AppConstants.postHogAPIKey, host: AppConstants.postHogHost)
+            phConfig.captureApplicationLifecycleEvents = true
+            phConfig.captureScreenViews = true
+            PostHogSDK.shared.setup(phConfig)
+        }
     }
 
     /// Detect if the process is being launched as a test host.
     private static var isRunningTests: Bool {
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil
+    }
+
+    /// In DEBUG builds without Firebase configured, treat the user as authenticated
+    /// so we can walk the actual feature surface in the simulator. Production
+    /// builds always enforce real auth — this is purely a dev-loop convenience.
+    private var devAuthBypass: Bool {
+        #if DEBUG
+        return FirebaseApp.app() == nil
+        #else
+        return false
+        #endif
+    }
+
+    /// When V2 is on, skip the V1 30-step onboarding entirely. The Upgrade tab
+    /// IS the audit-first onboarding, so running both back-to-back violates
+    /// Codex's ≤2-minute-to-diagnosis North Star. Auto-marks the V1 flag so
+    /// the user never sees the 30-step flow on this device again.
+    @MainActor
+    private var shouldSkipV1Onboarding: Bool {
+        guard FeatureFlagManager.shared.isEnabled(.v2UpgradeFlow) else { return false }
+        if !hasCompletedOnboarding {
+            // Mark V1 onboarding as completed so the gate flips next time too.
+            DispatchQueue.main.async { hasCompletedOnboarding = true }
+        }
+        return true
     }
 
     var body: some Scene {
@@ -55,7 +93,7 @@ struct GigaRizzApp: App {
                 // 3. Completed onboarding, no auth → SignInView
                 // 4. Authenticated → MainTabView
                 
-                if !hasCompletedOnboarding {
+                if !hasCompletedOnboarding && !shouldSkipV1Onboarding {
                     if hasSeenOnboarding && !hasCompletedOnboarding && !showResumePrompt {
                         // Returning user who didn't complete onboarding
                         OnboardingResumePromptView(
@@ -89,7 +127,7 @@ struct GigaRizzApp: App {
                                 }
                             }
                     }
-                } else if authManager.isAuthenticated {
+                } else if authManager.isAuthenticated || devAuthBypass {
                     MainTabView()
                         .environmentObject(authManager)
                         .environmentObject(subscriptionManager)

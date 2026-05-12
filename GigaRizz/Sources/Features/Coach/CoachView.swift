@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CoachView: View {
     @StateObject private var viewModel = CoachViewModel()
+    @StateObject private var featureFlags = FeatureFlagManager.shared
     @State private var showPaywall = false
 
     var body: some View {
@@ -10,6 +11,9 @@ struct CoachView: View {
             ScrollView {
                 VStack(spacing: DesignSystem.Spacing.large) {
                     headerSection
+                    if featureFlags.isEnabled(.screenshotCoach) {
+                        screenshotCoachEntry
+                    }
                     weeklyReportSection
                     bioGeneratorSection
                     openingLinesSection
@@ -21,6 +25,41 @@ struct CoachView: View {
         }
         .navigationTitle("Coach").toolbarColorScheme(.dark, for: .navigationBar)
         .sheet(isPresented: $showPaywall) { PaywallView() }
+    }
+
+    // MARK: - Screenshot Coach entry
+
+    private var screenshotCoachEntry: some View {
+        NavigationLink {
+            ScreenshotCoachView()
+        } label: {
+            GRCard {
+                HStack(spacing: DesignSystem.Spacing.medium) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.small)
+                            .fill(DesignSystem.Colors.flameOrange.opacity(0.15))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "bubble.left.and.text.bubble.right.fill")
+                            .font(.system(size: 20, weight: .medium))
+                            .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    }
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
+                        Text("Screenshot Coach")
+                            .font(DesignSystem.Typography.callout)
+                            .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        Text("Paste a profile or chat → openers, replies, revival")
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+            }
+        }
+        .buttonStyle(HapticButtonStyle(hapticStyle: .light))
+        .accessibilityLabel("Screenshot Coach: paste a profile or chat to get openers, replies, or revive a stalled chat")
     }
 
     // MARK: - Weekly Report

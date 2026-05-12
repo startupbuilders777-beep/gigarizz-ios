@@ -1,4 +1,5 @@
 @preconcurrency import FirebaseStorage
+import FirebaseCore
 import Foundation
 import UIKit
 
@@ -18,7 +19,14 @@ final class StorageManager: ObservableObject {
 
     // MARK: - Private Properties
 
-    private let storage = Storage.storage()
+    /// Lazy because `Storage.storage()` fatal-errors when Firebase isn't configured.
+    /// Constructing the singleton at MainTabView render time previously crashed dev
+    /// builds without GoogleService-Info.plist; now we defer the lookup until an
+    /// actual upload/delete fires.
+    private var storage: Storage? {
+        guard FirebaseApp.app() != nil else { return nil }
+        return Storage.storage()
+    }
     private let maxDimension: CGFloat = 2048
     private let compressionQuality: CGFloat = 0.85
 
@@ -45,6 +53,9 @@ final class StorageManager: ObservableObject {
         }
 
         let path = "users/\(userId)/photos/\(photoId)_original.jpg"
+        guard let storage else {
+            throw NSError(domain: "StorageManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Firebase Storage isn't configured."])
+        }
         let ref = storage.reference().child(path)
 
         let metadata = StorageMetadata()
@@ -77,6 +88,9 @@ final class StorageManager: ObservableObject {
 
     func deletePhoto(userId: String, photoId: String) async throws {
         let path = "users/\(userId)/photos/\(photoId)_original.jpg"
+        guard let storage else {
+            throw NSError(domain: "StorageManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Firebase Storage isn't configured."])
+        }
         let ref = storage.reference().child(path)
         try await ref.delete()
     }

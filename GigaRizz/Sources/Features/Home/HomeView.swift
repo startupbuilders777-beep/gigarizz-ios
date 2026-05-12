@@ -232,11 +232,24 @@ struct HomeView: View {
             Text("Quick Actions")
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
-            
+
             HStack(spacing: DesignSystem.Spacing.medium) {
-                ForEach(QuickAction.allCases) { action in
+                ForEach(visibleQuickActions) { action in
                     quickActionButton(action)
                 }
+            }
+        }
+    }
+
+    /// Filter Quick Actions by feature flags so server can hide a tile without
+    /// shipping an app update.
+    private var visibleQuickActions: [QuickAction] {
+        QuickAction.allCases.filter { action in
+            switch action {
+            case .photoPicker: return FeatureFlagManager.shared.isEnabled(.generation)
+            case .faceEnhance: return FeatureFlagManager.shared.isEnabled(.faceEnhance)
+            case .outfitStudio: return FeatureFlagManager.shared.isEnabled(.outfitStudio)
+            case .hairstyle: return FeatureFlagManager.shared.isEnabled(.hairstyle)
             }
         }
     }
@@ -296,10 +309,12 @@ struct HomeView: View {
     @ViewBuilder
     private func destinationForAction(_ action: QuickAction) -> some View {
         switch action {
-        case .profileScore:
-            ProfileView()
-        case .myGallery:
-            GeneratedPhotosGalleryView()
+        case .faceEnhance:
+            FaceEnhancementView()
+        case .outfitStudio:
+            AIOutfitChangerView()
+        case .hairstyle:
+            HairstylePickerView()
         default:
             EmptyView() // Tab-switching actions handled by button, not NavigationLink
         }

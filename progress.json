@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "last_updated": "2026-05-01T02:00:00Z",
+  "summary": "Iter 9 COMPLETE. Server-driven feature flag system covers all 9 SOTA surfaces + paywall_mode (none/soft/hard) + 7 onboarding flags. Pose Studio (InstantID any-scene) shipped iter 8. Home Quick Actions surface SOTA (Face Enhance / Outfit / Hairstyle). Settings Developer toggle for real-AI bypass. LAUNCH_CHECKLIST + CORE_USER_FLOW docs written.",
+  "iterations_completed": 9,
+  "completed": [
+    {"iteration": 7, "item": "Hairstyle Try-On + outfit_swap analytics enum + Hinge tile",
+     "details": "GenerationStyle outfit_swap + hairstyle_swap enums. HairstylePickerView 6-style catalog (Nano Banana 2). ToolsHub Hairstyle + Hinge tiles. iOS 23/23 + backend 24/24."},
+    {"iteration": 8, "item": "Pose Studio (InstantID any-scene) + Home Quick Actions surface SOTA",
+     "details": "Backend INSTANT_ID model + pose_image_url forwarded. AIModel enum gains NANO_BANANA_2/GPT_IMAGE_2/FACE_RESTORE/INSTANT_ID. PoseStudioView with 6 quick-start chips (Helicopter/Yacht/Rooftop/Mountain/Coffee/Concert). HomeView Quick Actions reorder photoPicker/faceEnhance/outfitStudio/hairstyle. Settings DEBUG-only 'Use Real AI' toggle bound to UserDefault. Backlog cleanup: rizzCoach/profileScore/myGallery quick actions removed."},
+    {"iteration": 9, "item": "Server-driven feature flag system + LAUNCH checklist",
+     "details": "Backend FeatureFlags expanded +9 SOTA flags + paywall_mode + soft_paywall_after_uses + 7 onboarding flags + max_batch_models. Settings + feature_flags router updated. iOS FeatureFlagManager: 14 new Feature enum cases, struct + CodingKeys + defaults + isEnabled() switch coverage, PaywallMode enum, paywallMode + softPaywallAfterUses + onboardingMaxSteps + maxBatchModels computed properties. HomeView visibleQuickActions filter. ToolsHubView 6 SOTA tiles wrapped in `if featureFlags.isEnabled(...)`. backend/.env.example rewritten as comprehensive 30+ flag template. ServiceTests testFeatureFlags_persistAndRestore fixed for new struct fields (BUG-9). LAUNCH_CHECKLIST.md updated; CORE_USER_FLOW.md written."}
+  ],
+  "in_progress": [],
+  "bugs_found": [
+    {"id": "BUG-1", "title": "Generated photos drop URLs in production", "status": "fixed iter 1"},
+    {"id": "BUG-2", "title": "Source images never uploaded to backend", "status": "fixed iter 2"},
+    {"id": "BUG-3", "title": "Face enhancement is fake (CIFilter only)", "status": "fixed iter 3"},
+    {"id": "BUG-4", "title": "Inline comment on S3_ENDPOINT_URL crashed StorageService", "status": "fixed iter 2"},
+    {"id": "BUG-5", "title": "App crashes on launch (Firebase missing plist)", "status": "fixed iter 2"},
+    {"id": "BUG-6", "title": "FirebaseStorage Storage.storage() fatal-errored on MainTabView render", "status": "fixed iter 4"},
+    {"id": "BUG-7", "title": "CloudFunctions Firestore.firestore() fatal-errored eagerly", "status": "fixed iter 4"},
+    {"id": "BUG-8", "title": "ServiceTests bit-rot — FeatureFlags missing 5 args", "status": "fixed iter 5"},
+    {"id": "BUG-9", "title": "ServiceTests bit-rot — FeatureFlags struct gained 18 fields, persistAndRestore initializer broken", "status": "fixed iter 9"}
+  ],
+  "next_focus": [
+    "Run full test suite (backend + iOS) to verify iter 9 didn't regress",
+    "Apple Developer + Firebase + RevenueCat live keys (BLOCKERS in LAUNCH_CHECKLIST)",
+    "Feature flag admin endpoint (PATCH /api/v1/flags) for runtime toggles without restart",
+    "S3 bucket + IAM keys (currently presign falls back to dev placeholder)"
+  ]
+}

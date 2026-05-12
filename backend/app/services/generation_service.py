@@ -35,6 +35,12 @@ class AIModel(str, Enum):
     PLAYGROUND_V3 = "playground_v3"         # Playground v3 — artistic + real
     IDEOGRAM_3 = "ideogram_3"              # Ideogram 3 — text + photorealism
 
+    # Replicate — Identity-preserving
+    INSTANT_ID = "instant_id"               # InstantID — single-image identity lock with style control
+
+    # Replicate — Face restoration (Facetune-grade enhancement)
+    FACE_RESTORE = "face_restore"           # CodeFormer — texture-preserving face restoration + upscale
+
     # fal.ai — fast inference (NanoBanana-compatible)
     FAL_FLUX_SCHNELL = "fal_flux_schnell"   # Flux Schnell via fal.ai (fastest)
     FAL_FLUX_DEV = "fal_flux_dev"           # Flux Dev via fal.ai
@@ -42,9 +48,13 @@ class AIModel(str, Enum):
     FAL_SDXL_LIGHTNING = "fal_sdxl_lightning"  # SDXL Lightning — 4-step ultra-fast
     FAL_RECRAFT_V3 = "fal_recraft_v3"       # Recraft V3 — design-quality photos
 
+    # fal.ai — Google Gemini (Nano Banana 2)
+    NANO_BANANA_2 = "nano_banana_2"         # Gemini 3.1 Flash Image — locks 5 identities, native 4K
+
     # OpenAI
     DALL_E_3 = "dall_e_3"                   # DALL-E 3
-    GPT_IMAGE_1 = "gpt_image_1"            # GPT Image 1 (latest)
+    GPT_IMAGE_1 = "gpt_image_1"            # GPT Image 1
+    GPT_IMAGE_2 = "gpt_image_2"            # GPT Image 2 — agentic edits, premium tier
 
 
 # Replicate model identifiers
@@ -58,6 +68,8 @@ REPLICATE_MODELS: dict[str, str] = {
     AIModel.REALVIS_XL: "adirik/realvisxl-v3.0-turbo:1577d0dac4482a46b48c5d3befc6ec1e",
     AIModel.PLAYGROUND_V3: "playgroundai/playground-v2.5-1024px-aesthetic:a45f82a1382bed5c7aeb861dac7c7d191b0fdf74d8d57c4a0e6ed7d4d0bf7d24",
     AIModel.IDEOGRAM_3: "ideogram-ai/ideogram-v2-turbo",
+    AIModel.INSTANT_ID: "zsxkib/instant-id-ipadapter-plus-face",
+    AIModel.FACE_RESTORE: "sczhou/codeformer:cc4956dd26fa5a7185d5660cc9100fab1b76b4ab8b14e2ed9c89c19b06ad0c20",
 }
 
 # fal.ai model identifiers
@@ -67,12 +79,14 @@ FAL_MODELS: dict[str, str] = {
     AIModel.FAL_FLUX_PRO: "fal-ai/flux-pro",
     AIModel.FAL_SDXL_LIGHTNING: "fal-ai/fast-sdxl",
     AIModel.FAL_RECRAFT_V3: "fal-ai/recraft-v3",
+    AIModel.NANO_BANANA_2: "fal-ai/gemini-3.1-flash-image-preview",
 }
 
 # OpenAI model identifiers
 OPENAI_MODELS: dict[str, str] = {
     AIModel.DALL_E_3: "dall-e-3",
     AIModel.GPT_IMAGE_1: "gpt-image-1",
+    AIModel.GPT_IMAGE_2: "gpt-image-2",
 }
 
 # Human-readable info for the iOS model picker — grouped by category
@@ -89,6 +103,8 @@ MODEL_CATALOG: list[dict] = [
     {"id": "fal_recraft_v3", "name": "Recraft V3", "provider": "fal", "speed": "fast", "quality": "high", "tier": "plus", "category": "artistic"},
     {"id": "dall_e_3", "name": "DALL-E 3", "provider": "openai", "speed": "medium", "quality": "high", "tier": "plus", "category": "classic"},
     {"id": "playground_v3", "name": "Playground v3", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus", "category": "artistic"},
+    {"id": "instant_id", "name": "InstantID", "provider": "replicate", "speed": "medium", "quality": "high", "tier": "plus", "category": "photorealistic"},
+    {"id": "face_restore", "name": "Face Restore", "provider": "replicate", "speed": "fast", "quality": "high", "tier": "plus", "category": "photorealistic"},
     # --- Gold tier ---
     {"id": "flux_1_1_pro", "name": "Flux 1.1 Pro", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "premium"},
     {"id": "flux_1_1_pro_ultra", "name": "Flux Pro Ultra", "provider": "replicate", "speed": "slow", "quality": "ultra", "tier": "gold", "category": "premium"},
@@ -96,7 +112,34 @@ MODEL_CATALOG: list[dict] = [
     {"id": "realvis_xl", "name": "RealVisXL", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "photorealistic"},
     {"id": "ideogram_3", "name": "Ideogram 3", "provider": "replicate", "speed": "medium", "quality": "best", "tier": "gold", "category": "photorealistic"},
     {"id": "gpt_image_1", "name": "GPT Image 1", "provider": "openai", "speed": "medium", "quality": "best", "tier": "gold", "category": "premium"},
+    {"id": "nano_banana_2", "name": "Nano Banana 2", "provider": "fal", "speed": "fast", "quality": "ultra", "tier": "gold", "category": "premium"},
+    {"id": "gpt_image_2", "name": "GPT Image 2", "provider": "openai", "speed": "medium", "quality": "ultra", "tier": "gold", "category": "premium"},
 ]
+
+# Wrapper applied when keep_me_natural=True (the V2 trust default).
+# Prefixes/suffixes the existing style prompt with strong identity-preservation
+# language so providers (Nano Banana 2, InstantID, Flux) keep facial features,
+# skin texture, age, and ethnicity from the source photo instead of drifting.
+_NATURAL_PREFIX = (
+    "Photorealistic, true-to-life portrait. Preserve the person's exact facial "
+    "features, skin texture, age, ethnicity, and natural body proportions from "
+    "the source photo. No plastic skin, no over-smoothing, no fashion-model drift. "
+)
+_NATURAL_SUFFIX = (
+    " The result must read as the same real person, not an idealized version."
+)
+
+
+def _wrap_natural(prompt: str) -> str:
+    """Apply identity-preservation wrapping to a style prompt.
+
+    Idempotent — calling twice doesn't double-wrap. Pure function so unit tests
+    can verify the wrap survives both string templates and the {subject} swap.
+    """
+    if _NATURAL_PREFIX in prompt:
+        return prompt
+    return _NATURAL_PREFIX + prompt + _NATURAL_SUFFIX
+
 
 # Style prompt templates for dating photos
 STYLE_PROMPTS: dict[str, str] = {
@@ -134,6 +177,43 @@ STYLE_PROMPTS: dict[str, str] = {
         "Luxury lifestyle photo of {subject}, designer clothing, high-end setting "
         "like yacht, rooftop, or luxury hotel, confident expression, "
         "professional photography, Phase One IQ4, cinematic color grading, photorealistic"
+    ),
+
+    # Hinge-mode prompt-overlay templates — best paired with gpt_image_2 (its strength is
+    # rendering crisp legible typography on top of photo composition).
+    "hinge_prompt": (
+        "Editorial portrait of {subject}, warm cinematic lighting, soft bokeh background, "
+        "with the Hinge-style prompt text 'I'll fall for you if...' rendered in clean "
+        "white sans-serif overlay in the lower-left third, photorealistic, vertical 3:4"
+    ),
+    "hinge_caption": (
+        "Magazine-style portrait of {subject}, golden hour, candid expression, "
+        "with the caption 'My ideal Sunday in 3 emojis' rendered in elegant white serif "
+        "centered below the subject, photorealistic, vertical 3:4"
+    ),
+    "hinge_chemistry": (
+        "Confident portrait of {subject}, modern minimal setting, natural smile, "
+        "with the prompt 'Two truths and a lie' rendered as a small white tag in the "
+        "upper-right corner, photorealistic, vertical 3:4"
+    ),
+
+    # Identity-preserving wardrobe / hair swaps — pair with nano_banana_2.
+    # The iOS client appends a specific outfit description; this template is the
+    # fallback when the client doesn't override custom_prompt.
+    "outfit_swap": (
+        "Same person as the reference photo, same face, same pose, same background. "
+        "Change ONLY the clothing to a clean, photogenic dating-profile outfit. "
+        "Photorealistic, vertical 3:4."
+    ),
+    "hairstyle_swap": (
+        "Same person as the reference photo, same face, same expression, same background. "
+        "Change ONLY the hairstyle to a clean, photogenic dating-profile look. "
+        "Photorealistic, vertical 3:4."
+    ),
+    "age_modify": (
+        "Same person as the reference photo, same identity. Adjust the apparent age "
+        "while preserving facial bone structure, eye color, and natural expression. "
+        "Realistic skin texture, no over-smoothing. Photorealistic, vertical 3:4."
     ),
 }
 
@@ -189,6 +269,8 @@ class GenerationService:
         custom_prompt: str | None = None,
         webhook_url: str | None = None,
         model: str | None = None,
+        pose_image_url: str | None = None,
+        keep_me_natural: bool = True,
     ) -> str:
         """Create a prediction using the requested model (or default).
 
@@ -197,6 +279,8 @@ class GenerationService:
         model_key = model or AIModel.FLUX_SCHNELL
         prompt = custom_prompt or STYLE_PROMPTS.get(style, STYLE_PROMPTS["professional"])
         prompt = prompt.replace("{subject}", "a person")
+        if keep_me_natural:
+            prompt = _wrap_natural(prompt)
 
         # Route to the correct provider
         if model_key in FAL_MODELS:
@@ -206,7 +290,8 @@ class GenerationService:
         else:
             # Default: Replicate
             return await self._create_replicate(
-                job_id, model_key, prompt, source_image_urls, photo_count, webhook_url
+                job_id, model_key, prompt, source_image_urls, photo_count, webhook_url,
+                pose_image_url=pose_image_url,
             )
 
     async def check_prediction(self, prediction_id: str, model: str | None = None) -> dict:
@@ -247,26 +332,63 @@ class GenerationService:
         self, job_id: str, model_key: str, prompt: str,
         source_image_urls: list[str], photo_count: int,
         webhook_url: str | None,
+        pose_image_url: str | None = None,
     ) -> str:
         replicate_model = REPLICATE_MODELS.get(model_key, REPLICATE_MODELS[AIModel.FLUX_SCHNELL])
 
-        payload: dict = {
-            "input": {
-                "prompt": prompt,
-                "num_outputs": min(photo_count, 4),
-                "aspect_ratio": "3:4",
-                "output_format": "webp",
-                "output_quality": 90,
-                "go_fast": True,
-            },
-        }
+        # InstantID requires a face reference image and uses a different param schema.
+        if model_key == AIModel.INSTANT_ID:
+            if not source_image_urls:
+                raise ValueError("InstantID requires at least one source face image")
+            payload: dict = {
+                "input": {
+                    "image": source_image_urls[0],
+                    "prompt": prompt,
+                    "negative_prompt": "low quality, blurry, deformed, plastic skin",
+                    "num_outputs": min(photo_count, 4),
+                    "guidance_scale": 5.0,
+                    "ip_adapter_scale": 0.8,
+                    "controlnet_conditioning_scale": 0.8,
+                    "output_format": "webp",
+                    "output_quality": 90,
+                },
+            }
+            # Optional pose reference — locks the user's face from `image` onto the
+            # pose/composition of this second photo. Closes the "put me in this
+            # exact photo" use case.
+            if pose_image_url:
+                payload["input"]["pose_image"] = pose_image_url
+        elif model_key == AIModel.FACE_RESTORE:
+            if not source_image_urls:
+                raise ValueError("Face Restore requires at least one source image")
+            # CodeFormer: codeformer_fidelity 0.0 = max enhancement, 1.0 = identity-locked.
+            # 0.7 is the Facetune-comparable sweet spot — clean skin without losing identity.
+            payload = {
+                "input": {
+                    "image": source_image_urls[0],
+                    "codeformer_fidelity": 0.7,
+                    "background_enhance": True,
+                    "face_upsample": True,
+                    "upscale": 2,
+                },
+            }
+        else:
+            payload = {
+                "input": {
+                    "prompt": prompt,
+                    "num_outputs": min(photo_count, 4),
+                    "aspect_ratio": "3:4",
+                    "output_format": "webp",
+                    "output_quality": 90,
+                    "go_fast": True,
+                },
+            }
+            if source_image_urls:
+                payload["input"]["image"] = source_image_urls[0]
 
         if webhook_url:
             payload["webhook"] = webhook_url
             payload["webhook_events_filter"] = ["completed"]
-
-        if source_image_urls:
-            payload["input"]["image"] = source_image_urls[0]
 
         response = await self.replicate.post(f"/models/{replicate_model}/predictions", json=payload)
         response.raise_for_status()
@@ -288,16 +410,27 @@ class GenerationService:
     ) -> str:
         fal_model = FAL_MODELS[model_key]
 
-        payload: dict = {
-            "prompt": prompt,
-            "num_images": min(photo_count, 4),
-            "image_size": {"width": 768, "height": 1024},  # 3:4 portrait
-            "output_format": "jpeg",
-            "enable_safety_checker": True,
-        }
-
-        if source_image_urls:
-            payload["image_url"] = source_image_urls[0]
+        # Nano Banana 2 (Gemini 3.1 Flash Image) takes image_urls (list, up to 5 identities)
+        # and emits 4K output; payload shape differs from the Flux/SDXL family.
+        if model_key == AIModel.NANO_BANANA_2:
+            payload: dict = {
+                "prompt": prompt,
+                "num_images": min(photo_count, 4),
+                "output_format": "jpeg",
+                "aspect_ratio": "3:4",
+            }
+            if source_image_urls:
+                payload["image_urls"] = source_image_urls[:5]
+        else:
+            payload = {
+                "prompt": prompt,
+                "num_images": min(photo_count, 4),
+                "image_size": {"width": 768, "height": 1024},  # 3:4 portrait
+                "output_format": "jpeg",
+                "enable_safety_checker": True,
+            }
+            if source_image_urls:
+                payload["image_url"] = source_image_urls[0]
 
         response = await self.fal.post(f"/{fal_model}", json=payload)
         response.raise_for_status()
@@ -339,12 +472,23 @@ class GenerationService:
         openai_model = OPENAI_MODELS[model_key]
 
         if openai_model == "gpt-image-1":
-            # GPT Image 1 API
             payload = {
                 "model": "gpt-image-1",
                 "prompt": prompt,
                 "n": min(photo_count, 4),
                 "size": "1024x1536",  # Portrait
+                "quality": "high",
+            }
+            response = await self.openai.post("/images/generations", json=payload)
+        elif openai_model == "gpt-image-2":
+            # GPT Image 2 — agentic edits, ultra quality. Uses the same shape as gpt-image-1
+            # but with the upgraded model and high-quality default. Edits endpoint is gated
+            # behind a separate face-edit pipeline added in a follow-up iteration.
+            payload = {
+                "model": "gpt-image-2",
+                "prompt": prompt,
+                "n": min(photo_count, 4),
+                "size": "1024x1536",
                 "quality": "high",
             }
             response = await self.openai.post("/images/generations", json=payload)

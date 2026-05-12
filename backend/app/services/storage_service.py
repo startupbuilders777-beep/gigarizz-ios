@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from io import BytesIO
 
 import boto3
 from botocore.config import Config
@@ -13,22 +12,45 @@ from app.config import get_settings
 logger = logging.getLogger(__name__)
 
 
+def _clean_endpoint(raw: str) -> str:
+    """Strip inline-comment garbage from S3_ENDPOINT_URL env values."""
+    if not raw:
+        return ""
+    # pydantic-settings doesn't strip inline comments — guard against `URL  # comment`
+    cleaned = raw.split("#", 1)[0].strip()
+    if not cleaned.startswith(("http://", "https://")):
+        return ""
+    return cleaned
+
+
 class StorageService:
-    """Handles photo upload/download to S3 or Cloudflare R2."""
+    """Handles photo upload/download to S3 or Cloudflare R2.
+
+    The boto3 client is constructed lazily so an unconfigured dev env
+    can still import + serve the upload router (the route falls back to
+    a placeholder URL when storage is unavailable).
+    """
 
     def __init__(self):
         settings = get_settings()
-        kwargs = {
-            "region_name": settings.aws_region,
-            "aws_access_key_id": settings.aws_access_key_id,
-            "aws_secret_access_key": settings.aws_secret_access_key,
-            "config": Config(signature_version="s3v4"),
-        }
-        if settings.s3_endpoint_url:
-            kwargs["endpoint_url"] = settings.s3_endpoint_url
-
-        self.s3 = boto3.client("s3", **kwargs)
         self.bucket = settings.s3_bucket_name
+        self._s3_client = None
+
+    @property
+    def s3(self):
+        if self._s3_client is None:
+            settings = get_settings()
+            kwargs = {
+                "region_name": settings.aws_region,
+                "aws_access_key_id": settings.aws_access_key_id,
+                "aws_secret_access_key": settings.aws_secret_access_key,
+                "config": Config(signature_version="s3v4"),
+            }
+            endpoint = _clean_endpoint(settings.s3_endpoint_url)
+            if endpoint:
+                kwargs["endpoint_url"] = endpoint
+            self._s3_client = boto3.client("s3", **kwargs)
+        return self._s3_client
 
     def upload_bytes(self, key: str, data: bytes, content_type: str = "image/webp") -> str:
         """Upload bytes to S3 and return the public URL."""

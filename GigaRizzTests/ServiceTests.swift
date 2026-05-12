@@ -128,8 +128,7 @@ final class PersistenceTests: XCTestCase {
 
     func testFeatureFlags_persistAndRestore() throws {
         let key = "gigarizz_feature_flags"
-        var flags = FeatureFlagManager.FeatureFlags.defaults
-        flags = FeatureFlagManager.FeatureFlags(
+        let flags = FeatureFlagManager.FeatureFlags(
             enableGeneration: false,
             enableCoach: true,
             enableFaceSwap: true,
@@ -139,9 +138,35 @@ final class PersistenceTests: XCTestCase {
             enableColorGrade: true,
             enablePoseLibrary: false,
             enableIntroOffer: true,
+            enableBatchGeneration: true,
+            enablePremiumModels: true,
+            enablePhotorealisticModels: true,
+            enableArtisticModels: true,
+            enableFaceEnhance: true,
+            enableOutfitStudio: true,
+            enableHairstyle: true,
+            enableAgeStudio: true,
+            enablePoseStudio: true,
+            enableHingeOverlay: true,
+            enableNanoBanana2: true,
+            enableGptImage2: true,
+            enableInstantID: true,
+            paywallMode: "hard",
+            softPaywallAfterUses: 5,
+            onboardingEnabled: true,
+            onboardingQuizEnabled: false,
+            onboardingSkipEnabled: true,
+            onboardingMaxSteps: 30,
+            onboardingShowSocialProof: true,
+            onboardingShowTestimonials: true,
+            onboardingShowVideoDemo: false,
+            enableV2UpgradeFlow: true,
+            enableAuditEndpoint: true,
+            enableScreenshotCoach: true,
             maxFreeGenerations: 10,
             maxPlusGenerations: 100,
             maxGoldGenerations: 5000,
+            maxBatchModels: 4,
             showPromoBanner: true,
             minAppVersion: "3.0.0"
         )
@@ -155,6 +180,11 @@ final class PersistenceTests: XCTestCase {
         let decoded = try JSONDecoder().decode(FeatureFlagManager.FeatureFlags.self, from: stored)
         XCTAssertEqual(decoded.enableGeneration, false)
         XCTAssertEqual(decoded.enableFaceSwap, true)
+        XCTAssertEqual(decoded.enablePoseStudio, true)
+        XCTAssertEqual(decoded.paywallMode, "hard")
+        XCTAssertEqual(decoded.softPaywallAfterUses, 5)
+        XCTAssertEqual(decoded.onboardingMaxSteps, 30)
+        XCTAssertEqual(decoded.onboardingQuizEnabled, false)
         XCTAssertEqual(decoded.maxFreeGenerations, 10)
         XCTAssertEqual(decoded.maxGoldGenerations, 5000)
         XCTAssertEqual(decoded.minAppVersion, "3.0.0")

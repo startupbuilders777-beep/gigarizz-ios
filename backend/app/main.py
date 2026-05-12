@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.models.database import init_db
-from app.routers import coach, feature_flags, generation, health, users
+from app.routers import audit, coach, feature_flags, generation, health, uploads, users
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +64,10 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(feature_flags.router)
     app.include_router(generation.router)
+    app.include_router(uploads.router)
     app.include_router(coach.router)
     app.include_router(users.router)
+    app.include_router(audit.router)
 
     return app
 

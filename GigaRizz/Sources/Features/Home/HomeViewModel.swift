@@ -204,46 +204,44 @@ struct HomeDailyTip: Identifiable {
 
 enum QuickAction: Identifiable, CaseIterable {
     case photoPicker
-    case rizzCoach
-    case profileScore
-    case myGallery
-    
+    case faceEnhance
+    case outfitStudio
+    case hairstyle
+
     var id: String { title }
-    
+
     var title: String {
         switch self {
         case .photoPicker: return "Generate"
-        case .rizzCoach: return "Coach"
-        case .profileScore: return "Score"
-        case .myGallery: return "Gallery"
+        case .faceEnhance: return "Enhance"
+        case .outfitStudio: return "Outfit"
+        case .hairstyle: return "Hair"
         }
     }
-    
+
     var subtitle: String {
         switch self {
         case .photoPicker: return "New photos"
-        case .rizzCoach: return "Get advice"
-        case .profileScore: return "Audit profile"
-        case .myGallery: return "View all"
+        case .faceEnhance: return "Anti-plastic"
+        case .outfitStudio: return "Swap fit"
+        case .hairstyle: return "Try-on"
         }
     }
-    
+
     var icon: String {
         switch self {
         case .photoPicker: return "wand.and.stars"
-        case .rizzCoach: return "brain.head.profile"
-        case .profileScore: return "chart.bar.fill"
-        case .myGallery: return "photo.on.rectangle.angled"
+        case .faceEnhance: return "face.smiling.fill"
+        case .outfitStudio: return "tshirt.fill"
+        case .hairstyle: return "scissors"
         }
     }
-    
+
     /// Returns the tab to switch to, or nil if this action should push via NavigationLink
     var switchesTab: MainTabView.Tab? {
         switch self {
         case .photoPicker: return .generate
-        case .rizzCoach: return .coach
-        case .profileScore: return nil
-        case .myGallery: return nil
+        case .faceEnhance, .outfitStudio, .hairstyle: return nil
         }
     }
 }

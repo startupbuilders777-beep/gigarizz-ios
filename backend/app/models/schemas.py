@@ -20,6 +20,14 @@ class GenerationStyle(str, Enum):
     night_out = "night_out"
     creative = "creative"
     luxury = "luxury"
+    # Hinge-mode prompt-overlay templates — leverage GPT Image 2's text rendering.
+    hinge_prompt = "hinge_prompt"
+    hinge_caption = "hinge_caption"
+    hinge_chemistry = "hinge_chemistry"
+    # Identity-preserving wardrobe / hair / age swaps — pair with Nano Banana 2.
+    outfit_swap = "outfit_swap"
+    hairstyle_swap = "hairstyle_swap"
+    age_modify = "age_modify"
     custom = "custom"
 
 
@@ -42,13 +50,17 @@ class AIModelChoice(str, Enum):
     realvis_xl = "realvis_xl"
     playground_v3 = "playground_v3"
     ideogram_3 = "ideogram_3"
+    instant_id = "instant_id"
+    face_restore = "face_restore"
     fal_flux_schnell = "fal_flux_schnell"
     fal_flux_dev = "fal_flux_dev"
     fal_flux_pro = "fal_flux_pro"
     fal_sdxl_lightning = "fal_sdxl_lightning"
     fal_recraft_v3 = "fal_recraft_v3"
+    nano_banana_2 = "nano_banana_2"
     dall_e_3 = "dall_e_3"
     gpt_image_1 = "gpt_image_1"
+    gpt_image_2 = "gpt_image_2"
 
 
 class GenerateRequest(BaseModel):
@@ -56,8 +68,17 @@ class GenerateRequest(BaseModel):
     prompt: str | None = None
     model: AIModelChoice | None = AIModelChoice.flux_schnell
     source_image_url: str | None = None
+    # Optional pose-reference image for InstantID. When set, the model
+    # locks the user's face from `source_image_url` onto the pose/composition
+    # of `pose_image_url`. Enables "put me in this exact photo" flows.
+    pose_image_url: str | None = None
     photo_count: int = Field(default=4, ge=1, le=8)
     platform: str = "tinder"
+    # Trust toggle. When true, every generation prompt is wrapped with strong
+    # identity-preservation language so the result still looks like the user,
+    # not a fashion-model-pretending-to-be-them. Default true so new users get
+    # the safer behavior; advanced users can flip off in iOS Settings.
+    keep_me_natural: bool = True
 
 
 class ModelInfo(BaseModel):
@@ -162,6 +183,7 @@ class ReplyResponse(BaseModel):
 
 
 class FeatureFlags(BaseModel):
+    # ── Core surfaces ─────────────────────────────────────────────────────
     enable_generation: bool = True
     enable_coach: bool = True
     enable_face_swap: bool = False
@@ -175,10 +197,51 @@ class FeatureFlags(BaseModel):
     enable_premium_models: bool = True
     enable_photorealistic_models: bool = True
     enable_artistic_models: bool = True
+
+    # ── New SOTA features (iter 1-9) ───────────────────────────────────────
+    enable_face_enhance: bool = True       # Anti-plastic CodeFormer
+    enable_outfit_studio: bool = True      # Nano Banana 2 outfit swap
+    enable_hairstyle: bool = True          # Nano Banana 2 hairstyle try-on
+    enable_age_studio: bool = True         # Nano Banana 2 age slider
+    enable_pose_studio: bool = True        # InstantID any-pose generator
+    enable_hinge_overlay: bool = True      # GPT Image 2 prompt-overlay presets
+    enable_nano_banana_2: bool = True      # Surface model in picker
+    enable_gpt_image_2: bool = True        # Surface model in picker
+    enable_instant_id: bool = True         # Surface model in picker
+
+    # ── Paywall strategy ───────────────────────────────────────────────────
+    # "none" = no paywall (everything free)
+    # "soft" = paywall after N free uses, dismissible
+    # "hard" = paywall on first launch after onboarding, not dismissible
+    paywall_mode: str = "soft"
+    soft_paywall_after_uses: int = 3       # Trigger soft paywall on Nth use
+
+    # ── Onboarding ─────────────────────────────────────────────────────────
+    onboarding_enabled: bool = True
+    onboarding_quiz_enabled: bool = True   # Personality / style quiz
+    onboarding_skip_enabled: bool = True   # Show "Skip" button
+    onboarding_max_steps: int = 30         # Cap the 30-step luxury flow
+    onboarding_show_social_proof: bool = True
+    onboarding_show_testimonials: bool = True
+    onboarding_show_video_demo: bool = True
+
+    # ── Quotas ─────────────────────────────────────────────────────────────
     max_free_generations: int = 3
     max_plus_generations: int = 30
     max_gold_generations: int = 999
     max_batch_models: int = 4
+
+    # ── V2 Profile Upgrade flow ─────────────────────────────────────────────
+    # When ON, iOS shows the new Upgrade tab (audit-first flow) and hides V1 tools-hub.
+    # When OFF, iOS keeps the existing tab structure. Lets us A/B real users.
+    enable_v2_upgrade_flow: bool = False
+    enable_audit_endpoint: bool = True
+    # Screenshot Coach (V2 Sprint 5) — paste a profile/chat screenshot and get
+    # OCR-driven openers + reply suggestions. iOS-only Vision OCR, no new
+    # backend endpoint, just toggles the surface.
+    enable_screenshot_coach: bool = True
+
+    # ── Misc ───────────────────────────────────────────────────────────────
     show_promo_banner: bool = False
     min_app_version: str = "1.0.0"
 
@@ -206,6 +269,124 @@ class UserAnalytics(BaseModel):
     streak_days: int = 0
     weekly_generations: list[int] = [0, 0, 0, 0, 0, 0, 0]
     platform_breakdown: dict[str, int] = {}
+
+
+# ── Uploads ─────────────────────────────────────────────────────────────────
+
+
+class UploadPurpose(str, Enum):
+    """Why the iOS client is uploading a photo."""
+    source = "source"      # source selfie that the AI provider should pull from
+    result = "result"      # finished photo the user wants to back up
+    avatar = "avatar"      # profile avatar
+
+
+class UploadPresignRequest(BaseModel):
+    """Request a presigned upload URL for a user photo."""
+    content_type: str = "image/jpeg"
+    purpose: UploadPurpose = UploadPurpose.source
+
+
+class UploadPresignResponse(BaseModel):
+    """Presigned upload URL + the public URL the backend will pass to AI providers."""
+    upload_url: str
+    public_url: str
+    key: str
+    expires_in: int = 3600
+
+
+# ── Profile Audit + ProfileKit (V2) ─────────────────────────────────────────
+
+
+class PhotoArchetype(str, Enum):
+    """The slot a dating photo fills in a complete profile."""
+    first_photo = "first_photo"
+    casual_candid = "casual_candid"
+    dressed_up = "dressed_up"
+    hobby_activity = "hobby_activity"
+    travel_lifestyle = "travel_lifestyle"
+    social_proof = "social_proof"
+    full_body = "full_body"
+
+
+class PhotoCritique(BaseModel):
+    """Per-photo audit scores + qualitative notes."""
+    photo_url: str
+    photo_index: int
+    clarity: int = Field(ge=0, le=10)
+    lighting: int = Field(ge=0, le=10)
+    expression: int = Field(ge=0, le=10)
+    crop: int = Field(ge=0, le=10)
+    authenticity: int = Field(ge=0, le=10)
+    platform_fit: int = Field(ge=0, le=10)
+    overall: int = Field(ge=0, le=10)
+    archetype: PhotoArchetype | None = None
+    issues: list[str] = []      # short bullets describing what's hurting this photo
+    strengths: list[str] = []   # what's working
+
+
+class ProfileFix(BaseModel):
+    """A concrete recommendation for the user to act on."""
+    title: str
+    detail: str
+    target_archetype: PhotoArchetype | None = None
+    suggested_style: GenerationStyle | None = None
+
+
+class ProfileAuditResult(BaseModel):
+    """Set-level audit produced by the audit service."""
+    overall_score: int = Field(ge=0, le=100)
+    summary: str
+    best_photo_index: int
+    weakest_photo_index: int
+    missing_archetypes: list[PhotoArchetype] = []
+    top_fixes: list[ProfileFix] = []
+    per_photo: list[PhotoCritique] = []
+    target_platforms: list[DatingPlatform] = []
+    created_at: datetime | None = None
+
+
+class AuditRequest(BaseModel):
+    """Run a profile audit on a set of uploaded photos."""
+    photo_urls: list[str] = Field(min_length=1, max_length=12)
+    target_platforms: list[DatingPlatform] = []
+
+
+class MissingPhotoSlot(BaseModel):
+    """A profile slot that needs to be generated."""
+    archetype: PhotoArchetype
+    title: str
+    why_it_matters: str
+    suggested_style: GenerationStyle
+
+
+class PromptKitItem(BaseModel):
+    """A platform-specific prompt or bio entry inside a ProfileKit."""
+    platform: DatingPlatform
+    label: str           # e.g. "Bio", "Hinge Prompt: A life goal of mine"
+    content: str
+
+
+class ProfileKit(BaseModel):
+    """The hero artifact of the V2 flow — a complete, exportable dating profile."""
+    id: str
+    user_id: str
+    # The user's stated reason for using GigaRizz. Codex's V2 plan calls this
+    # out as the literal first question (Step 0 of the upgrade flow). Free-form
+    # string so iOS can extend the option set without backend redeploys.
+    primary_goal: str | None = None
+    target_platforms: list[DatingPlatform] = []
+    audit: ProfileAuditResult | None = None
+    current_photo_urls: list[str] = []
+    generated_photo_urls: list[str] = []
+    recommended_order_hinge: list[int] = []      # indices into current+generated
+    recommended_order_tinder: list[int] = []
+    recommended_order_bumble: list[int] = []
+    bio: str | None = None
+    prompts: list[PromptKitItem] = []
+    openers: list[str] = []
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
 
 
 # ── Health ──────────────────────────────────────────────────────────────────

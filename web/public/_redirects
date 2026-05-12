@@ -1,0 +1,8 @@
+# Redirect apex to www so iOS app links resolve everywhere.
+# Cloudflare Pages applies these in order; first match wins.
+https://gigarizz.app/* https://www.gigarizz.app/:splat 301
+
+# Common alternate paths.
+/privacy-policy /privacy 301
+/terms-of-service /terms 301
+/tos /terms 301

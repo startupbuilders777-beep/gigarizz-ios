@@ -1,0 +1,11 @@
+name = "gigarizz-web"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "./public"
+
+# Cloudflare Pages config for the gigarizz.app marketing site.
+# Deploy: `cd web && npx wrangler pages deploy public --project-name gigarizz-web`
+# Or run `npm run deploy` from this directory.
+#
+# Custom domains (configure in Cloudflare dashboard after first deploy):
+#   • www.gigarizz.app  → required (iOS app links to www.gigarizz.app/{privacy,terms})
+#   • gigarizz.app      → apex; redirect rule to www

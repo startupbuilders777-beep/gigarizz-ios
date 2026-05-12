@@ -62,15 +62,85 @@ struct ToolsHubView: View {
                         )
                     }
 
-                    NavigationLink {
-                        FaceEnhancementView()
-                    } label: {
-                        toolCard(
-                            title: "Face Enhance",
-                            subtitle: "Natural AI retouching",
-                            icon: "face.smiling.fill",
-                            color: DesignSystem.Colors.success
-                        )
+                    if featureFlags.isEnabled(.faceEnhance) {
+                        NavigationLink {
+                            FaceEnhancementView()
+                        } label: {
+                            toolCard(
+                                title: "Face Enhance",
+                                subtitle: "Anti-plastic retouch",
+                                icon: "face.smiling.fill",
+                                color: DesignSystem.Colors.success
+                            )
+                        }
+                    }
+
+                    if featureFlags.isEnabled(.outfitStudio) {
+                        NavigationLink {
+                            AIOutfitChangerView().environmentObject(subscriptionManager)
+                        } label: {
+                            toolCard(
+                                title: "Outfit Studio",
+                                subtitle: "Swap clothes, keep face",
+                                icon: "tshirt.fill",
+                                color: DesignSystem.Colors.goldAccent
+                            )
+                        }
+                    }
+
+                    if featureFlags.isEnabled(.hairstyle) {
+                        NavigationLink {
+                            HairstylePickerView().environmentObject(subscriptionManager)
+                        } label: {
+                            toolCard(
+                                title: "Hairstyle",
+                                subtitle: "Try-on new looks",
+                                icon: "scissors",
+                                color: .pink
+                            )
+                        }
+                    }
+
+                    if featureFlags.isEnabled(.ageStudio) {
+                        NavigationLink {
+                            AgeModifierView().environmentObject(subscriptionManager)
+                        } label: {
+                            toolCard(
+                                title: "Age Studio",
+                                subtitle: "See ±20 years",
+                                icon: "hourglass",
+                                color: .indigo
+                            )
+                        }
+                    }
+
+                    if featureFlags.isEnabled(.poseStudio) {
+                        NavigationLink {
+                            PoseStudioView().environmentObject(subscriptionManager)
+                        } label: {
+                            toolCard(
+                                title: "Pose Studio",
+                                subtitle: "Any scene, locked face",
+                                icon: "figure.wave",
+                                color: .cyan
+                            )
+                        }
+                    }
+
+                    if featureFlags.isEnabled(.hingeOverlay) {
+                        NavigationLink {
+                            // Hinge Mode opens Generate; user picks photos and the
+                            // gold-tier hinge_prompt preset shows up at the top of
+                            // the style row (presetsSortedByUsage).
+                            GenerateView().environmentObject(subscriptionManager)
+                        } label: {
+                            toolCard(
+                                title: "Hinge Mode",
+                                subtitle: "Prompt-text overlays",
+                                icon: "text.bubble.fill",
+                                color: DesignSystem.Colors.hinge
+                            )
+                        }
                     }
 
                     NavigationLink {

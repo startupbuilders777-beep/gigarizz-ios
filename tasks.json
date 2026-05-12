@@ -1,0 +1,69 @@
+{
+  "current_iteration": 9,
+  "started_at": "2026-05-01T00:00:00Z",
+  "vision": "Bring Gigarizz to FaceApp/Facetune-level facial aesthetic editing for dating photos. Identity-preserving SOTA models (Nano Banana 2, GPT Image 2, InstantID) + Facetune-style conversational/outfit/hairstyle tools, with an 'anti-plastic' positioning that beats over-smoothed competitors.",
+  "north_star_metrics": [
+    "Generated photo identity-resemblance score >= 0.85 (target)",
+    "Time-to-first-photo p50 <= 35s",
+    "Free->Plus conversion >= 6%",
+    "Backend test pass rate = 100%",
+    "iOS unit test pass rate = 100%",
+    "iOS build green on iPhone 17 simulator",
+    "Dev cold-launch reaches MainTabView with no crashes",
+    "Server-driven feature flags govern every SOTA surface, paywall mode, onboarding"
+  ],
+  "iterations": [
+    {"id": 1, "completed_at": "2026-05-01T00:10:00Z", "status": "completed"},
+    {"id": 2, "completed_at": "2026-05-01T00:20:00Z", "status": "completed"},
+    {"id": 3, "completed_at": "2026-05-01T00:30:00Z", "status": "completed"},
+    {"id": 4, "completed_at": "2026-05-01T00:40:00Z", "status": "completed"},
+    {"id": 5, "completed_at": "2026-05-01T00:50:00Z", "status": "completed"},
+    {"id": 6, "completed_at": "2026-05-01T01:00:00Z", "status": "completed"},
+    {"id": 7, "completed_at": "2026-05-01T01:10:00Z", "theme": "Hairstyle Try-On + Hinge tile + outfit_swap analytics enum", "status": "completed"},
+    {"id": 8, "completed_at": "2026-05-01T01:25:00Z", "theme": "Pose Studio (InstantID any-scene generation) + Home Quick Actions surfacing SOTA", "status": "completed",
+     "ship": [
+       "Backend: INSTANT_ID model + pose_image_url forwarded to gen_svc",
+       "Backend: STYLE_PROMPTS for hinge_prompt/hinge_caption/hinge_chemistry/age_modify",
+       "Backend: AIModel adds NANO_BANANA_2, GPT_IMAGE_2, FACE_RESTORE, INSTANT_ID (now 20 models)",
+       "iOS PoseStudioView: face upload + prompt + optional pose reference + 6 quick-start chips",
+       "iOS HomeView Quick Actions reorder: photoPicker / faceEnhance / outfitStudio / hairstyle (replaces rizzCoach/profileScore/myGallery)",
+       "iOS Settings DEBUG-only Developer section with 'Use Real AI' UserDefault toggle"
+     ]},
+    {
+      "id": 9,
+      "started_at": "2026-05-01T01:25:00Z",
+      "completed_at": "2026-05-01T02:00:00Z",
+      "theme": "Server-driven feature flags + launch checklist + core user flow",
+      "status": "completed",
+      "ship": [
+        "Backend FeatureFlags pydantic model expanded with 9 SOTA flags + paywall_mode + soft_paywall_after_uses + 7 onboarding flags + max_batch_models",
+        "Backend Settings + feature_flags router forward all new fields",
+        "iOS FeatureFlagManager: 14 new Feature enum cases, struct fields, CodingKeys, defaults, isEnabled() switch coverage, PaywallMode enum, paywallMode + softPaywallAfterUses + onboardingMaxSteps + maxBatchModels computed",
+        "iOS HomeView visibleQuickActions filters by feature flags",
+        "iOS ToolsHubView wraps every SOTA tile in `if featureFlags.isEnabled(...)`",
+        "backend/.env.example: comprehensive 30+ flag template grouped Core / SOTA / Paywall / Onboarding / Quotas",
+        "BUG-9 fixed: ServiceTests testFeatureFlags_persistAndRestore now uses full struct initializer (37 fields)",
+        "LAUNCH_CHECKLIST.md updated with iter 1-9 status + dev-build env vars + feature flag editing guide + 9 bugs + new test counts",
+        "CORE_USER_FLOW.md written documenting cold launch -> SDK guard -> onboarding -> paywall -> home -> 6 SOTA flows"
+      ]
+    }
+  ],
+  "backlog": [
+    "Conversational AI editor (Facetune Skin 2.0)",
+    "Texture-preserving smooth ('anti-plastic' Skin 2.0 implementation)",
+    "Gender-swap, Beard/hair color try-on",
+    "Video selfie smooth (Hinge video prompts)",
+    "Auto-pick best photos from Camera Roll (Tinder Chemistry-style)",
+    "Multi-character group date photos (Nano Banana 2 5-identity)",
+    "GPT Image 2 surgical-edit premium SKU",
+    "Remini-style face deblur upscaler",
+    "Match-rate uplift A/B (with-AI vs original)",
+    "Prod S3 bucket + Secrets Manager IAM keys",
+    "PostHog telemetry for upload + face_restore + Hinge-overlay + outfit_swap + hairstyle_swap + pose_studio events",
+    "Strip inline comments from .env on load (utility helper)",
+    "DeepLinkRouter cleanup so simctl openurl bypasses Safari handoff",
+    "Backend test asserting outfit_swap + hairstyle_swap + age_modify + hinge_prompt accepted as GenerationStyle",
+    "Feature flag admin endpoint (PATCH /api/v1/flags) so flags can be toggled without restarting backend",
+    "iOS UI test that taps Tools tab and asserts SOTA tiles visible with default flags"
+  ]
+}

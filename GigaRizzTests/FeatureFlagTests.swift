@@ -44,9 +44,35 @@ final class FeatureFlagsCodableTests: XCTestCase {
             "enable_color_grade": true,
             "enable_pose_library": false,
             "enable_intro_offer": true,
+            "enable_batch_generation": true,
+            "enable_premium_models": true,
+            "enable_photorealistic_models": true,
+            "enable_artistic_models": true,
+            "enable_face_enhance": true,
+            "enable_outfit_studio": true,
+            "enable_hairstyle": true,
+            "enable_age_studio": true,
+            "enable_pose_studio": true,
+            "enable_hinge_overlay": true,
+            "enable_nano_banana_2": true,
+            "enable_gpt_image_2": true,
+            "enable_instant_id": true,
+            "paywall_mode": "hard",
+            "soft_paywall_after_uses": 5,
+            "onboarding_enabled": true,
+            "onboarding_quiz_enabled": false,
+            "onboarding_skip_enabled": true,
+            "onboarding_max_steps": 30,
+            "onboarding_show_social_proof": true,
+            "onboarding_show_testimonials": true,
+            "onboarding_show_video_demo": true,
+            "enable_v2_upgrade_flow": true,
+            "enable_audit_endpoint": true,
+            "enable_screenshot_coach": true,
             "max_free_generations": 5,
             "max_plus_generations": 50,
             "max_gold_generations": 1000,
+            "max_batch_models": 4,
             "show_promo_banner": true,
             "min_app_version": "2.0.0"
         }
@@ -57,9 +83,17 @@ final class FeatureFlagsCodableTests: XCTestCase {
         XCTAssertTrue(flags.enableCoach)
         XCTAssertTrue(flags.enableFaceSwap)
         XCTAssertFalse(flags.enableBackgroundReplacer)
+        XCTAssertTrue(flags.enablePoseStudio)
+        XCTAssertEqual(flags.paywallMode, "hard")
+        XCTAssertEqual(flags.softPaywallAfterUses, 5)
+        XCTAssertEqual(flags.onboardingMaxSteps, 30)
+        XCTAssertFalse(flags.onboardingQuizEnabled)
         XCTAssertEqual(flags.maxFreeGenerations, 5)
         XCTAssertEqual(flags.maxPlusGenerations, 50)
         XCTAssertEqual(flags.maxGoldGenerations, 1000)
+        XCTAssertEqual(flags.maxBatchModels, 4)
+        XCTAssertTrue(flags.enableV2UpgradeFlow)
+        XCTAssertTrue(flags.enableAuditEndpoint)
         XCTAssertTrue(flags.showPromoBanner)
         XCTAssertEqual(flags.minAppVersion, "2.0.0")
     }
@@ -73,7 +107,8 @@ final class FeatureFlagsCodableTests: XCTestCase {
     }
 
     func testFeature_caseCount() {
-        XCTAssertEqual(FeatureFlagManager.Feature.allCases.count, 10)
+        // 14 core + 9 SOTA + 6 onboarding sub-flags + 2 V2 + 1 screenshotCoach = 32
+        XCTAssertEqual(FeatureFlagManager.Feature.allCases.count, 32)
     }
 
     func testFeature_rawValuesAreSnakeCase() {

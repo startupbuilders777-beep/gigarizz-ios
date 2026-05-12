@@ -1,0 +1,14 @@
+{
+  "name": "gigarizz-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Pages site for gigarizz.app — landing, privacy, terms, support",
+  "scripts": {
+    "dev": "wrangler pages dev public --port 8788",
+    "deploy": "wrangler pages deploy public --project-name gigarizz-web",
+    "deploy:preview": "wrangler pages deploy public --project-name gigarizz-web --branch preview"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

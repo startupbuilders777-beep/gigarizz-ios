@@ -7,6 +7,9 @@ struct SettingsView: View {
     @State private var showPaywall = false
     @State private var showTierComparison = false
     @State private var errorMessage: String?
+    @AppStorage("dev_use_real_ai") private var useRealAI = false
+    @AppStorage("gigarizz_keep_me_natural") private var keepMeNatural = true
+    @AppStorage("dev_force_v2_upgrade_flow") private var forceV2UpgradeFlow = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -68,17 +71,77 @@ struct SettingsView: View {
                     .listRowBackground(DesignSystem.Colors.surface)
 
                     Section {
+                        Toggle(isOn: $keepMeNatural) {
+                            settingsRow(
+                                icon: "person.fill.checkmark",
+                                title: "Keep me looking like me",
+                                subtitle: keepMeNatural
+                                    ? "Generations preserve your real face, skin, and age."
+                                    : "Off — generations may take more creative liberties.",
+                                color: DesignSystem.Colors.success,
+                                accessibilityLabel: "Keep me looking like me, identity preservation toggle"
+                            )
+                        }
+                        .tint(DesignSystem.Colors.flameOrange)
+                        HStack(spacing: DesignSystem.Spacing.medium) {
+                            Image(systemName: "lock.shield.fill")
+                                .font(.system(size: 18))
+                                .foregroundStyle(DesignSystem.Colors.success)
+                                .frame(width: 28)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Your photos stay yours")
+                                    .font(DesignSystem.Typography.callout)
+                                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+                                Text("Auto-deleted after 30 days. Never used to train AI models.")
+                                    .font(DesignSystem.Typography.footnote)
+                                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                            }
+                            Spacer()
+                        }
+                        Link(destination: AppConstants.privacyURL) {
+                            settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Privacy Policy")
+                        }
+                        .accessibilityAddTraits(.isLink)
+                    } header: { Text("Trust & Privacy").foregroundStyle(DesignSystem.Colors.textSecondary) }
+                    .listRowBackground(DesignSystem.Colors.surface)
+
+                    Section {
                         settingsRow(icon: "info.circle.fill", title: "Version", subtitle: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
                         Link(destination: AppConstants.termsURL) {
                             settingsRow(icon: "doc.text.fill", title: "Terms of Service", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Terms of Service")
                         }
                         .accessibilityAddTraits(.isLink)
-                        Link(destination: AppConstants.privacyURL) {
-                            settingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Privacy Policy")
-                        }
-                        .accessibilityAddTraits(.isLink)
                     } header: { Text("About").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
+
+                    #if DEBUG
+                    Section {
+                        Toggle(isOn: $useRealAI) {
+                            settingsRow(
+                                icon: "sparkles.tv.fill",
+                                title: "Use Real AI",
+                                subtitle: useRealAI ? "Calling backend at \(AppConstants.backendBaseURL)" : "Mock mode — features return your input photo",
+                                color: DesignSystem.Colors.flameOrange,
+                                accessibilityLabel: "Use real AI in dev builds"
+                            )
+                        }
+                        .tint(DesignSystem.Colors.flameOrange)
+
+                        Toggle(isOn: $forceV2UpgradeFlow) {
+                            settingsRow(
+                                icon: "wand.and.sparkles.inverse",
+                                title: "Force V2 Upgrade Flow",
+                                subtitle: forceV2UpgradeFlow
+                                    ? "Upgrade tab + audit-first flow shown regardless of backend flag"
+                                    : "Off — respects the server's enable_v2_upgrade_flow flag",
+                                color: DesignSystem.Colors.hinge,
+                                accessibilityLabel: "Force V2 upgrade flow in dev builds"
+                            )
+                        }
+                        .tint(DesignSystem.Colors.flameOrange)
+                    } header: { Text("Developer").foregroundStyle(DesignSystem.Colors.textSecondary) }
+                    .listRowBackground(DesignSystem.Colors.surface)
+                    #endif
 
                     Section {
                         Button {

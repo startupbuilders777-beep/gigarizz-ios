@@ -44,7 +44,9 @@ class Settings(BaseSettings):
     # Moderation
     moderation_enabled: bool = True
 
-    # Feature Flags
+    # Feature Flags — read from env, served from /api/v1/flags, mirrored on iOS.
+    # Edit any of these in the deployed .env (or in CI env vars) and the iOS app
+    # picks up the change on next refresh (1h cache TTL or app cold start).
     flag_enable_generation: bool = True
     flag_enable_coach: bool = True
     flag_enable_face_swap: bool = False
@@ -58,12 +60,38 @@ class Settings(BaseSettings):
     flag_enable_premium_models: bool = True
     flag_enable_photorealistic_models: bool = True
     flag_enable_artistic_models: bool = True
+    # New SOTA features (iter 1-9)
+    flag_enable_face_enhance: bool = True
+    flag_enable_outfit_studio: bool = True
+    flag_enable_hairstyle: bool = True
+    flag_enable_age_studio: bool = True
+    flag_enable_pose_studio: bool = True
+    flag_enable_hinge_overlay: bool = True
+    flag_enable_nano_banana_2: bool = True
+    flag_enable_gpt_image_2: bool = True
+    flag_enable_instant_id: bool = True
+    # Paywall + onboarding strategy (server-driven)
+    flag_paywall_mode: str = "soft"  # none | soft | hard
+    flag_soft_paywall_after_uses: int = 3
+    flag_onboarding_enabled: bool = True
+    flag_onboarding_quiz_enabled: bool = True
+    flag_onboarding_skip_enabled: bool = True
+    flag_onboarding_max_steps: int = 30
+    flag_onboarding_show_social_proof: bool = True
+    flag_onboarding_show_testimonials: bool = True
+    flag_onboarding_show_video_demo: bool = True
+    # Quotas
     flag_max_free_generations: int = 3
     flag_max_plus_generations: int = 30
     flag_max_gold_generations: int = 999
     flag_max_batch_models: int = 4
     flag_show_promo_banner: bool = False
     flag_min_app_version: str = "1.0.0"
+
+    # V2 Profile Upgrade flow
+    flag_enable_v2_upgrade_flow: bool = False
+    flag_enable_audit_endpoint: bool = True
+    flag_enable_screenshot_coach: bool = True
 
     # Rate Limiting
     rate_limit_generation: str = "10/hour"

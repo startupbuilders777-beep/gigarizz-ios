@@ -131,6 +131,14 @@ struct FaceEnhancementView: View {
         .onChange(of: viewModel.photosPickerItem) {
             Task { await viewModel.loadPhoto() }
         }
+        .alert("Couldn't enhance", isPresented: .init(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     // MARK: - Header
@@ -149,10 +157,10 @@ struct FaceEnhancementView: View {
                     )
 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.micro) {
-                    Text("Natural AI Retouching")
+                    Text("Anti-Plastic Retouch")
                         .font(DesignSystem.Typography.title)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
-                    Text("Enhancement that looks like you, not a filter")
+                    Text("Looks like you — only on a great day.")
                         .font(DesignSystem.Typography.footnote)
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
                 }
@@ -382,19 +390,34 @@ struct FaceEnhancementView: View {
     // MARK: - Apply Button
 
     private var applyButton: some View {
-        GRButton(
-            title: "Apply Enhancement",
-            icon: "sparkles",
-            isLoading: viewModel.isProcessing
-        ) {
-            if subscriptionManager.currentTier == .free && viewModel.enhancementsUsed >= 3 {
-                showPaywall = true
-                DesignSystem.Haptics.warning()
-            } else {
-                Task {
-                    await viewModel.applyEnhancement()
+        VStack(spacing: DesignSystem.Spacing.xs) {
+            GRButton(
+                title: "Apply Enhancement",
+                icon: "sparkles",
+                isLoading: viewModel.isProcessing
+            ) {
+                if subscriptionManager.currentTier == .free && viewModel.enhancementsUsed >= 3 {
+                    showPaywall = true
+                    DesignSystem.Haptics.warning()
+                } else {
+                    Task {
+                        await viewModel.applyEnhancement()
+                    }
+                    DesignSystem.Haptics.medium()
                 }
-                DesignSystem.Haptics.medium()
+            }
+            // Surface the actual model running so users know it's real AI, not
+            // a CIFilter. Only shown in production where the backend round-trip
+            // is the source of truth.
+            if ServiceMode.current == .production {
+                HStack(spacing: 4) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 10))
+                        .foregroundStyle(DesignSystem.Colors.goldAccent)
+                    Text("Powered by CodeFormer · texture-preserving")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
             }
         }
     }
@@ -555,6 +578,8 @@ final class FaceEnhancementViewModel: ObservableObject {
     @Published var facesDetected = 0
     @Published var currentIntensity: EnhancementIntensity = .natural
     @Published var enhancementsUsed = 0
+    @Published var enhancementMode: String = "preview"  // "preview" | "ai"
+    @Published var errorMessage: String?
 
     func loadPhoto() async {
         guard let item = photosPickerItem else { return }
@@ -613,19 +638,60 @@ final class FaceEnhancementViewModel: ObservableObject {
         guard let original = selectedPhoto else { return }
         isProcessing = true
         progress = 0
+        errorMessage = nil
+        enhancementMode = "preview"
 
         let params = currentIntensity.parameters
 
-        // Simulate processing with progress updates
-        for i in 0..<10 {
-            try? await Task.sleep(nanoseconds: 150_000_000)
-            progress = Double(i + 1) / 10.0
+        // 1. Instant local CIFilter preview (always — gives the user something
+        //    to see in the first ~1.5s while the backend pipeline is running).
+        let preview = await applyEnhancements(to: original, parameters: params, isPreview: false)
+        resultImage = preview
+        progress = 0.4
+        DesignSystem.Haptics.medium()
+
+        // 2. Production: kick off CodeFormer via the backend; mock builds stop here.
+        switch ServiceMode.current {
+        case .mock:
+            // Animate progress to completion in mock mode.
+            for i in 4..<10 {
+                try? await Task.sleep(nanoseconds: 80_000_000)
+                progress = Double(i + 1) / 10.0
+            }
+        case .production:
+            do {
+                enhancementMode = "ai"
+                let userId = AuthManager.shared.currentUserId ?? "anonymous"
+                let url = try await AIGenerationService.shared.restoreFace(image: original, userId: userId)
+                if let restored = await Self.downloadImage(from: url) {
+                    resultImage = restored
+                    progress = 1.0
+                }
+            } catch let error as GenerationError {
+                // Keep the CIFilter preview as a fallback, but surface the error.
+                errorMessage = error.errorDescription
+                DesignSystem.Haptics.warning()
+            } catch {
+                errorMessage = error.localizedDescription
+                DesignSystem.Haptics.warning()
+            }
         }
 
-        resultImage = await applyEnhancements(to: original, parameters: params, isPreview: false)
         isProcessing = false
         enhancementsUsed += 1
         DesignSystem.Haptics.success()
+    }
+
+    private static func downloadImage(from url: URL) async -> UIImage? {
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            if let http = response as? HTTPURLResponse, !(200..<300 ~= http.statusCode) {
+                return nil
+            }
+            return UIImage(data: data)
+        } catch {
+            return nil
+        }
     }
 
     private func applyEnhancements(to image: UIImage, parameters: EnhancementParameters, isPreview: Bool) async -> UIImage {

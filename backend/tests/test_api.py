@@ -54,6 +54,10 @@ async def test_feature_flags(client: AsyncClient):
         "max_gold_generations",
         "show_promo_banner",
         "min_app_version",
+        # V2 flags
+        "enable_v2_upgrade_flow",
+        "enable_audit_endpoint",
+        "enable_screenshot_coach",
     }
     assert expected_keys.issubset(set(data.keys())), f"Missing keys: {expected_keys - set(data.keys())}"
 
@@ -123,7 +127,7 @@ async def test_list_models(client: AsyncClient):
     assert resp.status_code == 200
     models = resp.json()
     assert isinstance(models, list)
-    assert len(models) == 16  # 9 Replicate + 5 fal + 2 OpenAI
+    assert len(models) == 20  # 11 Replicate + 6 fal + 3 OpenAI
     # Verify shape
     for m in models:
         assert "id" in m
@@ -146,6 +150,11 @@ async def test_list_models(client: AsyncClient):
     assert "fal_sdxl_lightning" in model_ids
     assert "flux_1_1_pro_ultra" in model_ids
     assert "playground_v3" in model_ids
+    # SOTA additions (May 2026)
+    assert "nano_banana_2" in model_ids
+    assert "gpt_image_2" in model_ids
+    assert "instant_id" in model_ids
+    assert "face_restore" in model_ids
 
 
 @pytest.mark.asyncio
@@ -318,6 +327,169 @@ async def test_cors_headers(client: AsyncClient):
 # ────────────────────────────────────────────────────────────────────────────
 # Full E2E Flow:  User creation → generation → check analytics
 # ────────────────────────────────────────────────────────────────────────────
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# Uploads — /api/v1/uploads
+# ────────────────────────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_upload_presign_returns_urls(client: AsyncClient):
+    """POST /api/v1/uploads/presign returns upload_url + public_url + key."""
+    resp = await client.post(
+        "/api/v1/uploads/presign",
+        json={"content_type": "image/jpeg", "purpose": "source"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    for required in ("upload_url", "public_url", "key", "expires_in"):
+        assert required in data, f"Missing {required} in {data}"
+    assert data["key"].startswith("source/dev-user-001/")
+    assert data["key"].endswith(".jpg")
+    assert isinstance(data["expires_in"], int)
+    assert data["expires_in"] > 0
+
+
+@pytest.mark.asyncio
+async def test_upload_presign_rejects_unsupported_type(client: AsyncClient):
+    """Unsupported content-types get a clean 400."""
+    resp = await client.post(
+        "/api/v1/uploads/presign",
+        json={"content_type": "image/gif", "purpose": "source"},
+    )
+    assert resp.status_code == 400
+    detail = resp.json().get("detail", "")
+    assert "image/gif" in detail or "Unsupported" in detail
+
+
+@pytest.mark.asyncio
+async def test_upload_presign_default_content_type(client: AsyncClient):
+    """Empty body falls back to image/jpeg defaults."""
+    resp = await client.post("/api/v1/uploads/presign", json={})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["key"].endswith(".jpg")
+
+
+@pytest.mark.asyncio
+async def test_upload_presign_rejects_invalid_purpose(client: AsyncClient):
+    """Unknown purpose values get a 422 validation error from pydantic."""
+    resp = await client.post(
+        "/api/v1/uploads/presign",
+        json={"content_type": "image/jpeg", "purpose": "malicious_path/../../etc/passwd"},
+    )
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_upload_presign_accepts_all_known_purposes(client: AsyncClient):
+    """source / result / avatar all map cleanly into the key prefix."""
+    for purpose in ("source", "result", "avatar"):
+        resp = await client.post(
+            "/api/v1/uploads/presign",
+            json={"content_type": "image/jpeg", "purpose": purpose},
+        )
+        assert resp.status_code == 200, f"{purpose}: {resp.text}"
+        assert resp.json()["key"].startswith(f"{purpose}/dev-user-001/")
+
+
+@pytest.mark.asyncio
+async def test_generation_accepts_new_style_enums(client: AsyncClient):
+    """Iter 5+7 added new GenerationStyle values for Hinge overlays + outfit/hair swaps.
+    The /generate endpoint must accept all of them (returns 202 if providers configured,
+    500 if not — both prove the schema validated)."""
+    new_styles = ["hinge_prompt", "hinge_caption", "hinge_chemistry", "outfit_swap", "hairstyle_swap", "age_modify"]
+    for style in new_styles:
+        resp = await client.post(
+            "/api/v1/generate",
+            json={"style": style, "prompt": "test prompt", "photo_count": 1, "model": "nano_banana_2"},
+        )
+        # 202 = job queued; 500 = provider not configured (fal_key empty in CI). Both mean
+        # the request shape passed schema validation. 422 would mean the enum rejected.
+        assert resp.status_code in (202, 500), f"{style} got {resp.status_code}: {resp.text}"
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# Naturalness wrap (V2 trust default)
+# ────────────────────────────────────────────────────────────────────────────
+
+
+def test_natural_wrap_prepends_identity_clause():
+    """Importable: naturalness wrapper prefixes identity-preservation language."""
+    from app.services.generation_service import _wrap_natural, _NATURAL_PREFIX, _NATURAL_SUFFIX
+
+    base = "Professional headshot of a person in a navy suit."
+    wrapped = _wrap_natural(base)
+    assert wrapped.startswith(_NATURAL_PREFIX)
+    assert wrapped.endswith(_NATURAL_SUFFIX)
+    assert base in wrapped
+
+
+def test_natural_wrap_is_idempotent():
+    """Wrapping twice doesn't double-wrap."""
+    from app.services.generation_service import _wrap_natural
+
+    base = "casual outdoor photo"
+    once = _wrap_natural(base)
+    twice = _wrap_natural(once)
+    assert once == twice
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# Audit — /api/v1/audit (V2)
+# ────────────────────────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_audit_returns_structured_result(client: AsyncClient):
+    """POST /api/v1/audit returns ProfileAuditResult with per-photo critiques."""
+    resp = await client.post(
+        "/api/v1/audit",
+        json={
+            "photo_urls": [
+                "https://example.com/p1.jpg",
+                "https://example.com/p2.jpg",
+                "https://example.com/p3.jpg",
+            ],
+            "target_platforms": ["hinge", "tinder"],
+        },
+    )
+    assert resp.status_code == 200, resp.text
+    data = resp.json()
+    assert 0 <= data["overall_score"] <= 100
+    assert isinstance(data["summary"], str) and data["summary"]
+    assert 0 <= data["best_photo_index"] < 3
+    assert 0 <= data["weakest_photo_index"] < 3
+    assert isinstance(data["missing_archetypes"], list)
+    assert isinstance(data["top_fixes"], list)
+    assert len(data["per_photo"]) == 3
+    # First photo should map back to first url
+    assert data["per_photo"][0]["photo_url"] == "https://example.com/p1.jpg"
+    # Each per_photo critique has all six dimensions
+    for crit in data["per_photo"]:
+        for k in ("clarity", "lighting", "expression", "crop", "authenticity", "platform_fit", "overall"):
+            assert 0 <= crit[k] <= 10
+    # target_platforms round-trips
+    assert "hinge" in data["target_platforms"]
+    assert "tinder" in data["target_platforms"]
+
+
+@pytest.mark.asyncio
+async def test_audit_rejects_empty_photo_list(client: AsyncClient):
+    """POST /api/v1/audit with no photos returns 422 (pydantic min_length)."""
+    resp = await client.post("/api/v1/audit", json={"photo_urls": []})
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_audit_caps_photo_count(client: AsyncClient):
+    """POST /api/v1/audit rejects more than 12 photos."""
+    resp = await client.post(
+        "/api/v1/audit",
+        json={"photo_urls": [f"https://example.com/p{i}.jpg" for i in range(13)]},
+    )
+    assert resp.status_code == 422
 
 
 @pytest.mark.asyncio

@@ -93,6 +93,8 @@ async def create_generation(
             custom_prompt=req.prompt,
             webhook_url=webhook_url,
             model=selected_model,
+            pose_image_url=req.pose_image_url,
+            keep_me_natural=req.keep_me_natural,
         )
 
         job.replicate_prediction_id = prediction_id

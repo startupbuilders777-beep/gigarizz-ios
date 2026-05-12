@@ -74,6 +74,8 @@ actor GigaRizzAPIClient {
         let prompt: String?
         let model: String?
         let sourceImageUrl: String?
+        let poseImageUrl: String?
+        let keepMeNatural: Bool?
     }
 
     struct GenerationJobResponse: Codable {
@@ -87,8 +89,19 @@ actor GigaRizzAPIClient {
         let error: String?
     }
 
-    func submitGeneration(style: String, prompt: String? = nil, model: String = "flux_schnell", sourceImageUrl: String? = nil) async throws -> GenerationJobResponse {
-        let req = GenerateRequest(style: style, prompt: prompt, model: model, sourceImageUrl: sourceImageUrl)
+    func submitGeneration(
+        style: String,
+        prompt: String? = nil,
+        model: String = "flux_schnell",
+        sourceImageUrl: String? = nil,
+        poseImageUrl: String? = nil,
+        keepMeNatural: Bool? = nil
+    ) async throws -> GenerationJobResponse {
+        let req = GenerateRequest(
+            style: style, prompt: prompt, model: model,
+            sourceImageUrl: sourceImageUrl, poseImageUrl: poseImageUrl,
+            keepMeNatural: keepMeNatural ?? NaturalnessSettings.keepMeNatural
+        )
         return try await post("/api/v1/generate", body: req)
     }
 
@@ -104,6 +117,45 @@ actor GigaRizzAPIClient {
 
     func fetchModels() async throws -> [AIModel] {
         try await get("/api/v1/generate/models")
+    }
+
+    // MARK: - Uploads
+
+    struct UploadPresignRequest: Codable {
+        let contentType: String
+        let purpose: String
+    }
+
+    struct UploadPresignResponse: Codable {
+        let uploadUrl: String
+        let publicUrl: String
+        let key: String
+        let expiresIn: Int
+    }
+
+    /// Mint a presigned PUT URL the client can upload bytes to.
+    func requestPresignedUpload(contentType: String = "image/jpeg", purpose: String = "source") async throws -> UploadPresignResponse {
+        let req = UploadPresignRequest(contentType: contentType, purpose: purpose)
+        return try await post("/api/v1/uploads/presign", body: req)
+    }
+
+    /// Upload raw bytes to a presigned URL via PUT. Returns nothing — the caller
+    /// already knows the public URL from `requestPresignedUpload`.
+    func putToPresignedURL(_ urlString: String, data: Data, contentType: String) async throws {
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidResponse
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
+        let (_, response) = try await session.upload(for: request, from: data)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        guard 200..<300 ~= httpResponse.statusCode else {
+            throw APIError.serverError(httpResponse.statusCode)
+        }
     }
 
     // MARK: - Batch Generation
@@ -215,6 +267,26 @@ actor GigaRizzAPIClient {
 
     func deleteAccount() async throws {
         try await delete("/api/v1/users/me")
+    }
+
+    // MARK: - Audit (V2)
+
+    struct AuditRequestBody: Codable {
+        let photoUrls: [String]
+        let targetPlatforms: [String]
+
+        enum CodingKeys: String, CodingKey {
+            case photoUrls = "photo_urls"
+            case targetPlatforms = "target_platforms"
+        }
+    }
+
+    func runAudit(photoUrls: [String], targetPlatforms: [DatingPlatform]) async throws -> ProfileAuditResult {
+        let body = AuditRequestBody(
+            photoUrls: photoUrls,
+            targetPlatforms: targetPlatforms.map { $0.rawValue.lowercased() }
+        )
+        return try await post("/api/v1/audit", body: body)
     }
 
     // MARK: - Health

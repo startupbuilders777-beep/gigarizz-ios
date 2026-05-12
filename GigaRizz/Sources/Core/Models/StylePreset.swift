@@ -122,6 +122,36 @@ struct StylePreset: Identifiable, Equatable {
             prompt: "Studio portrait, clean white background, minimalist styling, sharp focus, professional studio photography",
             tier: .gold,
             gradient: [.white, .gray]
+        ),
+
+        // Hinge-mode prompt overlays — pair with the gpt_image_2 model for best
+        // text rendering. These produce shareable Hinge-prompt-formatted shots.
+        StylePreset(
+            id: "hinge_prompt",
+            name: "Hinge: Fall For You",
+            description: "Portrait with 'I'll fall for you if...' overlay.",
+            icon: "text.bubble.fill",
+            prompt: "Editorial portrait of a person, warm cinematic lighting, soft bokeh background, with the Hinge-style prompt text 'I'll fall for you if...' rendered in clean white sans-serif overlay in the lower-left third, photorealistic, vertical 3:4",
+            tier: .gold,
+            gradient: [.pink, .orange]
+        ),
+        StylePreset(
+            id: "hinge_caption",
+            name: "Hinge: Sunday Vibe",
+            description: "Magazine-style with 'My ideal Sunday' caption.",
+            icon: "sun.haze.fill",
+            prompt: "Magazine-style portrait of a person, golden hour, candid expression, with the caption 'My ideal Sunday in 3 emojis' rendered in elegant white serif centered below the subject, photorealistic, vertical 3:4",
+            tier: .gold,
+            gradient: [.yellow, .orange]
+        ),
+        StylePreset(
+            id: "hinge_chemistry",
+            name: "Hinge: Two Truths",
+            description: "Modern minimal with 'Two truths and a lie' tag.",
+            icon: "rectangle.and.text.magnifyingglass",
+            prompt: "Confident portrait of a person, modern minimal setting, natural smile, with the prompt 'Two truths and a lie' rendered as a small white tag in the upper-right corner, photorealistic, vertical 3:4",
+            tier: .gold,
+            gradient: [.indigo, .blue]
         )
     ]
 
