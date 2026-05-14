@@ -80,6 +80,10 @@ class GenerateRequest(BaseModel):
     # not a fashion-model-pretending-to-be-them. Default true so new users get
     # the safer behavior; advanced users can flip off in iOS Settings.
     keep_me_natural: bool = True
+    # V3 naturalness intensity (0–100). When present, swaps the prompt wrapper
+    # to a Conservative (<=40) / Standard (41–70) / Bold (71+) variant.
+    # When None, the legacy default wrapper is used.
+    naturalness_intensity: int | None = Field(default=None, ge=0, le=100)
 
 
 class ModelInfo(BaseModel):

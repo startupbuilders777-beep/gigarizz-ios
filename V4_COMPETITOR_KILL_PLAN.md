@@ -1,7 +1,32 @@
 # GigaRizz V4 — Competitor Kill Plan
 
 > Last updated 2026-05-14.
-> Companion docs: `COMPETITOR_RESEARCH.md` (full landscape), `V3_PRODUCT_PLAN.md` (proactive market expansion), `V2_PRODUCT_PLAN.md` (current shipped product).
+> Companion docs: `COMPETITOR_RESEARCH.md`, `PHOTO_EDITOR_RESEARCH.md` (FaceApp/Facetune), `V3_PRODUCT_PLAN.md`, `V2_PRODUCT_PLAN.md`, `BACKLOG.md`.
+
+---
+
+## V4 RESEQUENCE — PHOTO-FIRST (2026-05-14)
+
+V4 also re-prioritizes around the photo wedge. Every counter that is not a photo feature is paused until V3 photo sprints 1–3 ship. The non-photo counters stay on the roadmap but appear in `BACKLOG.md`.
+
+### What shipped on 2026-05-14 (V4 counters active in code)
+
+- **Naturalness intensity slider** (counters Aragon, Sway, YourMove, PhotoAI) — three bands plus on-device drift threshold. Backend wrapper varies prompt strength per band.
+- **IdentityMatchService** (counters every "doesn't look like me" complaint across the segment) — on-device face similarity, no data leaves the phone. Foundation for FaceCheck Pre-Flight + Identity Match Certificate.
+- **Glow Up Studio** (counters Facetune's freeform palette + FaceApp's preset filters) — audit-driven, only shows fixes that help *this* specific photo.
+
+### Sprint 1 photo counters (next 2 weeks)
+
+- **FaceCheck Pre-Flight** — predict Hinge/Tinder verification pass before upload. **Structural counter to FaceApp + Facetune in the dating context** (see `PHOTO_EDITOR_RESEARCH.md`).
+- **"Why this photo" rationale on every audit + generation result** — counters RIZZ's templated outputs and Aragon's silent grid.
+- **Comparison landing page** (`facetune-vs-gigarizz`, `faceapp-vs-gigarizz`, `rizz-vs-gigarizz`) — copy ready.
+
+### Sprint 2 photo counters
+
+- **Identity Match Certificate** — signed JSON edit receipt per export. Counters FaceApp/Facetune opacity.
+- **Age-Faithful Lock** — fails any generation that drifts the apparent age >5 years from the user's reference. Direct Sway AI counter.
+
+---
 
 ## Frame
 

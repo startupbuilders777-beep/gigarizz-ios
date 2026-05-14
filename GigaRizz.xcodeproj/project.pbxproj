@@ -89,6 +89,7 @@
 		8888E9BA7AD10776961B89C3 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771A6980E69DDA58928A77B5 /* DesignSystem.swift */; };
 		888CD699D163446317D2F07F /* AppRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD213F248B9EE41CF6C92D /* AppRatingView.swift */; };
 		89808353F0DB7BF9C730156B /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E192F07BA8ADA237E3C61A /* ModelTests.swift */; };
+		898ED5F171A7C12A8D713F31 /* GlowUpStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6060471C5FA9A4FB85BA6DA5 /* GlowUpStudioView.swift */; };
 		8A41855389D8F5BC7A18DD62 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3AEC7B0E5D2C4ED0C10ACD /* AppRatingManager.swift */; };
 		8C28D86F4DA80132936D9B4C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45D7B883564D04113DC0F84 /* HomeView.swift */; };
 		8C53106A94EAAB963D829022 /* PaywallGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2442C945FC4494C7E5E793E3 /* PaywallGate.swift */; };
@@ -134,6 +135,7 @@
 		D47E74FA6A29E21A64EB8067 /* ServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50E5C25FFF32C9A979F3F33 /* ServiceTests.swift */; };
 		D5BB885A5CB401E2CE21FCEF /* ProfileKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060C82F4FDF3D176246B6D5 /* ProfileKit.swift */; };
 		D6B072C0E815F49DCF016E67 /* SharePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77439C9EFEEACA9F69A184FC /* SharePromptView.swift */; };
+		D76B3923EF84152D88F23ED4 /* IdentityMatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1BE280A5947760243728D /* IdentityMatchService.swift */; };
 		DCC676BF6325FB9D85DE457E /* PaywallGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1291C39BF6303B1AF3410D /* PaywallGateTests.swift */; };
 		E0782A6727E0EE18AC7A0096 /* ProfileCompletenessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41E437B47C13F9E3CCFB709 /* ProfileCompletenessView.swift */; };
 		E0D61A8EB360AC96FCFBF6DE /* GenerateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC59BF99B3A522FC7F4BD807 /* GenerateViewModel.swift */; };
@@ -239,6 +241,7 @@
 		5A0E38BCE2E268A6CF768B41 /* PhotoAuditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAuditView.swift; sourceTree = "<group>"; };
 		5C8D9BE90190EEB03464A3BF /* StylePresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePresetManager.swift; sourceTree = "<group>"; };
 		5CE7EE035980A46F7CBEAE29 /* PHPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerSheet.swift; sourceTree = "<group>"; };
+		6060471C5FA9A4FB85BA6DA5 /* GlowUpStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlowUpStudioView.swift; sourceTree = "<group>"; };
 		61E0591960C91E22928DD1C7 /* AgeModifierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeModifierView.swift; sourceTree = "<group>"; };
 		627AB2CF8A5C95CF2194C47E /* PhotoPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewModel.swift; sourceTree = "<group>"; };
 		62CC1AD275648BF266866B53 /* AIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModel.swift; sourceTree = "<group>"; };
@@ -270,6 +273,7 @@
 		8E365F26865AEBDA726B7D8C /* QuickUploadFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickUploadFAB.swift; sourceTree = "<group>"; };
 		9060C82F4FDF3D176246B6D5 /* ProfileKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileKit.swift; sourceTree = "<group>"; };
 		91E19AAE96EF4E76C770BF56 /* GigaRizzAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigaRizzAPIClient.swift; sourceTree = "<group>"; };
+		95F1BE280A5947760243728D /* IdentityMatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityMatchService.swift; sourceTree = "<group>"; };
 		968982CF6D829164203ADA68 /* RizzTipCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RizzTipCard.swift; sourceTree = "<group>"; };
 		998B870BA2B1FD60D077347F /* ProfileKitExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileKitExporter.swift; sourceTree = "<group>"; };
 		99CF3C08614CE2E8FC7E36EB /* FeatureFlagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagManager.swift; sourceTree = "<group>"; };
@@ -661,6 +665,7 @@
 		6C049260103D6BD838C4236F /* Upgrade */ = {
 			isa = PBXGroup;
 			children = (
+				6060471C5FA9A4FB85BA6DA5 /* GlowUpStudioView.swift */,
 				B515F24B1935A576F0511F5A /* MissingSlotActionSheet.swift */,
 				2442C945FC4494C7E5E793E3 /* PaywallGate.swift */,
 				3A784396EE10F75A57458388 /* ProfileDiagnosisView.swift */,
@@ -798,6 +803,7 @@
 				99CF3C08614CE2E8FC7E36EB /* FeatureFlagManager.swift */,
 				91E19AAE96EF4E76C770BF56 /* GigaRizzAPIClient.swift */,
 				12FCC488385D0DE0D3FBC3FE /* HapticManager.swift */,
+				95F1BE280A5947760243728D /* IdentityMatchService.swift */,
 				DDBA9062A46B79F8C240CA47 /* NaturalnessSettings.swift */,
 				BC986FA45BD7C539849B64B5 /* NotificationDelegateHandler.swift */,
 				1BD5950DD8B3A5EE578F6144 /* NotificationManager.swift */,
@@ -1234,10 +1240,12 @@
 				177F9704FA0C511AA9AACE7C /* GenerationTipsView.swift in Sources */,
 				4AA0695B190D1E9F31D12F9C /* GigaRizzAPIClient.swift in Sources */,
 				E524CE40274FAA4B15F642A8 /* GigaRizzApp.swift in Sources */,
+				898ED5F171A7C12A8D713F31 /* GlowUpStudioView.swift in Sources */,
 				1E023E936FC791DB99B90EA0 /* HairstylePickerView.swift in Sources */,
 				11AF459D270CE3E4B53EBC26 /* HapticManager.swift in Sources */,
 				8C28D86F4DA80132936D9B4C /* HomeView.swift in Sources */,
 				F8213AC1983E6E566885362B /* HomeViewModel.swift in Sources */,
+				D76B3923EF84152D88F23ED4 /* IdentityMatchService.swift in Sources */,
 				884DF129FE5252A900D6B891 /* LaunchScreenView.swift in Sources */,
 				269D86E2E04F76AA210209A4 /* LightingColorGradeView.swift in Sources */,
 				63C020963F8F245E45860430 /* MainTabView.swift in Sources */,

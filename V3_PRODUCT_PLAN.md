@@ -2,7 +2,81 @@
 
 > Last updated 2026-05-14.
 > Predecessor: `V2_PRODUCT_PLAN.md` (audit-first profile upgrade studio, shipped in code).
-> Companion: `V4_COMPETITOR_KILL_PLAN.md` (surgical, competitor-by-competitor counters).
+> Companion: `V4_COMPETITOR_KILL_PLAN.md` (surgical, competitor-by-competitor counters), `PHOTO_EDITOR_RESEARCH.md` (FaceApp/Facetune teardown), `BACKLOG.md` (deferred items).
+
+---
+
+## V3 RESEQUENCE — PHOTO-FIRST (2026-05-14)
+
+**Decision:** every V3 sprint now leads with one photo feature. Non-photo bets (Live Wingman keyboard, video, voice, Concierge cron) move to `BACKLOG.md` until the photo wedge is locked. See `PHOTO_EDITOR_RESEARCH.md` for the rationale: Tinder Face Check + Hinge Selfie Verification structurally disadvantage FaceApp/Facetune in the dating-photo context — that is the gap we exploit.
+
+### Photo-First Hero Claim
+
+> **The only AI photo editor that passes Hinge Selfie Verification and Tinder Face Check.** Better than FaceApp on naturalness. Better than Facetune on identity preservation. Built for dating profiles, not viral filters.
+
+### Photo-First Sprint Order
+
+| Sprint | Hero shipped | Status |
+|--------|--------------|--------|
+| 0 (today) | IdentityMatchService (on-device face similarity), Naturalness intensity slider (Conservative/Standard/Bold), Glow Up Studio scaffold, backend `_wrap_natural` intensity-aware | ✅ Shipped 2026-05-14 |
+| 1 | FaceCheck Pre-Flight — predict pass/fail for Hinge + Tinder verification before upload | Next |
+| 2 | Identity Match Certificate — signed JSON edit receipt attached to every generated photo | Next |
+| 3 | Audit-Driven Glow Up — chain the audit critique into one-tap multi-tool fix sequence (lighting → face restore → background) | Sprint 3 |
+| 4 | Conversational Photo Brief — plain English "what photo do you want" → drift-checked variants | Sprint 4 |
+| 5 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Sprint 5 |
+| 6 | Age-Faithful Lock + Generation Receipt UI | Sprint 6 |
+
+Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
+
+### What shipped on 2026-05-14 (code)
+
+- `Core/Services/IdentityMatchService.swift` — on-device Vision-framework face similarity. Detects largest face in candidate + reference, crops both, generates `VNFeaturePrintObservation`, computes distance, maps to band (Excellent / Acceptable / Borderline / Rejected).
+- `Core/Services/NaturalnessSettings.swift` — extended from binary toggle to 0–100 intensity slider with three named levels (Conservative default, Standard, Bold). Each level has its own backend prompt wrapper and Identity Match threshold.
+- `Features/Upgrade/GlowUpStudioView.swift` — audit-driven photo improver. Takes a UIImage, runs PhotoQualityAnalyzer + IdentityMatchService, routes each detected issue to the right existing tool (FaceEnhancement / ColorGrade / re-roll). Beats Facetune's freeform palette by only surfacing fixes that help *this* specific photo.
+- `Features/Settings/SettingsView.swift` — naturalness slider with live "Conservative / Standard / Bold" band labels and Identity Match threshold preview.
+- `backend/app/services/generation_service.py` `_wrap_natural(prompt, intensity)` — variable identity-preservation prefix per intensity band. Conservative locks features harder; Bold allows more styling.
+- `backend/app/models/schemas.py` + router — accepts new `naturalness_intensity` int field on `/api/v1/generate`.
+- `Core/Services/GigaRizzAPIClient.swift` — sends the intensity on every generation request.
+
+### FaceCheck Pre-Flight (Sprint 1 hero)
+
+The single most defensible feature in the category. FaceApp and Facetune *cannot* ship this without cannibalizing their power-user behavior — their products incentivize the kind of editing that fails verification.
+
+**Mechanism:**
+1. User selects a generated or edited photo to upload.
+2. GigaRizz runs IdentityMatchService against the user's reference selfie.
+3. If similarity ≥ band threshold AND no detected drift signals (oversmoothing, eye widening, jaw narrowing) — surface a green "Predicted to pass Face Check" badge.
+4. If borderline or failing — surface specific reasons and offer a one-tap regenerate at a lower intensity.
+5. Backend logs the prediction so we can calibrate against real verification outcomes.
+
+**Why now:** Tinder Face Check went US-wide in 2025. Hinge made Selfie Verification mandatory in UK + Australia and the rest of the world is following. Match Group reports >50% drop in bad-actor interactions where Face Check is live. The dating photo market that *can pass verification* is the only photo market that matters now.
+
+### Identity Match Certificate (Sprint 2 hero)
+
+Every exported photo gets a signed JSON edit receipt:
+
+```json
+{
+  "kit_id": "...",
+  "photo_id": "...",
+  "original_hash": "sha256:...",
+  "naturalness_intensity": 25,
+  "identity_match_score": 0.84,
+  "identity_match_band": "acceptable",
+  "tools_applied": ["face_restore", "color_grade"],
+  "drift_signals": [],
+  "verified_at": "2026-05-14T10:42:00Z",
+  "signature": "..."
+}
+```
+
+Shipped alongside every Save / Share / Copy export. Counters the FaceApp/Facetune "what did this app actually do to my photo" opacity. Builds the brand claim *"every photo we ship has a receipt."*
+
+### Audit-Driven Glow Up (Sprint 3 hero)
+
+Today's Glow Up Studio routes each issue to the right tool one-tap. Sprint 3 upgrades this to chain the fixes: tap *Apply Glow Up* and the engine sequentially runs the lighting fix, then face restore, then background swap, with the identity match score re-computed after each step and the user shown a before/during/after comparison. Stop the chain at the first regression. Beats Facetune's "tool drawer" UX with a single "make this photo good" gesture.
+
+---
 
 ## V3 Mission
 

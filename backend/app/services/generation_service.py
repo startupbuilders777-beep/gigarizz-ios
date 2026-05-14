@@ -131,16 +131,41 @@ _NATURAL_SUFFIX = (
     " The result must read as the same real person, not an idealized version."
 )
 
+# V3 intensity bands. Each band swaps the prefix copy so providers see a
+# proportional identity-preservation signal. Lower intensity = harder lock.
+_NATURAL_PREFIX_CONSERVATIVE = (
+    "Strict photorealistic portrait. Preserve EVERY facial feature, skin texture, "
+    "age, ethnicity, jawline, and natural body proportions from the source photo "
+    "EXACTLY. No skin smoothing, no jaw reshaping, no eye widening, no whitening, "
+    "no fashion-model drift. Edits limited to lighting, composition, and outfit. "
+)
+_NATURAL_PREFIX_BOLD = (
+    "Photorealistic portrait. The subject must remain recognizable as the same "
+    "person from the source photo — same facial structure, ethnicity, and age "
+    "range. Subtle styling improvements (lighting, posture, outfit) are welcome; "
+    "no transformation of facial features. "
+)
 
-def _wrap_natural(prompt: str) -> str:
+
+def _wrap_natural(prompt: str, intensity: int | None = None) -> str:
     """Apply identity-preservation wrapping to a style prompt.
 
     Idempotent — calling twice doesn't double-wrap. Pure function so unit tests
     can verify the wrap survives both string templates and the {subject} swap.
+
+    ``intensity`` is the V3 0–100 naturalness slider value. ``None`` keeps the
+    legacy default copy (used when the iOS client hasn't sent the new field).
     """
-    if _NATURAL_PREFIX in prompt:
+    # Re-wrapping detection — any of the three prefixes counts.
+    if _NATURAL_PREFIX in prompt or _NATURAL_PREFIX_CONSERVATIVE in prompt or _NATURAL_PREFIX_BOLD in prompt:
         return prompt
-    return _NATURAL_PREFIX + prompt + _NATURAL_SUFFIX
+    prefix = _NATURAL_PREFIX
+    if intensity is not None:
+        if intensity <= 40:
+            prefix = _NATURAL_PREFIX_CONSERVATIVE
+        elif intensity >= 71:
+            prefix = _NATURAL_PREFIX_BOLD
+    return prefix + prompt + _NATURAL_SUFFIX
 
 
 # Style prompt templates for dating photos
@@ -273,6 +298,7 @@ class GenerationService:
         model: str | None = None,
         pose_image_url: str | None = None,
         keep_me_natural: bool = True,
+        naturalness_intensity: int | None = None,
     ) -> str:
         """Create a prediction using the requested model (or default).
 
@@ -282,7 +308,7 @@ class GenerationService:
         prompt = custom_prompt or STYLE_PROMPTS.get(style, STYLE_PROMPTS["professional"])
         prompt = prompt.replace("{subject}", "a person")
         if keep_me_natural:
-            prompt = _wrap_natural(prompt)
+            prompt = _wrap_natural(prompt, intensity=naturalness_intensity)
 
         # Route to the correct provider
         if model_key in FAL_MODELS:

@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var errorMessage: String?
     @AppStorage("dev_use_real_ai") private var useRealAI = false
     @AppStorage("gigarizz_keep_me_natural") private var keepMeNatural = true
+    @AppStorage("gigarizz_naturalness_intensity") private var naturalnessIntensity = NaturalnessSettings.Level.conservative.intensityValue
     @AppStorage("dev_force_v2_upgrade_flow") private var forceV2UpgradeFlow = false
     @Environment(\.dismiss) private var dismiss
 
@@ -82,6 +83,30 @@ struct SettingsView: View {
                             )
                         }
                         .tint(DesignSystem.Colors.flameOrange)
+                        if keepMeNatural {
+                            VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                                HStack {
+                                    Text("Naturalness")
+                                        .font(DesignSystem.Typography.callout)
+                                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                                    Spacer()
+                                    Text(NaturalnessSettings.currentLevel(forIntensity: naturalnessIntensity).displayName)
+                                        .font(DesignSystem.Typography.caption)
+                                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                                }
+                                Slider(value: Binding(
+                                    get: { Double(naturalnessIntensity) },
+                                    set: { naturalnessIntensity = Int($0) }
+                                ), in: 0...100, step: 5)
+                                    .tint(DesignSystem.Colors.flameOrange)
+                                    .accessibilityLabel("Naturalness intensity")
+                                    .accessibilityValue("\(naturalnessIntensity) out of 100")
+                                Text(NaturalnessSettings.currentLevel(forIntensity: naturalnessIntensity).subtitle)
+                                    .font(DesignSystem.Typography.footnote)
+                                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                            }
+                            .padding(.vertical, DesignSystem.Spacing.small)
+                        }
                         HStack(spacing: DesignSystem.Spacing.medium) {
                             Image(systemName: "lock.shield.fill")
                                 .font(.system(size: 18))

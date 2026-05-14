@@ -77,6 +77,7 @@ actor GigaRizzAPIClient {
         let sourceImageUrls: [String]?
         let poseImageUrl: String?
         let keepMeNatural: Bool?
+        let naturalnessIntensity: Int?
     }
 
     struct GenerationJobResponse: Codable {
@@ -97,13 +98,15 @@ actor GigaRizzAPIClient {
         sourceImageUrl: String? = nil,
         sourceImageUrls: [String]? = nil,
         poseImageUrl: String? = nil,
-        keepMeNatural: Bool? = nil
+        keepMeNatural: Bool? = nil,
+        naturalnessIntensity: Int? = nil
     ) async throws -> GenerationJobResponse {
         let req = GenerateRequest(
             style: style, prompt: prompt, model: model,
             sourceImageUrl: sourceImageUrl, sourceImageUrls: sourceImageUrls,
             poseImageUrl: poseImageUrl,
-            keepMeNatural: keepMeNatural ?? NaturalnessSettings.keepMeNatural
+            keepMeNatural: keepMeNatural ?? NaturalnessSettings.keepMeNatural,
+            naturalnessIntensity: naturalnessIntensity ?? NaturalnessSettings.intensity
         )
         return try await post("/api/v1/generate", body: req)
     }
