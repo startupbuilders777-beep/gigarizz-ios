@@ -688,3 +688,35 @@ Target:
 - Bad: Build output still has Swift concurrency warnings, especially haptics/design-system feedback generators, Vision OCR sendability, and ShareItemProvider sendability.
 - Ugly: If credentials are half-configured, the app currently surfaces generic server errors instead of a polished "AI service unavailable" recovery path.
 - Ugly: The real paid magic moment is not proven until a live audit produces a diagnosis, GPT Image 2 creates believable missing-slot photos, and the app exports a complete Hinge/Tinder/Bumble kit.
+
+## V2 Completion Audit — 2026-05-14
+
+### Sprint completion vs original plan
+
+| Sprint | Status | Evidence |
+|--------|--------|----------|
+| Sprint 1 — V2 Shape | ✅ Complete | `UpgradeFlowView.swift` (589 lines), Upgrade tab in `MainTabView`, `ProfileKit` model present |
+| Sprint 2 — Diagnosis | ✅ Complete | `ProfileDiagnosisView.swift` (331 lines), `audit_service.py` using GPT-4o vision, missing-slot grid in `MissingSlotActionSheet.swift` |
+| Sprint 3 — Kit Generation | ✅ Complete | `ProfileKitOrderer.swift` (150 lines, archetype-aware ordering), `ProfileKitView.swift` (479 lines), backend `_wrap_natural` integration |
+| Sprint 4 — Export | ✅ Complete | `ProfileKitExporter.swift` (129 lines): clipboard, PhotoLibrary multi-save, share sheet |
+| Sprint 5 — Coach | ✅ Complete | `ScreenshotOCRService.swift` (on-device Vision OCR), `ScreenshotCoachView.swift`, backend `/openers` + `/reply` endpoints |
+| Sprint 6 — Paywall + Trust | ✅ Complete | `PaywallGate.swift` (audit-triggered), `NaturalnessSettings.swift` + Settings toggle, server-side `_wrap_natural` is idempotent |
+| Sprint 7 — QA + Launch | ⚠️ Mostly done | Backend 33/33 passing; iOS suite passing; **External credentials still missing** (Apple Dev team, RevenueCat, PostHog, OpenAI/Replicate/fal.ai, AWS, EC2 deploy) |
+
+### Verified 2026-05-14
+- `GoogleService-Info.plist` installed at `GigaRizz/Resources/` for Firebase project `rizzi-44071` (replaces the absent placeholder).
+- `backend/firebase-service-account.json` installed; backend `.env` updated to `FIREBASE_PROJECT_ID=rizzi-44071`.
+- Backend Firebase Admin SDK initializes successfully against the new project (verified by importing `firebase_admin` and calling `initialize_app`).
+- Backend test suite still green: `33 passed`.
+- Xcode project regenerated via `xcodegen` so the new plist is bundled.
+
+### V2 Verdict
+
+V2 is **feature-complete in code**. Every Sprint 1–6 deliverable has shipped. Sprint 7 (QA + launch) is gated on external credentials and the EC2 deployment, not on missing product work. Once the user enables the four manual items below, V2 is a real launch candidate.
+
+### Outstanding manual user actions (cannot be done via gcloud/CLI)
+
+1. **Firebase Console — enable Authentication providers.** The Identity Platform API requires Blaze billing to enable via REST. The free path is one click in the console at `https://console.firebase.google.com/project/rizzi-44071/authentication/providers` → enable **Email/Password** and **Apple**. Until this is done, the iOS Sign-In screen will hit `CONFIGURATION_NOT_FOUND`.
+2. **Firebase Console — enable Firestore + Storage.** Currently both APIs are disabled on the project. Either enable in console or upgrade to Blaze and run the API calls.
+3. **Apple Developer account.** Set `DEVELOPMENT_TEAM` in `project.yml` or an xcconfig. Enable the **Sign in with Apple** capability for `com.gigarizz.app`.
+4. **Provider API keys.** Drop real values into `backend/.env`: `OPENAI_API_KEY`, `REPLICATE_API_TOKEN`, `FAL_KEY`, `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`. RevenueCat + PostHog keys belong in Xcode build settings (`REVENUECAT_API_KEY`, `POSTHOG_API_KEY`).

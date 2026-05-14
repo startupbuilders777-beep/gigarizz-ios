@@ -1,10 +1,62 @@
 # GigaRizz — App Store Launch Checklist
 
-> Last updated 2026-05-12 after App Store readiness sweep.
+> Last updated 2026-05-14 after Firebase project bootstrap (`rizzi-44071`).
 > Branch: `main` | Backend tests: **33/33** | iOS simulator tests: **passing** | Release simulator build: **passing**
 > Models in catalog: **20** (10 Replicate + 5 fal.ai + 5 OpenAI)
 > SOTA surfaces shipped: Face Enhance, Outfit Studio, Hairstyle, Age Studio, Pose Studio, Hinge Mode
 > **V2 Profile Upgrade flow is the default first-run shell** (audit -> diagnosis -> kit -> export -> screenshot coach)
+> Firebase project `rizzi-44071`: iOS app registered, `GoogleService-Info.plist` bundled, backend Admin SDK initialized.
+
+---
+
+## ⚠️ USER ACTIONS REQUIRED BEFORE LAUNCH
+
+These cannot be done from CLI / scripts and need you in front of a browser or with credentials in hand.
+
+### Firebase Console (rizzi-44071)
+1. **Enable Authentication** — open https://console.firebase.google.com/project/rizzi-44071/authentication/providers and click *Get Started*. Enable **Email/Password** and **Sign in with Apple** providers.
+2. **Enable Firestore** — https://console.firebase.google.com/project/rizzi-44071/firestore. Create database in `nam5` location, start in *production* mode.
+3. **Enable Storage** — https://console.firebase.google.com/project/rizzi-44071/storage. Default rules.
+4. *(Optional, costs money)* Upgrade to Blaze plan if you want any of the above doable via API later.
+
+### Apple Developer
+5. Set `DEVELOPMENT_TEAM` in `project.yml` (or an xcconfig) to your Apple Team ID. Re-run `xcodegen generate`.
+6. In Apple Developer portal: register App ID `com.gigarizz.app`, enable **Sign in with Apple** capability.
+7. Create Distribution Cert + Provisioning Profile.
+
+### Provider API keys (drop into `backend/.env`)
+8. `OPENAI_API_KEY` — required for audit + coach + GPT Image 2 generation.
+9. `REPLICATE_API_TOKEN` — Flux, SDXL, CodeFormer (face enhance), InstantID.
+10. `FAL_KEY` — Nano Banana 2 (Outfit/Hairstyle/Age Studio).
+11. `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` + `S3_BUCKET_NAME=gigarizz-photos`.
+
+### EC2 backend
+12. Start EC2 instance (currently stopped — port 22 timeout from this machine on 2026-05-14). Allocate elastic IP.
+13. Update `backend/deploy.sh` `EC2_HOST=` if IP changed.
+14. From a machine with the SSH key: `cd backend && ./deploy.sh setup && ./deploy.sh deploy && ./deploy.sh ssl`.
+15. Point `api.gigarizz.app` DNS to the elastic IP.
+
+### Marketing / legal pages (Cloudflare Pages)
+16. `cd web && npm install && npx wrangler login && npm run deploy`.
+17. Cloudflare dashboard → Pages → gigarizz-web → add custom domains `www.gigarizz.app` + `gigarizz.app`.
+
+### App Store Connect
+18. Create app, upload screenshots (use marketing/assets), set IAPs, submit reviewer notes.
+19. RevenueCat dashboard → wire products + entitlements `gold` / `plus` → set `REVENUECAT_API_KEY` Xcode build setting.
+20. PostHog dashboard → set `POSTHOG_API_KEY` Xcode build setting.
+
+---
+
+## What was completed on 2026-05-14
+
+- Firebase project `rizzi-44071`: iOS app registered (`com.gigarizz.app`, app ID `1:264997849602:ios:9b923b56f34f795d68751b`).
+- `GoogleService-Info.plist` downloaded via Firebase Management API and installed at `GigaRizz/Resources/`.
+- `xcodegen generate` re-run; plist now bundled in `.app` (verified in Debug-iphonesimulator build).
+- Service account JSON installed at `backend/firebase-service-account.json`. Both files added to `.gitignore`.
+- Backend `.env` `FIREBASE_PROJECT_ID` updated to `rizzi-44071`. Admin SDK initializes successfully.
+- Backend test suite: **33/33** still passing.
+- Debug iOS simulator build: **passing** (xcodebuild exit 0).
+- New planning docs: `V3_PRODUCT_PLAN.md` (market-domination roadmap), `V4_COMPETITOR_KILL_PLAN.md` (surgical counter-feature plan), `COMPETITOR_RESEARCH.md` (25 competitor profiles).
 
 ---
 
