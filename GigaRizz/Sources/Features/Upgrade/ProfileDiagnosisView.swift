@@ -85,6 +85,7 @@ struct ProfileDiagnosisView: View {
 
     private var buildKitCTA: some View {
         V2PrimaryButton("Build my Profile Kit", systemImage: "wand.and.sparkles.inverse") {
+            kitStore.seedStarterCopyIfNeeded(from: audit)
             showKit = true
         }
     }

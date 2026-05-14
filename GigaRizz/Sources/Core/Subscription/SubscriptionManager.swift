@@ -75,6 +75,7 @@ final class SubscriptionManager: NSObject, ObservableObject {
     // MARK: - Purchases
 
     private var purchases: Purchases { Purchases.shared }
+    var isPurchaseServiceConfigured: Bool { Purchases.isConfigured }
 
     // MARK: - Override
 
@@ -135,6 +136,11 @@ final class SubscriptionManager: NSObject, ObservableObject {
     // MARK: - Fetch Entitlements
 
     func fetchEntitlements() {
+        guard Purchases.isConfigured else {
+            currentTier = .free
+            updateBannerState()
+            return
+        }
         isLoading = true
         errorMessage = nil
 
@@ -155,6 +161,10 @@ final class SubscriptionManager: NSObject, ObservableObject {
     // MARK: - Purchase
 
     func purchase(package: Package) async throws {
+        guard Purchases.isConfigured else {
+            errorMessage = "Purchases are temporarily unavailable. Please try again later."
+            throw SubscriptionError.purchaseServiceUnavailable
+        }
         isLoading = true
         errorMessage = nil
 
@@ -176,6 +186,10 @@ final class SubscriptionManager: NSObject, ObservableObject {
     // MARK: - Restore
 
     func restorePurchases() async {
+        guard Purchases.isConfigured else {
+            errorMessage = "Purchases are temporarily unavailable. Please try again later."
+            return
+        }
         isLoading = true
         errorMessage = nil
 
@@ -236,6 +250,17 @@ final class SubscriptionManager: NSObject, ObservableObject {
         dailyPhotosUsed = 0
         persistDailyUsage()
         updateBannerState()
+    }
+}
+
+enum SubscriptionError: LocalizedError {
+    case purchaseServiceUnavailable
+
+    var errorDescription: String? {
+        switch self {
+        case .purchaseServiceUnavailable:
+            return "Purchases are temporarily unavailable. Please try again later."
+        }
     }
 }
 

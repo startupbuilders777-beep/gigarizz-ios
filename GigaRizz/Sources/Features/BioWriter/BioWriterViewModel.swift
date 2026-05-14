@@ -150,7 +150,7 @@ final class BioWriterViewModel: ObservableObject {
     private func buildBios() -> [GeneratedBio] {
         let traits = Array(selectedTraits)
         let interests = Array(selectedInterests)
-        guard let firstTrait = traits.first, let firstInterest = interests.first else { return [] }
+        guard let firstTrait = traits.first, !interests.isEmpty else { return [] }
 
         var bios: [GeneratedBio] = []
 

@@ -73,6 +73,32 @@ struct V2Card<Content: View>: View {
     }
 }
 
+struct V2BottomActionBar<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .padding(.horizontal, DesignSystem.Spacing.medium)
+            .padding(.top, 10)
+            .padding(.bottom, 8)
+            .background(
+                LinearGradient(
+                    colors: [
+                        DesignSystem.Colors.background.opacity(0),
+                        DesignSystem.Colors.background.opacity(0.94),
+                        DesignSystem.Colors.background,
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+    }
+}
+
 struct V2SectionHeader: View {
     let title: String
     let subtitle: String?
@@ -154,6 +180,9 @@ struct V2PrimaryButton: View {
         }
         .disabled(!isEnabled || isLoading)
         .opacity(isEnabled ? 1 : 0.5)
+        .accessibilityLabel(title)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("v2_primary_\(title.accessibilitySlug)")
     }
 }
 
@@ -189,6 +218,17 @@ struct V2SecondaryButton: View {
                     .strokeBorder(DesignSystem.Colors.divider, lineWidth: 1)
             )
         }
+        .accessibilityLabel(title)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("v2_secondary_\(title.accessibilitySlug)")
+    }
+}
+
+private extension String {
+    var accessibilitySlug: String {
+        lowercased()
+            .replacingOccurrences(of: "[^a-z0-9]+", with: "_", options: .regularExpression)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
     }
 }
 

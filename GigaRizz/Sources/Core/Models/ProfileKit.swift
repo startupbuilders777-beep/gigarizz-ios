@@ -144,22 +144,29 @@ enum UpgradeGoal: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    static let upgradeFlowCases: [UpgradeGoal] = [
+        .moreMatches,
+        .betterFirstPhoto,
+        .betterHinge,
+        .betterTinderBumble,
+    ]
+
     var displayName: String {
         switch self {
         case .moreMatches: return "More matches"
         case .betterFirstPhoto: return "Better first photo"
         case .betterHinge: return "Better Hinge profile"
-        case .betterTinderBumble: return "Better Tinder / Bumble photos"
+        case .betterTinderBumble: return "Tinder + Bumble"
         case .betterOpeners: return "Better openers & replies"
         }
     }
 
     var subtitle: String {
         switch self {
-        case .moreMatches: return "Diagnose what's costing matches and fix it."
-        case .betterFirstPhoto: return "Lock in a strong, swipeable lead photo."
-        case .betterHinge: return "Round out 6 photos + write your prompts."
-        case .betterTinderBumble: return "Score your set, swap weak photos, ship."
+        case .moreMatches: return "Diagnose what's costing matches."
+        case .betterFirstPhoto: return "Pick a swipeable lead shot."
+        case .betterHinge: return "Photos plus prompt answers."
+        case .betterTinderBumble: return "Score, replace, and ship."
         case .betterOpeners: return "Drop in a chat or profile, get unique openers."
         }
     }
@@ -223,4 +230,57 @@ struct ProfileKit: Codable, Equatable, Identifiable {
     var hasAudit: Bool { audit != nil }
 
     var totalPhotos: Int { currentPhotoUrls.count + generatedPhotoUrls.count }
+}
+
+extension ProfileAuditResult {
+    static func mock(photoUrls: [String], targetPlatforms: [DatingPlatform]) -> ProfileAuditResult {
+        let archetypes: [PhotoArchetype] = [.firstPhoto, .casualCandid, .dressedUp, .fullBody]
+        let perPhoto = photoUrls.enumerated().map { index, url in
+            PhotoCritique(
+                photoUrl: url,
+                photoIndex: index,
+                clarity: max(5, 8 - index),
+                lighting: max(5, 7 - index),
+                expression: max(5, 8 - (index / 2)),
+                crop: max(5, 8 - index),
+                authenticity: 8,
+                platformFit: max(5, 8 - index),
+                overall: max(5, 8 - index),
+                archetype: archetypes.indices.contains(index) ? archetypes[index] : .casualCandid,
+                issues: index == 0 ? ["Needs more profile variety around it"] : ["Could use stronger lighting or clearer context"],
+                strengths: index == 0 ? ["Clear face and strong first-photo potential"] : ["Adds useful variety to the set"]
+            )
+        }
+
+        return ProfileAuditResult(
+            overallScore: 68,
+            summary: "Solid base, but the set needs more variety and one stronger story-driven photo before it feels Hinge/Tinder ready.",
+            bestPhotoIndex: 0,
+            weakestPhotoIndex: max(0, min(photoUrls.count - 1, 2)),
+            missingArchetypes: [.hobbyActivity, .travelLifestyle, .socialProof],
+            topFixes: [
+                ProfileFix(
+                    title: "Add a hobby or activity shot",
+                    detail: "Your set needs one photo that gives matches an easy opening line. Generate or upload a real activity photo.",
+                    targetArchetype: .hobbyActivity,
+                    suggestedStyle: "adventure"
+                ),
+                ProfileFix(
+                    title: "Create a stronger first-photo backup",
+                    detail: "Keep the face clear and natural, but test a warmer background and more relaxed expression.",
+                    targetArchetype: .firstPhoto,
+                    suggestedStyle: "professional"
+                ),
+                ProfileFix(
+                    title: "Round out the profile story",
+                    detail: "A travel, lifestyle, or dressed-up photo would make the profile feel more complete across dating apps.",
+                    targetArchetype: .travelLifestyle,
+                    suggestedStyle: "casual"
+                ),
+            ],
+            perPhoto: perPhoto,
+            targetPlatforms: targetPlatforms.map { $0.rawValue.lowercased() },
+            createdAt: Date()
+        )
+    }
 }

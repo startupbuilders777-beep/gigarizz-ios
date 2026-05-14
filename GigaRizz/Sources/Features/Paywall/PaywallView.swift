@@ -161,10 +161,14 @@ struct PaywallView: View {
 
     private var purchaseButton: some View {
         GRButton(
-            title: viewModel.isLoading ? "Processing..." : "Subscribe to \(viewModel.selectedTier.displayName)",
+            title: viewModel.isLoading
+                ? "Processing..."
+                : viewModel.purchasesAvailable
+                    ? "Subscribe to \(viewModel.selectedTier.displayName)"
+                    : "Purchases Unavailable",
             icon: viewModel.selectedTier == .gold ? "crown.fill" : "star.fill",
             isLoading: viewModel.isLoading,
-            isDisabled: viewModel.isLoading
+            isDisabled: viewModel.isLoading || !viewModel.purchasesAvailable
         ) {
             Task {
                 await viewModel.purchaseSelectedTier()
@@ -203,6 +207,12 @@ struct PaywallView: View {
                           .foregroundStyle(DesignSystem.Colors.textSecondary)
                   }
             }
+
+            Text("Subscriptions renew monthly until canceled. Your Apple ID is charged at confirmation, and you can manage or cancel anytime in App Store account settings.")
+                .font(DesignSystem.Typography.caption)
+                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, DesignSystem.Spacing.small)
 
             // Error message
             if let error = viewModel.errorMessage {

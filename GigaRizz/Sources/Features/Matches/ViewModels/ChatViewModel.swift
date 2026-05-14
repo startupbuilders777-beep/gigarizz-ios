@@ -22,6 +22,7 @@ final class ChatViewModel: ObservableObject {
     // MARK: - Private Properties
 
     private let coachService = CoachService.shared
+    private let subscriptionManager = SubscriptionManager.shared
     private let match: Match
     private var lastSuggestionTime: Date?
 
@@ -36,8 +37,7 @@ final class ChatViewModel: ObservableObject {
     }
 
     var canGenerateSuggestions: Bool {
-        // TODO: Check subscription tier for unlimited
-        dailySuggestionCount < maxFreeSuggestionsPerDay
+        subscriptionManager.currentTier != .free || dailySuggestionCount < maxFreeSuggestionsPerDay
     }
 
     // MARK: - Init
@@ -104,7 +104,6 @@ final class ChatViewModel: ObservableObject {
         let message = ChatMessage(content: inputText, isFromUser: true)
         messages.append(message)
 
-        let sentText = inputText
         inputText = ""
         showSuggestionBar = true
 

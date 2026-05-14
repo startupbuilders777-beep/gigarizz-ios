@@ -82,6 +82,7 @@
 		7D36863CD26A01BAB88D1CBC /* QuickUploadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B8A9681652D6AB07022C0 /* QuickUploadSheet.swift */; };
 		7DB30F245702294281E43F22 /* ShareService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6A2B7AD3A3887B8BD86CF3 /* ShareService.swift */; };
 		7E11238E667A23635A13EDC8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F49FCAFFE752C731AD3C66 /* ProfileView.swift */; };
+		A1B2C3D4E5F60718293A4B5D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */; };
 		860A5BFBA705A169F970E783 /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73ECEEF23D67F4276DA6158C /* PaywallViewModel.swift */; };
 		8636DB3E75C9FC1CF4E0F9E0 /* QuickUploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E7DD965981E200402A909 /* QuickUploadViewModel.swift */; };
 		884DF129FE5252A900D6B891 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398A1380E103F2774685DCAE /* LaunchScreenView.swift */; };
@@ -271,6 +272,8 @@
 		998B870BA2B1FD60D077347F /* ProfileKitExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileKitExporter.swift; sourceTree = "<group>"; };
 		99CF3C08614CE2E8FC7E36EB /* FeatureFlagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagManager.swift; sourceTree = "<group>"; };
 		9A0505E3C0D34F6EFB316804 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5E /* GigaRizz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = GigaRizz.entitlements; path = GigaRizz/GigaRizz.entitlements; sourceTree = "<group>"; };
 		9B640D81F5DA46FBF9293D81 /* ProfileKitOrdererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileKitOrdererTests.swift; sourceTree = "<group>"; };
 		9C3AEC7B0E5D2C4ED0C10ACD /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		9E73EA2477A3D71BE96B1198 /* ScreenshotTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTestHelper.swift; sourceTree = "<group>"; };
@@ -742,6 +745,7 @@
 			children = (
 				664F72CC6B63018EBE8BCBC6 /* Assets.xcassets */,
 				9A0505E3C0D34F6EFB316804 /* Info.plist */,
+				A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */,
 			);
 			name = Resources;
 			path = GigaRizz/Resources;
@@ -908,6 +912,7 @@
 			children = (
 				4200E23C84B656E5232EFF60 /* GigaRizzTests */,
 				D677D3E87C3C1BC566F7FCA8 /* GigaRizzUITests */,
+				A1B2C3D4E5F60718293A4B5E /* GigaRizz.entitlements */,
 				9EC844A1BD0BCC9BA8F16A48 /* Resources */,
 				91F657B038EA0388F0DBBB55 /* Sources */,
 				B562B00C6D777B04FDEA308E /* Products */,
@@ -1170,6 +1175,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CBA6D6BE54A15B270FC5F46 /* Assets.xcassets in Resources */,
+				A1B2C3D4E5F60718293A4B5D /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1452,6 +1458,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = GigaRizz/GigaRizz.entitlements;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FirebaseDebugEnvironmentEnabled = NO;
 				INFOPLIST_FILE = GigaRizz/Resources/Info.plist;
@@ -1568,6 +1575,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = GigaRizz/GigaRizz.entitlements;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FirebaseDebugEnvironmentEnabled = YES;
 				INFOPLIST_FILE = GigaRizz/Resources/Info.plist;

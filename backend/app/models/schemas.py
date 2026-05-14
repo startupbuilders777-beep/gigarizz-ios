@@ -66,8 +66,9 @@ class AIModelChoice(str, Enum):
 class GenerateRequest(BaseModel):
     style: GenerationStyle = GenerationStyle.professional
     prompt: str | None = None
-    model: AIModelChoice | None = AIModelChoice.flux_schnell
+    model: AIModelChoice | None = AIModelChoice.gpt_image_2
     source_image_url: str | None = None
+    source_image_urls: list[str] = Field(default_factory=list, max_length=8)
     # Optional pose-reference image for InstantID. When set, the model
     # locks the user's face from `source_image_url` onto the pose/composition
     # of `pose_image_url`. Enables "put me in this exact photo" flows.
@@ -98,6 +99,7 @@ class BatchGenerateRequest(BaseModel):
     prompt: str | None = None
     models: list[AIModelChoice] = Field(min_length=1, max_length=6)
     source_image_url: str | None = None
+    source_image_urls: list[str] = Field(default_factory=list, max_length=8)
     photo_count: int = Field(default=2, ge=1, le=4)
     platform: str = "tinder"
 

@@ -126,6 +126,10 @@ final class PaywallViewModel: ObservableObject {
     /// Whether any tier has an active introductory offer
     var hasIntroOffer: Bool { !introPrices.isEmpty }
 
+    var purchasesAvailable: Bool {
+        subscriptionManager.isPurchaseServiceConfigured
+    }
+
     // MARK: - Init
 
     init(
@@ -155,6 +159,10 @@ final class PaywallViewModel: ObservableObject {
     /// Fetch RevenueCat offerings so we can map tier → Package.
     /// Also detects introductory offers (free trials, discounted first period).
     private func fetchOfferings() async {
+        guard purchasesAvailable else {
+            errorMessage = "Purchases are temporarily unavailable. Please try again later."
+            return
+        }
         do {
             let offerings = try await Purchases.shared.offerings()
             currentOffering = offerings.current
@@ -193,6 +201,10 @@ final class PaywallViewModel: ObservableObject {
 
     func purchaseSelectedTier() async {
         guard selectedTier != .free else { return }
+        guard purchasesAvailable else {
+            errorMessage = "Purchases are temporarily unavailable. Please try again later."
+            return
+        }
 
         isLoading = true
         errorMessage = nil
@@ -235,6 +247,11 @@ final class PaywallViewModel: ObservableObject {
     }
 
     func restorePurchases() async {
+        guard purchasesAvailable else {
+            errorMessage = "Purchases are temporarily unavailable. Please try again later."
+            return
+        }
+
         isRestoring = true
         errorMessage = nil
 

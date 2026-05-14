@@ -10,6 +10,8 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
+from app.models.schemas import GenerateRequest
+
 
 # ────────────────────────────────────────────────────────────────────────────
 # Health
@@ -201,6 +203,27 @@ async def test_create_generation_returns_job(client: AsyncClient):
         assert data["status"] in ("queued", "processing")
 
 
+def test_generate_request_accepts_multiple_source_urls():
+    """V2 clients can send a full source set for GPT Image edits."""
+    req = GenerateRequest(
+        style="professional",
+        model="gpt_image_2",
+        source_image_url="https://cdn.example.com/lead.jpg",
+        source_image_urls=[
+            "https://cdn.example.com/lead.jpg",
+            "https://cdn.example.com/candid.jpg",
+            "https://cdn.example.com/full-body.jpg",
+        ],
+    )
+
+    assert req.source_image_url == "https://cdn.example.com/lead.jpg"
+    assert req.source_image_urls == [
+        "https://cdn.example.com/lead.jpg",
+        "https://cdn.example.com/candid.jpg",
+        "https://cdn.example.com/full-body.jpg",
+    ]
+
+
 @pytest.mark.asyncio
 async def test_get_generation_status_404(client: AsyncClient):
     """GET /api/v1/generate/{nonexistent} returns 404."""
@@ -349,6 +372,65 @@ async def test_upload_presign_returns_urls(client: AsyncClient):
     assert data["key"].endswith(".jpg")
     assert isinstance(data["expires_in"], int)
     assert data["expires_in"] > 0
+
+
+@pytest.mark.asyncio
+async def test_local_upload_put_and_media_get(client: AsyncClient):
+    """Dev storage returns a PUT target that persists bytes under /media."""
+    presign = await client.post(
+        "/api/v1/uploads/presign",
+        json={"content_type": "image/jpeg", "purpose": "source"},
+    )
+    assert presign.status_code == 200
+    data = presign.json()
+    upload_path = "/" + data["upload_url"].split("/", 3)[3]
+    media_path = "/" + data["public_url"].split("/", 3)[3]
+
+    put_resp = await client.put(
+        upload_path,
+        content=b"fake-jpeg",
+        headers={"content-type": "image/jpeg"},
+    )
+    assert put_resp.status_code == 204
+
+    get_resp = await client.get(media_path)
+    assert get_resp.status_code == 200
+    assert get_resp.content == b"fake-jpeg"
+
+
+@pytest.mark.asyncio
+async def test_openai_edit_source_files_use_image_array_field(client: AsyncClient):
+    """GPT Image edit requests send source files as image[] multipart fields."""
+    from app.services.generation_service import GenerationService
+
+    presign = await client.post(
+        "/api/v1/uploads/presign",
+        json={"content_type": "image/jpeg", "purpose": "source"},
+    )
+    assert presign.status_code == 200
+    data = presign.json()
+    upload_path = "/" + data["upload_url"].split("/", 3)[3]
+
+    put_resp = await client.put(
+        upload_path,
+        content=b"fake-jpeg",
+        headers={"content-type": "image/jpeg"},
+    )
+    assert put_resp.status_code == 204
+
+    service = GenerationService()
+    try:
+        files = await service._openai_source_files([data["public_url"]])
+    finally:
+        await service.close()
+
+    assert len(files) == 1
+    field, file_tuple = files[0]
+    filename, body, content_type = file_tuple
+    assert field == "image[]"
+    assert filename.endswith(".jpg")
+    assert body == b"fake-jpeg"
+    assert content_type == "image/jpeg"
 
 
 @pytest.mark.asyncio

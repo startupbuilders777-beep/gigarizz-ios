@@ -136,7 +136,7 @@ struct AIModel: Identifiable, Equatable, Codable {
         AIModel(id: "gpt_image_2", name: "GPT Image 2", provider: "openai", speed: "medium", quality: "ultra", tier: "gold", category: "premium"),
     ]
 
-    static let `default` = defaultModels[0]
+    static let `default` = defaultModels.first { $0.id == "gpt_image_2" } ?? defaultModels[0]
 
     /// Group models by category for display.
     static func grouped(_ models: [AIModel]) -> [(category: String, models: [AIModel])] {

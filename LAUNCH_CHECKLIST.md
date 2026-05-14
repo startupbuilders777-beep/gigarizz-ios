@@ -1,10 +1,10 @@
 # GigaRizz — App Store Launch Checklist
 
-> Last updated 2026-05-02 after V2 (Codex plan) Sprints 1–7.
-> Branch: `main` | Backend tests: **30/30** | iOS unit: **127/127** | UI tests: **4/4**
+> Last updated 2026-05-12 after App Store readiness sweep.
+> Branch: `main` | Backend tests: **33/33** | iOS simulator tests: **passing** | Release simulator build: **passing**
 > Models in catalog: **20** (10 Replicate + 5 fal.ai + 5 OpenAI)
 > SOTA surfaces shipped: Face Enhance, Outfit Studio, Hairstyle, Age Studio, Pose Studio, Hinge Mode
-> **V2 Profile Upgrade flow shipped behind `enable_v2_upgrade_flow` flag** (audit → diagnosis → kit → export → screenshot coach)
+> **V2 Profile Upgrade flow is the default first-run shell** (audit -> diagnosis -> kit -> export -> screenshot coach)
 
 ---
 
@@ -12,13 +12,13 @@
 
 | Area                              | Status                | Blocker?                                    |
 |-----------------------------------|-----------------------|---------------------------------------------|
-| iOS App Build                     | ✅ Clean              | No                                          |
-| iOS Unit Tests                    | ✅ 127/127            | No                                          |
-| iOS UI Tests                      | ✅ 4/4 (incl. V2 smoke) | No                                        |
-| Backend Unit Tests                | ✅ 30/30              | No                                          |
+| iOS App Build                     | ✅ Debug launch + Release simulator build clean | No                  |
+| iOS Tests                         | ✅ `xcodebuild test -quiet` passing | No                             |
+| iOS UI Tests                      | ✅ V2 smoke + navigation checks passing | No                    |
+| Backend Unit Tests                | ✅ 33/33              | No                                          |
 | Backend E2E (local)               | ✅ All endpoints      | Placeholder API keys                        |
 | Server-driven Feature Flags       | ✅ 33+ flags          | No                                          |
-| V2 Profile Upgrade flow           | ✅ End-to-end         | Off by default; flip flag for cohort        |
+| V2 Profile Upgrade flow           | ✅ End-to-end         | No                                          |
 | V2 Audit endpoint (GPT-4o vision) | ✅ Shipped            | No                                          |
 | V2 ProfileKit + Export (share / save / copy) | ✅ Shipped | No                                          |
 | V2 Screenshot Coach (Vision OCR)  | ✅ Shipped            | No                                          |
@@ -29,11 +29,14 @@
 | 6 SOTA Surfaces                   | ✅ All flag-gated     | No                                          |
 | Unified V2 design system          | ✅ V2Components atoms | No                                          |
 | EC2 Deployment                    | ⏳ Ready              | Instance needs restart                      |
-| Firebase Auth                     | 🚫 BLOCKER            | No `GoogleService-Info.plist`               |
-| RevenueCat                        | 🚫 BLOCKER            | Placeholder API key                         |
-| PostHog Analytics                 | 🚫 BLOCKER            | Placeholder API key                         |
-| Real Provider API Keys            | 🚫 BLOCKER            | OpenAI / Replicate / fal.ai / AWS           |
-| Apple Developer Account           | 🚫 BLOCKER            | `DEVELOPMENT_TEAM` empty                    |
+| Privacy manifest                  | ✅ Added              | Verify final App Store privacy answers match |
+| Sign in with Apple entitlement    | ✅ Added              | Requires Apple Developer capability enabled |
+| App icon catalog                  | ✅ Complete           | No asset-catalog warnings in Release build  |
+| Firebase Auth                     | ⚠️ External setup     | Add `GoogleService-Info.plist` for live auth |
+| RevenueCat                        | ⚠️ External setup     | Set build setting `REVENUECAT_API_KEY` + App Store products |
+| PostHog Analytics                 | ⚠️ External setup     | Set build setting `POSTHOG_API_KEY`         |
+| Real Provider API Keys            | ⚠️ External setup     | OpenAI / Replicate / fal.ai / AWS           |
+| Apple Developer Account           | ⚠️ External setup     | `DEVELOPMENT_TEAM` empty                    |
 | App Store Connect                 | 🚫 Not started        | Need account + metadata + screenshots       |
 | Privacy Policy & Terms            | ✅ Pages written      | Deploy via `cd web && npm run deploy` (Cloudflare Pages) |
 | Production S3 Bucket              | ⚠️ Falls back to dev  | Create bucket + IAM keys                    |
@@ -49,7 +52,7 @@ Minimum required for real AI generation:
 
 ```bash
 # AI providers (REQUIRED for real generation)
-OPENAI_API_KEY=sk-...                   # GPT Image 1, GPT Image 2, DALL-E 3, Coach
+OPENAI_API_KEY=<openai_api_key>         # GPT Image 1, GPT Image 2, DALL-E 3, Coach
 REPLICATE_API_TOKEN=r8_...              # Flux, SDXL, SD3, RealVisXL, InstantID, CodeFormer
 FAL_KEY=fal_...                         # Nano Banana 2, Recraft V3, SDXL Lightning
 
@@ -178,15 +181,21 @@ Launch
 
 ---
 
-## 3. P0 BLOCKERS (must fix before App Store submission)
+## 3. P0 EXTERNAL SETUP (must finish before App Store submission)
+
+The app now degrades gracefully when Firebase, RevenueCat, or PostHog are not
+configured, which keeps local and simulator launches from dead-ending. For App
+Store review and production, these still need real Apple/Firebase/RevenueCat/
+backend configuration so reviewers can exercise live account, purchase,
+restore, and AI generation flows.
 
 ### 3.1 Firebase configuration
 - [ ] Create Firebase project at https://console.firebase.google.com
 - [ ] Enable Authentication: Email + **Sign in with Apple**
 - [ ] Download `GoogleService-Info.plist` to `GigaRizz/Resources/`
-- [ ] Reference in `project.yml` (already wired; just needs the file)
+- [ ] Reference in the Xcode project/build settings if needed (the app already guards missing Firebase config)
 - [ ] Set `FIREBASE_PROJECT_ID` in backend `.env`
-- [ ] Verify cold launch reaches MainTabView (the lazy-init guards already prevent crashes if missing — once added, real auth lights up)
+- [ ] Verify cold launch reaches MainTabView (the lazy-init guards already prevent crashes if missing; once added, real auth lights up)
 
 ### 3.2 RevenueCat
 - [ ] Create RevenueCat project at https://app.revenuecat.com
@@ -196,7 +205,7 @@ Launch
   - GigaRizz Gold monthly + annual
   - Intro Offer (discounted first period)
 - [ ] Create "default" offering with `gold` and `plus` entitlement IDs
-- [ ] Replace `AppConstants.revenueCatAPIKey` with real key
+- [ ] Set `REVENUECAT_API_KEY` as a build setting / xcconfig value
 - [ ] Verify entitlements unlock correct quotas (`max_plus_generations`, `max_gold_generations`)
 
 ### 3.3 Real provider API keys (backend `.env`)
@@ -204,18 +213,18 @@ Launch
 - [ ] `REPLICATE_API_TOKEN` — https://replicate.com/account/api-tokens
 - [ ] `FAL_KEY` — https://fal.ai/dashboard/keys
 - [ ] `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` — IAM user with S3 PutObject + GetObject
-- [ ] Create S3 bucket `gigarizz-photos` (or your own name) — set `S3_BUCKET_NAME`
+- [ ] Create S3 bucket `gigarizz-photos` (or your own name) and set `S3_BUCKET_NAME`
 - [ ] CORS policy on bucket: allow `PUT` from `https://api.gigarizz.app` and (DEBUG) `http://localhost:8000`
 
 ### 3.4 PostHog Analytics
 - [ ] Create project at https://us.posthog.com
-- [ ] Replace `AppConstants.postHogAPIKey` with real key
+- [ ] Set `POSTHOG_API_KEY` as a build setting / xcconfig value
 - [ ] Verify host: `https://us.i.posthog.com`
 
 ### 3.5 Apple Developer + signing
-- [ ] Set `DEVELOPMENT_TEAM` in `project.yml`
-- [ ] Create App ID in Apple Developer portal: `app.gigarizz.GigaRizz`
-- [ ] Enable capabilities: Push Notifications, **Sign in with Apple**
+- [ ] Set `DEVELOPMENT_TEAM` in Xcode build settings or an xcconfig
+- [ ] Create App ID in Apple Developer portal: `com.gigarizz.app`
+- [ ] Enable capabilities: **Sign in with Apple**
 - [ ] Create Distribution certificate + Provisioning Profile (App Store)
 - [ ] Test archive: `xcodebuild -scheme GigaRizz -configuration Release archive`
 
@@ -343,8 +352,8 @@ Deploy steps:
 | iOS Constant                  | DEBUG                       | RELEASE                       |
 |-------------------------------|------------------------------|--------------------------------|
 | `backendBaseURL`              | `http://localhost:8000`      | `https://api.gigarizz.app`     |
-| `revenueCatAPIKey`            | `appl_REPLACE...`            | Real key                       |
-| `postHogAPIKey`               | `phc_REPLACE...`             | Real key                       |
+| `REVENUECAT_API_KEY`          | Empty build setting          | Real key                       |
+| `POSTHOG_API_KEY`             | Empty build setting          | Real key                       |
 | `postHogHost`                 | `https://us.i.posthog.com`   | Same                           |
 | `termsURL`                    | `https://www.gigarizz.app/terms`   | Live page                |
 | `privacyURL`                  | `https://www.gigarizz.app/privacy` | Live page                |
@@ -352,9 +361,9 @@ Deploy steps:
 
 | Backend `.env`                | Dev                   | Production                |
 |-------------------------------|------------------------|----------------------------|
-| `OPENAI_API_KEY`              | `sk-REPLACE...`        | Real key                   |
-| `REPLICATE_API_TOKEN`         | `r8_REPLACE...`        | Real key                   |
-| `FAL_KEY`                     | `fal_REPLACE...`       | Real key                   |
+| `OPENAI_API_KEY`              | Empty                  | Real key                   |
+| `REPLICATE_API_TOKEN`         | Empty                  | Real key                   |
+| `FAL_KEY`                     | Empty                  | Real key                   |
 | `ENVIRONMENT`                 | `development`          | `production`               |
 | `DEBUG`                       | `true`                 | `false`                    |
 | `MODERATION_ENABLED`          | `true`                 | `true` (fail-closed)       |
@@ -366,7 +375,7 @@ Deploy steps:
 ## 8. What is missing? (gap analysis)
 
 ### Critical gaps (block App Store)
-- All 5 P0 BLOCKERS above
+- All P0 external setup items above
 - Privacy + Terms pages: ✅ written; need `npm run deploy` from `web/` + Cloudflare custom domain
 - App Store screenshots (need real captures from working dev build)
 

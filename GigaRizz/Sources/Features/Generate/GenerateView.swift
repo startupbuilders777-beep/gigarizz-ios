@@ -180,7 +180,7 @@ struct GenerateView: View {
                     maxSelectionCount: viewModel.maximumPhotos,
                     matching: .images
                 ) {
-                    emptyPhotoPickerContent
+                    EmptyPhotoPickerContent()
                 }
             } else {
                 photoGrid
@@ -192,40 +192,6 @@ struct GenerateView: View {
                     .foregroundStyle(DesignSystem.Colors.warning)
             }
         }
-    }
-
-    private var emptyPhotoPickerContent: some View {
-        VStack(spacing: DesignSystem.Spacing.medium) {
-            Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 40, weight: .light))
-                .foregroundStyle(DesignSystem.Colors.flameOrange)
-
-            VStack(spacing: DesignSystem.Spacing.micro) {
-                Text("Upload 3-6 Selfies")
-                    .font(DesignSystem.Typography.callout)
-                    .foregroundStyle(DesignSystem.Colors.textPrimary)
-
-                Text("Clear face shots, different angles, good lighting")
-                    .font(DesignSystem.Typography.footnote)
-                    .foregroundStyle(DesignSystem.Colors.textSecondary)
-            }
-
-            HStack(spacing: DesignSystem.Spacing.xs) {
-                Image(systemName: "plus.circle.fill")
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-                Text("Select Photos")
-                    .font(DesignSystem.Typography.smallButton)
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 200)
-        .background(DesignSystem.Colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
-                .strokeBorder(DesignSystem.Colors.flameOrange.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [8]))
-        )
     }
 
     private var photoGrid: some View {
@@ -455,6 +421,42 @@ struct GenerateView: View {
             onComplete: {
                 // Results will be shown via showResults sheet
             }
+        )
+    }
+}
+
+private struct EmptyPhotoPickerContent: View {
+    var body: some View {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            Image(systemName: "photo.on.rectangle.angled")
+                .font(.system(size: 40, weight: .light))
+                .foregroundStyle(DesignSystem.Colors.flameOrange)
+
+            VStack(spacing: DesignSystem.Spacing.micro) {
+                Text("Upload 3-6 Selfies")
+                    .font(DesignSystem.Typography.callout)
+                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+
+                Text("Clear face shots, different angles, good lighting")
+                    .font(DesignSystem.Typography.footnote)
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+            }
+
+            HStack(spacing: DesignSystem.Spacing.xs) {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundStyle(DesignSystem.Colors.flameOrange)
+                Text("Select Photos")
+                    .font(DesignSystem.Typography.smallButton)
+                    .foregroundStyle(DesignSystem.Colors.flameOrange)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 200)
+        .background(DesignSystem.Colors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large)
+                .strokeBorder(DesignSystem.Colors.flameOrange.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [8]))
         )
     }
 }

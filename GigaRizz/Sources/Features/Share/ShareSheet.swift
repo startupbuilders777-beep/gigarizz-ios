@@ -79,7 +79,7 @@ extension UIActivity.ActivityType {
 // MARK: - Share Item Provider
 
 /// Custom item provider for sharing photos with metadata.
-class ShareItemProvider: UIActivityItemProvider {
+class ShareItemProvider: UIActivityItemProvider, @unchecked Sendable {
     private let image: UIImage
     private let caption: String?
     private let deepLinkURL: URL?

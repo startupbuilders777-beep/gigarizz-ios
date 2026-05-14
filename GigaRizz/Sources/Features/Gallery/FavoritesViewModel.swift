@@ -184,7 +184,7 @@ final class FavoritesViewModel: ObservableObject {
     // MARK: - Update Photo Favorite Status
 
     private func updatePhotoFavoriteStatus(_ photoId: String, isFavorite: Bool) {
-        guard var data = UserDefaults.standard.data(forKey: photosKey),
+        guard let data = UserDefaults.standard.data(forKey: photosKey),
               var photos = try? JSONDecoder().decode([GeneratedPhoto].self, from: data)
         else { return }
 

@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     aws_access_key_id: str = ""
     aws_secret_access_key: str = ""
     s3_endpoint_url: str = ""
+    local_storage_dir: str = "./data/media"
+    local_public_base_url: str = "http://localhost:8000"
 
     # Firebase
     firebase_project_id: str = "gigarizz-app"
@@ -89,7 +91,7 @@ class Settings(BaseSettings):
     flag_min_app_version: str = "1.0.0"
 
     # V2 Profile Upgrade flow
-    flag_enable_v2_upgrade_flow: bool = False
+    flag_enable_v2_upgrade_flow: bool = True
     flag_enable_audit_endpoint: bool = True
     flag_enable_screenshot_coach: bool = True
 

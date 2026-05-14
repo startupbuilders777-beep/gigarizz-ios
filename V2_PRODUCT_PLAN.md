@@ -629,3 +629,62 @@ Target:
 
 > GigaRizz is the AI dating profile studio that audits your current photos, generates better ones, writes your bio and prompts, and gives you a ready-to-upload Hinge/Tinder/Bumble profile kit.
 
+## Current QA Status - 2026-05-12
+
+### What Is Working
+
+- V2 is now the default local/dev experience via `enable_v2_upgrade_flow`; normal simulator launch opens on Upgrade, not the old Home/tools hub.
+- The app refreshes server feature flags on startup, so backend flags are no longer dead configuration.
+- The app launches into the Upgrade flow: goal -> target apps -> photo upload -> audit -> diagnosis/kit.
+- The first Upgrade screen is now focused on profile outcomes only: More matches, Better first photo, Better Hinge profile, Tinder + Bumble.
+- The sticky CTA sits above the tab bar without covering the core goal list on small iPhone simulator screens.
+- The audit step enforces a useful minimum of 3 photos and tells the user how many more are needed.
+- DEBUG mock mode returns a complete profile audit shape without requiring OpenAI, which makes first-run QA deterministic.
+- Building the Profile Kit from diagnosis now seeds starter bio, prompt answers, and openers instead of opening an empty shell.
+- Local development uploads work without AWS/R2 credentials. The backend now mints local PUT URLs, stores bytes under `backend/data/media`, and serves them through `/media`.
+- GPT Image 2 is the default generation model in iOS and backend request schemas.
+- The OpenAI image route supports both `images/generations` and `images/edits`, stores base64 outputs, and returns app-loadable media URLs.
+- First-run photo selection now reacts to `PhotosPicker` changes instead of staying stuck at `0/5 photos`.
+- The backend can convert local media URLs to data URLs for OpenAI audit calls, which unblocks Simulator QA against localhost assets.
+
+### Tested
+
+- Backend API tests: `32 passed`.
+- iOS simulator test suite: `137 passed`.
+- Focused V2 UI transition test: goal selection -> sticky Continue -> platform step passed.
+- Local backend live checks:
+  - `GET /health` returns healthy.
+  - `GET /api/v1/flags` returns V2/audit/screenshot flags enabled.
+  - `POST /api/v1/uploads/presign` returns local upload and public media URLs.
+  - Local `PUT` upload returns `204`.
+  - Public `/media/...` URL returns the uploaded bytes.
+- Simulator build/run succeeds with `-dev_backend_base_url http://localhost:8001`.
+- Normal simulator build/run now renders the V2 Upgrade screen as the first app surface.
+
+### Remaining Blocker
+
+- Real OpenAI audit/generation cannot be confirmed until a valid `OPENAI_API_KEY` is installed in `backend/.env` or injected into the backend runtime environment. The current local `.env` still has a placeholder key, so provider calls fail at the OpenAI authentication layer.
+- RevenueCat, PostHog, and Firebase production credentials are still placeholders or absent in dev. Monetization, analytics, auth, restore purchases, and production lifecycle events are not release-proven.
+- Direct iOS generation still sends only the first selected source image into generation. The backend supports multi-image GPT Image 2 edits, but the client needs to pass the full 3-8 photo set for the V2 promise.
+
+### Confidence
+
+- App/build/test confidence: high.
+- Local upload/storage confidence: high.
+- V2 navigation shell confidence: high for the tested first steps.
+- Real GPT Image 2 generation confidence: medium until tested with a live key.
+- App Store conversion confidence: medium. The positioning is much stronger than the old tools hub, but the product still needs the diagnosis-to-real-generated-kit payoff proven with live providers and purchase flow.
+
+### Good / Bad / Ugly
+
+- Good: The product now has a clearer mission: audit the user's current profile and create a better profile kit, not just generate random photos.
+- Good: The V2 tab architecture is much easier to understand than the old tool collection.
+- Good: The default launch now matches the V2 mission, so a user sees the highest-converting promise immediately.
+- Good: The first flow is visually cleaner after compact goal copy and a non-overlapping CTA.
+- Good: Local development no longer depends on production storage credentials.
+- Bad: Provider credentials are still the launch blocker.
+- Bad: The simulator flow is hard to automate through `PhotosPicker`, so this still needs stronger fixture-driven photo import QA.
+- Bad: Several advanced tools still exist as standalone surfaces and should become contextual photo actions.
+- Bad: Build output still has Swift concurrency warnings, especially haptics/design-system feedback generators, Vision OCR sendability, and ShareItemProvider sendability.
+- Ugly: If credentials are half-configured, the app currently surfaces generic server errors instead of a polished "AI service unavailable" recovery path.
+- Ugly: The real paid magic moment is not proven until a live audit produces a diagnosis, GPT Image 2 creates believable missing-slot photos, and the app exports a complete Hinge/Tinder/Bumble kit.

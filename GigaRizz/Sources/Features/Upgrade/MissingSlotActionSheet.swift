@@ -186,7 +186,7 @@ enum SlotTool: Hashable, Identifiable {
         }
     }
 
-    @ViewBuilder
+    @MainActor @ViewBuilder
     var destination: some View {
         switch self {
         case .generateStyle:

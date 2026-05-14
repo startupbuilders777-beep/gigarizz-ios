@@ -39,8 +39,7 @@ struct SettingsView: View {
                             }
                         }
                         Button {
-                            // Open system accessibility settings
-                            if let url = URL(string: "App-prefs:root=ACCESSIBILITY") {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url)
                             }
                         } label: {

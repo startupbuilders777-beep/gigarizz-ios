@@ -180,7 +180,7 @@ final class FeatureFlagManager: ObservableObject {
             onboardingShowSocialProof: true,
             onboardingShowTestimonials: true,
             onboardingShowVideoDemo: true,
-            enableV2UpgradeFlow: false,
+            enableV2UpgradeFlow: true,
             enableAuditEndpoint: true,
             enableScreenshotCoach: true,
             maxFreeGenerations: 3,

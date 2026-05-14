@@ -1,24 +1,23 @@
 import XCTest
 
+@MainActor
 final class GigaRizzUITests: XCTestCase {
-
-    private var app: XCUIApplication!
 
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        app = XCUIApplication()
-        app.launchArguments = ["--uitesting", "--disable-animations"]
     }
 
-    override func tearDown() {
-        app = nil
-        super.tearDown()
+    private func makeApp(extraArguments: [String] = []) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = ["--uitesting", "--disable-animations"] + extraArguments
+        return app
     }
 
     // MARK: - App Launch
 
     func testApp_launchesWithoutCrash() {
+        let app = makeApp()
         app.launch()
         XCTAssertTrue(app.exists)
     }
@@ -26,6 +25,7 @@ final class GigaRizzUITests: XCTestCase {
     // MARK: - Tab Bar
 
     func testTabBar_hasRequiredTabs() {
+        let app = makeApp()
         app.launch()
 
         // App should have a tab bar after launch
@@ -40,6 +40,7 @@ final class GigaRizzUITests: XCTestCase {
     // MARK: - Accessibility
 
     func testKeyScreens_haveAccessibilityIdentifiers() {
+        let app = makeApp()
         app.launch()
 
         // Tab bar should be accessible
@@ -54,7 +55,7 @@ final class GigaRizzUITests: XCTestCase {
     func testV2UpgradeFlow_isReachableWhenForced() {
         // -dev_force_v2_upgrade_flow 1 sets the UserDefault directly via the
         // launch-arg mechanism; FeatureFlagManager honors it in DEBUG builds.
-        app.launchArguments = ["--uitesting", "--disable-animations", "-dev_force_v2_upgrade_flow", "1"]
+        let app = makeApp(extraArguments: ["-dev_force_v2_upgrade_flow", "1"])
         app.launch()
 
         let tabBar = app.tabBars.firstMatch
@@ -79,7 +80,7 @@ final class GigaRizzUITests: XCTestCase {
     }
 
     func testV2_hasFourTabsWhenForced() {
-        app.launchArguments = ["--uitesting", "--disable-animations", "-dev_force_v2_upgrade_flow", "1"]
+        let app = makeApp(extraArguments: ["-dev_force_v2_upgrade_flow", "1"])
         app.launch()
 
         let tabBar = app.tabBars.firstMatch
@@ -96,5 +97,21 @@ final class GigaRizzUITests: XCTestCase {
         for label in ["Home", "Generate", "Matches"] {
             XCTAssertFalse(tabBar.buttons[label].exists, "V1 tab '\(label)' should be hidden under V2")
         }
+    }
+
+    func testV2GoalSelection_advancesToPlatformStep() {
+        let app = makeApp(extraArguments: ["-dev_force_v2_upgrade_flow", "1"])
+        app.launch()
+
+        let goal = app.buttons["upgrade_goal_more_matches"]
+        XCTAssertTrue(goal.waitForExistence(timeout: 5), "More matches goal should be tappable")
+        goal.tap()
+
+        let continueButton = app.buttons["v2_primary_continue"]
+        XCTAssertTrue(continueButton.waitForExistence(timeout: 2), "Sticky Continue CTA should appear after goal selection")
+        continueButton.tap()
+
+        XCTAssertTrue(app.staticTexts["STEP 2 OF 4"].waitForExistence(timeout: 3), "Goal confirmation should advance to platform step")
+        XCTAssertTrue(app.buttons["upgrade_platform_hinge"].exists, "Hinge platform row should be tappable")
     }
 }

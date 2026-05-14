@@ -74,6 +74,7 @@ actor GigaRizzAPIClient {
         let prompt: String?
         let model: String?
         let sourceImageUrl: String?
+        let sourceImageUrls: [String]?
         let poseImageUrl: String?
         let keepMeNatural: Bool?
     }
@@ -92,14 +93,16 @@ actor GigaRizzAPIClient {
     func submitGeneration(
         style: String,
         prompt: String? = nil,
-        model: String = "flux_schnell",
+        model: String = AIModel.default.id,
         sourceImageUrl: String? = nil,
+        sourceImageUrls: [String]? = nil,
         poseImageUrl: String? = nil,
         keepMeNatural: Bool? = nil
     ) async throws -> GenerationJobResponse {
         let req = GenerateRequest(
             style: style, prompt: prompt, model: model,
-            sourceImageUrl: sourceImageUrl, poseImageUrl: poseImageUrl,
+            sourceImageUrl: sourceImageUrl, sourceImageUrls: sourceImageUrls,
+            poseImageUrl: poseImageUrl,
             keepMeNatural: keepMeNatural ?? NaturalnessSettings.keepMeNatural
         )
         return try await post("/api/v1/generate", body: req)
@@ -282,6 +285,13 @@ actor GigaRizzAPIClient {
     }
 
     func runAudit(photoUrls: [String], targetPlatforms: [DatingPlatform]) async throws -> ProfileAuditResult {
+        #if DEBUG
+        if ServiceMode.current == .mock {
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            return ProfileAuditResult.mock(photoUrls: photoUrls, targetPlatforms: targetPlatforms)
+        }
+        #endif
+
         let body = AuditRequestBody(
             photoUrls: photoUrls,
             targetPlatforms: targetPlatforms.map { $0.rawValue.lowercased() }

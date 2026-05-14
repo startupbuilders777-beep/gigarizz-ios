@@ -38,18 +38,19 @@ struct GigaRizzApp: App {
             #endif
         }
 
-        // 2. RevenueCat — skip when key is the placeholder (would log noisy errors).
-        if !AppConstants.revenueCatAPIKey.contains("REPLACE_WITH") {
+        // 2. RevenueCat
+        if AppConstants.isRevenueCatConfigured {
             Purchases.logLevel = .debug
             Purchases.configure(withAPIKey: AppConstants.revenueCatAPIKey)
         }
 
-        // 3. PostHog — skip when key is the placeholder.
-        if !AppConstants.postHogAPIKey.contains("REPLACE_WITH") {
+        // 3. PostHog
+        if AppConstants.isPostHogConfigured {
             let phConfig = PostHogConfig(apiKey: AppConstants.postHogAPIKey, host: AppConstants.postHogHost)
             phConfig.captureApplicationLifecycleEvents = true
             phConfig.captureScreenViews = true
             PostHogSDK.shared.setup(phConfig)
+            PostHogManager.shared.markInitialized()
         }
     }
 
@@ -59,15 +60,11 @@ struct GigaRizzApp: App {
             || NSClassFromString("XCTestCase") != nil
     }
 
-    /// In DEBUG builds without Firebase configured, treat the user as authenticated
-    /// so we can walk the actual feature surface in the simulator. Production
-    /// builds always enforce real auth — this is purely a dev-loop convenience.
-    private var devAuthBypass: Bool {
-        #if DEBUG
-        return FirebaseApp.app() == nil
-        #else
-        return false
-        #endif
+    /// If Firebase is not bundled, do not trap users behind a dead login wall.
+    /// App Review also expects core functionality to be usable when account
+    /// features are not essential to the first-run experience.
+    private var localAuthBypass: Bool {
+        FirebaseApp.app() == nil
     }
 
     /// When V2 is on, skip the V1 30-step onboarding entirely. The Upgrade tab
@@ -127,7 +124,7 @@ struct GigaRizzApp: App {
                                 }
                             }
                     }
-                } else if authManager.isAuthenticated || devAuthBypass {
+                } else if authManager.isAuthenticated || localAuthBypass {
                     MainTabView()
                         .environmentObject(authManager)
                         .environmentObject(subscriptionManager)
@@ -142,7 +139,6 @@ struct GigaRizzApp: App {
             .preferredColorScheme(.dark)
             .onAppear {
                 authManager.startAuthStateListener()
-                postHogManager.markInitialized()
                 AppRatingManager.shared.trackAppLaunch()
                 
                 // Check if we should show resume prompt
@@ -151,9 +147,12 @@ struct GigaRizzApp: App {
                 // Setup notification delegate
                 setupNotificationDelegate()
             }
+            .task {
+                await FeatureFlagManager.shared.refreshIfNeeded()
+            }
             .onOpenURL { url in
                 // Handle deep links (custom scheme gigarizz:// and universal links https://gigarizz.app)
-                deepLinkManager.handleURL(url)
+                _ = deepLinkManager.handleURL(url)
             }
             .onChange(of: authManager.isAuthenticated) { _, isAuth in
                 // Route deferred deep link after authentication

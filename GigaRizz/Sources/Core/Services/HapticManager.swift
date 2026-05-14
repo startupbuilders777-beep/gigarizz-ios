@@ -4,8 +4,8 @@ import UIKit
 // MARK: - HapticManager
 
 /// Centralized haptic feedback manager.
-/// All methods are safe to call from any thread.
 /// Respects the system Reduce Motion accessibility setting.
+@MainActor
 enum HapticManager {
     
     // MARK: - Impact Haptics
@@ -91,7 +91,7 @@ enum HapticManager {
     /// Double tap pattern for attention-getting feedback.
     static func doubleTap() {
         light()
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(nanoseconds: 100_000_000)
             light()
         }
@@ -100,7 +100,7 @@ enum HapticManager {
     /// Triple pulse for success celebrations.
     static func triplePulse() {
         medium()
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(nanoseconds: 80_000_000)
             medium()
             try? await Task.sleep(nanoseconds: 80_000_000)
@@ -111,7 +111,7 @@ enum HapticManager {
     /// Purchase celebration haptic sequence.
     static func purchaseCelebration() {
         heavy()
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(nanoseconds: 150_000_000)
             success()
         }
@@ -129,6 +129,7 @@ struct HapticButtonStyle: ButtonStyle {
         case light, medium, heavy, soft, selection
         case success, warning, error
         
+        @MainActor
         func trigger() {
             switch self {
             case .light: HapticManager.light()

@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - UpgradeFlowView (V2 root)
 //
 // Audit-first first-run flow. State machine:
-//   1. pickPlatforms → 2. pickPhotos → 3. auditing → 4. diagnosis
+//   1. pickGoal → 2. pickPlatforms → 3. pickPhotos → 4. auditing → 5. diagnosis
 //
 // Composed from V2Components for unified visual language.
 
@@ -93,6 +93,8 @@ enum UpgradeStage: Equatable {
 
 @MainActor
 final class UpgradeFlowViewModel: ObservableObject {
+    let minimumAuditPhotos = 3
+
     @Published var stage: UpgradeStage = .pickGoal
     @Published var selectedGoal: UpgradeGoal?
     @Published var selectedPlatforms: Set<DatingPlatform> = [.hinge]
@@ -102,6 +104,12 @@ final class UpgradeFlowViewModel: ObservableObject {
     @Published var uploadedURLs: [URL] = []
 
     private let store = ProfileKitStore.shared
+
+    var canStartAudit: Bool { pickedImages.count >= minimumAuditPhotos }
+
+    var remainingAuditPhotoCount: Int {
+        max(0, minimumAuditPhotos - pickedImages.count)
+    }
 
     func confirmGoal() {
         guard let goal = selectedGoal else { return }
@@ -139,8 +147,8 @@ final class UpgradeFlowViewModel: ObservableObject {
     }
 
     func startAudit() async {
-        guard !pickedImages.isEmpty else {
-            stage = .error("Add at least one photo to audit your profile.")
+        guard canStartAudit else {
+            stage = .error("Add at least \(minimumAuditPhotos) photos to audit your profile.")
             return
         }
         stage = .auditing
@@ -208,20 +216,27 @@ private struct UpgradeGoalPicker: View {
                 }
 
                 VStack(spacing: 10) {
-                    ForEach(UpgradeGoal.allCases) { goal in
+                    ForEach(UpgradeGoal.upgradeFlowCases) { goal in
                         goalRow(goal)
                     }
                 }
 
-                V2PrimaryButton(
-                    "Continue",
-                    systemImage: "arrow.right",
-                    isEnabled: viewModel.selectedGoal != nil
-                ) {
-                    viewModel.confirmGoal()
+            }
+            .padding(.horizontal, DesignSystem.Spacing.medium)
+            .padding(.top, DesignSystem.Spacing.medium)
+            .padding(.bottom, 112)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if viewModel.selectedGoal != nil {
+                V2BottomActionBar {
+                    V2PrimaryButton(
+                        "Continue",
+                        systemImage: "arrow.right"
+                    ) {
+                        viewModel.confirmGoal()
+                    }
                 }
             }
-            .padding(DesignSystem.Spacing.medium)
         }
     }
 
@@ -246,10 +261,11 @@ private struct UpgradeGoalPicker: View {
                     Text(goal.displayName)
                         .font(DesignSystem.Typography.headline)
                         .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        .lineLimit(1)
                     Text(goal.subtitle)
                         .font(DesignSystem.Typography.footnote)
                         .foregroundStyle(DesignSystem.Colors.textSecondary)
-                        .lineLimit(2)
+                        .lineLimit(1)
                 }
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
@@ -272,6 +288,11 @@ private struct UpgradeGoalPicker: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(goal.displayName). \(goal.subtitle)")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("upgrade_goal_\(goal.rawValue)")
     }
 }
 
@@ -307,12 +328,21 @@ private struct UpgradePlatformPicker: View {
 
                 V2TrustBadge()
 
-                V2PrimaryButton("Continue", systemImage: "arrow.right",
-                                isEnabled: !viewModel.selectedPlatforms.isEmpty) {
+            }
+            .padding(.horizontal, DesignSystem.Spacing.medium)
+            .padding(.top, DesignSystem.Spacing.medium)
+            .padding(.bottom, 112)
+        }
+        .safeAreaInset(edge: .bottom) {
+            V2BottomActionBar {
+                V2PrimaryButton(
+                    "Continue",
+                    systemImage: "arrow.right",
+                    isEnabled: !viewModel.selectedPlatforms.isEmpty
+                ) {
                     viewModel.confirmPlatforms()
                 }
             }
-            .padding(DesignSystem.Spacing.medium)
         }
     }
 
@@ -363,6 +393,11 @@ private struct UpgradePlatformPicker: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(platform.rawValue)
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("upgrade_platform_\(platform.rawValue.lowercased())")
     }
 }
 
@@ -372,6 +407,14 @@ private struct UpgradePhotoPicker: View {
     @ObservedObject var viewModel: UpgradeFlowViewModel
 
     var body: some View {
+        let photoPickerTitle = viewModel.pickedImages.isEmpty
+            ? "Add photos"
+            : "Edit selection (\(viewModel.pickedImages.count))"
+        let photoPickerAccessibilityLabel = viewModel.pickedImages.isEmpty
+            ? "Add photos"
+            : "Edit photo selection"
+        let photoPickerAccessibilityValue = "\(viewModel.pickedImages.count) selected"
+
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                 V2HeroCard {
@@ -397,9 +440,7 @@ private struct UpgradePhotoPicker: View {
                     HStack(spacing: 8) {
                         Image(systemName: "photo.stack.fill")
                             .font(.system(size: 16, weight: .semibold))
-                        Text(viewModel.pickedImages.isEmpty
-                             ? "Add photos"
-                             : "Edit selection (\(viewModel.pickedImages.count))")
+                        Text(photoPickerTitle)
                             .font(DesignSystem.Typography.button)
                     }
                     .foregroundStyle(.white)
@@ -408,6 +449,9 @@ private struct UpgradePhotoPicker: View {
                     .background(DesignSystem.Colors.hinge)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
                 }
+                .accessibilityLabel(photoPickerAccessibilityLabel)
+                .accessibilityValue(photoPickerAccessibilityValue)
+                .accessibilityIdentifier("upgrade_add_photos")
                 .onChange(of: viewModel.pickerItems) { _, _ in
                     Task { await viewModel.loadPickedImages() }
                 }
@@ -434,12 +478,35 @@ private struct UpgradePhotoPicker: View {
 
                     V2TrustBadge()
 
-                    V2PrimaryButton("Audit my profile", systemImage: "wand.and.stars") {
+                    if !viewModel.canStartAudit {
+                        V2Card {
+                            Label(
+                                "Add \(viewModel.remainingAuditPhotoCount) more photo\(viewModel.remainingAuditPhotoCount == 1 ? "" : "s") for a useful audit",
+                                systemImage: "info.circle.fill"
+                            )
+                            .font(DesignSystem.Typography.footnote)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                    }
+
+                }
+            }
+            .padding(.horizontal, DesignSystem.Spacing.medium)
+            .padding(.top, DesignSystem.Spacing.medium)
+            .padding(.bottom, 112)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !viewModel.pickedImages.isEmpty {
+                V2BottomActionBar {
+                    V2PrimaryButton(
+                        "Audit my profile",
+                        systemImage: "wand.and.stars",
+                        isEnabled: viewModel.canStartAudit
+                    ) {
                         Task { await viewModel.startAudit() }
                     }
                 }
             }
-            .padding(DesignSystem.Spacing.medium)
         }
     }
 }

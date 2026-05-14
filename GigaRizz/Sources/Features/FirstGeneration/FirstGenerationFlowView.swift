@@ -61,6 +61,9 @@ struct FirstGenerationFlowView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onChange(of: viewModel.photosPickerItems) {
+            viewModel.handlePhotosPickerChange()
+        }
         .navigationDestination(isPresented: $showRizzCoach) {
             RizzCoachDashboardView()
                 .environmentObject(subscriptionManager)

@@ -23,6 +23,17 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/generate", tags=["generation"])
 
 
+def _source_urls(source_image_url: str | None, source_image_urls: list[str]) -> list[str]:
+    """Return a de-duplicated source list while preserving legacy single-url clients."""
+    urls: list[str] = []
+    if source_image_url:
+        urls.append(source_image_url)
+    for url in source_image_urls:
+        if url and url not in urls:
+            urls.append(url)
+    return urls[:8]
+
+
 @router.post("", response_model=GenerationJobResponse, status_code=status.HTTP_202_ACCEPTED)
 async def create_generation(
     req: GenerateRequest,
@@ -64,7 +75,8 @@ async def create_generation(
 
     # Create job record
     job_id = gen_svc.generate_job_id()
-    selected_model = req.model.value if req.model else "flux_schnell"
+    selected_model = req.model.value if req.model else "gpt_image_2"
+    source_image_urls = _source_urls(req.source_image_url, req.source_image_urls)
     job = GenerationJob(
         id=job_id,
         user_id=user["uid"],
@@ -72,14 +84,14 @@ async def create_generation(
         model=selected_model,
         custom_prompt=req.prompt,
         photo_count=req.photo_count,
-        source_image_urls=[req.source_image_url] if req.source_image_url else [],
+        source_image_urls=source_image_urls,
         status="processing",
         platform=req.platform,
     )
     db.add(job)
     await db.commit()
 
-    # Submit to Replicate
+    # Submit to the selected provider
     try:
         webhook_url = None
         if settings.webhook_base_url:
@@ -88,7 +100,7 @@ async def create_generation(
         prediction_id = await gen_svc.create_prediction(
             job_id=job_id,
             style=req.style.value,
-            source_image_urls=[req.source_image_url] if req.source_image_url else [],
+            source_image_urls=source_image_urls,
             photo_count=req.photo_count,
             custom_prompt=req.prompt,
             webhook_url=webhook_url,
@@ -102,7 +114,9 @@ async def create_generation(
 
         # OpenAI models return results synchronously
         openai_urls = gen_svc.pop_openai_results(prediction_id)
-        if openai_urls:
+        if openai_urls is not None:
+            if not openai_urls:
+                raise RuntimeError("OpenAI returned no generated images")
             job.status = "completed"
             job.result_urls = openai_urls
             job.progress = 1.0
@@ -183,6 +197,7 @@ async def create_batch_generation(
     for model_choice in req.models:
         model_str = model_choice.value
         job_id = gen_svc.generate_job_id()
+        source_image_urls = _source_urls(req.source_image_url, req.source_image_urls)
         job = GenerationJob(
             id=job_id,
             user_id=user["uid"],
@@ -190,7 +205,7 @@ async def create_batch_generation(
             model=model_str,
             custom_prompt=req.prompt,
             photo_count=req.photo_count,
-            source_image_urls=[req.source_image_url] if req.source_image_url else [],
+            source_image_urls=source_image_urls,
             status="processing",
             platform=req.platform,
             batch_id=batch_id,
@@ -206,7 +221,7 @@ async def create_batch_generation(
             prediction_id = await gen_svc.create_prediction(
                 job_id=job_id,
                 style=req.style.value,
-                source_image_urls=[req.source_image_url] if req.source_image_url else [],
+                source_image_urls=source_image_urls,
                 photo_count=req.photo_count,
                 custom_prompt=req.prompt,
                 webhook_url=webhook_url,
@@ -216,7 +231,9 @@ async def create_batch_generation(
 
             # Handle synchronous OpenAI results
             openai_urls = gen_svc.pop_openai_results(prediction_id)
-            if openai_urls:
+            if openai_urls is not None:
+                if not openai_urls:
+                    raise RuntimeError("OpenAI returned no generated images")
                 job.status = "completed"
                 job.result_urls = openai_urls
                 job.progress = 1.0

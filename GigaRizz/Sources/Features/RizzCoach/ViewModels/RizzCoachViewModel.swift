@@ -64,7 +64,8 @@ final class RizzCoachViewModel: ObservableObject {
             let photoScore = min(100, 50 + photoCount * 3)
             let bioScore = 65 // Will be updated when bio is analyzed by backend
             let activityScore = min(100, 40 + photoCount * 5)
-            let overallScore = (photoScore * 35 + bioScore * 25 + activityScore * 20 + 60 * 15 + 70 * 10) / 100
+            let promptScore = min(100, 60 + styleCount * 5)
+            let overallScore = (photoScore * 35 + bioScore * 25 + activityScore * 20 + 60 * 15 + promptScore * 10) / 100
 
             rizzScore = RizzScore(
                 overallScore: overallScore,
@@ -73,7 +74,7 @@ final class RizzCoachViewModel: ObservableObject {
                     RizzScoreCategory(name: "Bio", score: bioScore, weight: 0.25, icon: "text.quote"),
                     RizzScoreCategory(name: "Activity", score: activityScore, weight: 0.20, icon: "chart.line.uptrend.xyaxis"),
                     RizzScoreCategory(name: "Response Time", score: 60, weight: 0.15, icon: "clock.fill"),
-                    RizzScoreCategory(name: "Prompts", score: 70, weight: 0.10, icon: "text.badge.star")
+                    RizzScoreCategory(name: "Prompts", score: promptScore, weight: 0.10, icon: "text.badge.star")
                 ],
                 previousScore: nil,
                 trend: .stable

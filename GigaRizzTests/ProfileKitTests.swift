@@ -22,6 +22,15 @@ final class ProfileKitTests: XCTestCase {
         XCTAssertEqual(PhotoArchetype.travelLifestyle.rawValue, "travel_lifestyle")
     }
 
+    // MARK: - Upgrade goals
+
+    func testUpgradeGoal_flowCasesStayFocusedOnProfileUpgrade() {
+        XCTAssertFalse(UpgradeGoal.upgradeFlowCases.contains(.betterOpeners),
+                       "Coach-only goals should live in the Coach tab, not the photo audit funnel")
+        XCTAssertTrue(UpgradeGoal.upgradeFlowCases.contains(.moreMatches))
+        XCTAssertTrue(UpgradeGoal.upgradeFlowCases.contains(.betterFirstPhoto))
+    }
+
     // MARK: - ProfileAuditResult round-trip
 
     func testProfileAuditResult_decodesFromBackendJSON() throws {
@@ -64,6 +73,26 @@ final class ProfileKitTests: XCTestCase {
         XCTAssertEqual(audit.targetPlatforms, ["hinge", "tinder"])
     }
 
+    func testProfileAuditResult_mockProvidesCompleteDiagnosisShape() {
+        let audit = ProfileAuditResult.mock(
+            photoUrls: ["file:///one.jpg", "file:///two.jpg", "file:///three.jpg"],
+            targetPlatforms: [.hinge, .tinder]
+        )
+
+        XCTAssertEqual(audit.perPhoto.count, 3)
+        XCTAssertEqual(audit.targetPlatforms, ["hinge", "tinder"])
+        XCTAssertFalse(audit.summary.isEmpty)
+        XCTAssertEqual(audit.topFixes.count, 3)
+        XCTAssertFalse(audit.missingArchetypes.isEmpty)
+    }
+
+    @MainActor
+    func testUpgradeFlow_requiresThreePhotosForAudit() {
+        let viewModel = UpgradeFlowViewModel()
+        XCTAssertEqual(viewModel.minimumAuditPhotos, 3)
+        XCTAssertFalse(viewModel.canStartAudit)
+    }
+
     // MARK: - ProfileKit defaults
 
     func testProfileKit_emptyHasUUIDAndTimestamps() {
@@ -93,5 +122,23 @@ final class ProfileKitTests: XCTestCase {
         let store2 = ProfileKitStore(defaults: defaults)
         XCTAssertEqual(store2.current?.id, kit.id)
         XCTAssertEqual(store2.current?.targetPlatforms, [.hinge, .tinder])
+    }
+
+    @MainActor
+    func testProfileKitStore_seedStarterCopyFillsEmptyKit() {
+        let suiteName = "com.gigarizz.profilekit.seed.test"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let store = ProfileKitStore(defaults: defaults)
+        _ = store.startNewKit(userId: "u-123")
+        store.setTargetPlatforms([.hinge])
+        let audit = ProfileAuditResult.mock(photoUrls: ["file:///one.jpg", "file:///two.jpg", "file:///three.jpg"], targetPlatforms: [.hinge])
+
+        store.seedStarterCopyIfNeeded(from: audit)
+
+        XCTAssertFalse(store.current?.bio?.isEmpty ?? true)
+        XCTAssertEqual(store.current?.prompts.count, 3)
+        XCTAssertEqual(store.current?.openers.count, 3)
     }
 }

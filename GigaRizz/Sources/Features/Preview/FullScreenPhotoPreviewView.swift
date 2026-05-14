@@ -331,9 +331,6 @@ struct FullScreenPhotoPreviewView: View {
                 if scale < zoomThreshold && value.translation.height > 0 {
                     isDragging = true
                     dragOffset = value.translation
-
-                    // Dim background based on drag distance
-                    let progress = min(value.translation.height / dismissThreshold, 1.0)
                 }
             }
             .onEnded { value in

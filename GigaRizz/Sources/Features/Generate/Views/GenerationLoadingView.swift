@@ -187,7 +187,7 @@ struct GenerationLoadingView: View {
     
     private func updateParticles() {
         for index in particles.indices {
-            particles[index].update()
+            particles[index] = particles[index].update()
         }
     }
 }

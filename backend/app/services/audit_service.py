@@ -22,6 +22,7 @@ from app.models.schemas import (
     ProfileAuditResult,
     ProfileFix,
 )
+from app.services.storage_service import StorageService
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +73,7 @@ class AuditService:
     def __init__(self):
         settings = get_settings()
         self.client = AsyncOpenAI(api_key=settings.openai_api_key)
+        self.storage = StorageService()
 
     async def audit_photo_set(
         self,
@@ -121,8 +123,9 @@ class AuditService:
             },
         ]
         for url in photo_urls:
+            image_url = self.storage.data_url_for_local_url(url) or url
             content.append(
-                {"type": "image_url", "image_url": {"url": url, "detail": "low"}}
+                {"type": "image_url", "image_url": {"url": image_url, "detail": "low"}}
             )
 
         try:

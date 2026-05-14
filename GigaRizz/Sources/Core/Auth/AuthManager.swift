@@ -74,6 +74,9 @@ final class AuthManager: ObservableObject {
 
     /// Handles Apple Sign-In completion with Firebase credential.
     func signInWithApple(credential: ASAuthorizationAppleIDCredential) async throws {
+        guard FirebaseApp.app() != nil else {
+            throw AuthError.serviceUnavailable
+        }
         guard let nonce = currentNonce else {
             throw AuthError.invalidNonce
         }
@@ -114,6 +117,9 @@ final class AuthManager: ObservableObject {
     // MARK: - Sign In (Email/Password)
 
     func signIn(email: String, password: String) async throws {
+        guard FirebaseApp.app() != nil else {
+            throw AuthError.serviceUnavailable
+        }
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
@@ -125,6 +131,9 @@ final class AuthManager: ObservableObject {
     // MARK: - Sign Up
 
     func signUp(email: String, password: String) async throws {
+        guard FirebaseApp.app() != nil else {
+            throw AuthError.serviceUnavailable
+        }
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
@@ -136,6 +145,11 @@ final class AuthManager: ObservableObject {
     // MARK: - Sign Out
 
     func signOut() throws {
+        guard FirebaseApp.app() != nil else {
+            isAuthenticated = false
+            currentUser = nil
+            return
+        }
         try Auth.auth().signOut()
         isAuthenticated = false
         currentUser = nil
@@ -145,6 +159,11 @@ final class AuthManager: ObservableObject {
     // MARK: - Delete Account
 
     func deleteAccount() async throws {
+        guard FirebaseApp.app() != nil else {
+            isAuthenticated = false
+            currentUser = nil
+            return
+        }
         guard let user = currentUser else { return }
         isLoading = true
         errorMessage = nil
@@ -175,7 +194,7 @@ final class AuthManager: ObservableObject {
         var randomBytes = [UInt8](repeating: 0, count: length)
         let resultCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
         if resultCode != errSecSuccess {
-            fatalError("Unable to generate nonce: SecRandomCopyBytes failed with OSStatus \(resultCode)")
+            return UUID().uuidString.replacingOccurrences(of: "-", with: "")
         }
         
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
@@ -199,6 +218,7 @@ enum AuthError: LocalizedError {
     case invalidNonce
     case invalidToken
     case invalidCredential
+    case serviceUnavailable
     
     var errorDescription: String? {
         switch self {
@@ -208,6 +228,8 @@ enum AuthError: LocalizedError {
             return "Could not verify your Apple account. Please try again."
         case .invalidCredential:
             return "Sign-in credential was invalid. Please try again."
+        case .serviceUnavailable:
+            return "Sign-in is temporarily unavailable. You can still use the app locally on this device."
         }
     }
 }

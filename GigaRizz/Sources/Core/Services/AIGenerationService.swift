@@ -168,14 +168,16 @@ final class AIGenerationService: ObservableObject {
         model: AIModel,
         startTime: Date
     ) async throws -> GenerationResult {
-        // 1. Upload the strongest source image (the first selected) so the backend
-        // can pass its URL to identity-aware models (InstantID, Nano Banana 2,
-        // GPT Image 2, face_restore). Best-effort: if upload fails we still
-        // attempt prompt-only generation so the user isn't blocked.
+        // 1. Upload the selected source images so identity-aware providers can
+        // use more than one face/reference sample when they support it.
         generationProgress = 0.02
-        var sourceImageURL: URL?
-        if let firstImage = sourceImages.first {
-            sourceImageURL = await PhotoUploadService.shared.tryUpload(firstImage, purpose: "source")
+        var sourceImageURLs: [URL] = []
+        let uploadCandidates = Array(sourceImages.prefix(8))
+        for (index, image) in uploadCandidates.enumerated() {
+            if let uploaded = await PhotoUploadService.shared.tryUpload(image, purpose: "source") {
+                sourceImageURLs.append(uploaded)
+            }
+            generationProgress = max(generationProgress, 0.02 + (Double(index + 1) / Double(uploadCandidates.count)) * 0.03)
         }
 
         // 2. Submit job to backend
@@ -184,7 +186,8 @@ final class AIGenerationService: ObservableObject {
             style: style.name.lowercased().replacingOccurrences(of: " ", with: "_"),
             prompt: style.prompt,
             model: model.id,
-            sourceImageUrl: sourceImageURL?.absoluteString
+            sourceImageUrl: sourceImageURLs.first?.absoluteString,
+            sourceImageUrls: sourceImageURLs.map(\.absoluteString)
         )
 
         // 2. Poll for completion

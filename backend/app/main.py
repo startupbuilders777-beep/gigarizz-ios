@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.models.database import init_db
@@ -23,6 +25,8 @@ async def lifespan(app: FastAPI):
         level=logging.DEBUG if settings.debug else logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
+    for noisy_logger in ("httpx", "httpcore", "openai", "aiosqlite", "sqlalchemy.engine"):
+        logging.getLogger(noisy_logger).setLevel(logging.WARNING)
     logger.info("Starting GigaRizz API (%s)", settings.environment)
 
     # Init database tables
@@ -68,6 +72,12 @@ def create_app() -> FastAPI:
     app.include_router(coach.router)
     app.include_router(users.router)
     app.include_router(audit.router)
+
+    # Local development media storage. Production media should be served from S3/R2.
+    if settings.environment == "development":
+        media_root = Path(settings.local_storage_dir).expanduser().resolve()
+        media_root.mkdir(parents=True, exist_ok=True)
+        app.mount("/media", StaticFiles(directory=str(media_root)), name="media")
 
     return app
 

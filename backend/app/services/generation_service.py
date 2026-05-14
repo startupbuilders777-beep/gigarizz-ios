@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 from datetime import datetime, timezone
 from enum import Enum
@@ -10,6 +11,7 @@ import httpx
 from nanoid import generate as nanoid
 
 from app.config import get_settings
+from app.services.storage_service import StorageService
 
 logger = logging.getLogger(__name__)
 
@@ -226,6 +228,7 @@ class GenerationService:
 
     def __init__(self):
         self.settings = get_settings()
+        self.storage = StorageService()
 
         # Replicate client
         self.replicate = httpx.AsyncClient(
@@ -253,7 +256,6 @@ class GenerationService:
             base_url="https://api.openai.com/v1",
             headers={
                 "Authorization": f"Bearer {self.settings.openai_api_key}",
-                "Content-Type": "application/json",
             },
             timeout=120.0,
         )
@@ -286,7 +288,7 @@ class GenerationService:
         if model_key in FAL_MODELS:
             return await self._create_fal(job_id, model_key, prompt, source_image_urls, photo_count)
         elif model_key in OPENAI_MODELS:
-            return await self._create_openai(job_id, model_key, prompt, photo_count)
+            return await self._create_openai(job_id, model_key, prompt, source_image_urls, photo_count)
         else:
             # Default: Replicate
             return await self._create_replicate(
@@ -466,32 +468,28 @@ class GenerationService:
     # ── OpenAI Provider ─────────────────────────────────────────────────
 
     async def _create_openai(
-        self, job_id: str, model_key: str, prompt: str, photo_count: int,
+        self, job_id: str, model_key: str, prompt: str,
+        source_image_urls: list[str], photo_count: int,
     ) -> str:
         """OpenAI image generation is synchronous — returns results immediately."""
         openai_model = OPENAI_MODELS[model_key]
 
-        if openai_model == "gpt-image-1":
-            payload = {
-                "model": "gpt-image-1",
+        if openai_model.startswith("gpt-image"):
+            common = {
+                "model": openai_model,
                 "prompt": prompt,
-                "n": min(photo_count, 4),
-                "size": "1024x1536",  # Portrait
-                "quality": "high",
-            }
-            response = await self.openai.post("/images/generations", json=payload)
-        elif openai_model == "gpt-image-2":
-            # GPT Image 2 — agentic edits, ultra quality. Uses the same shape as gpt-image-1
-            # but with the upgraded model and high-quality default. Edits endpoint is gated
-            # behind a separate face-edit pipeline added in a follow-up iteration.
-            payload = {
-                "model": "gpt-image-2",
-                "prompt": prompt,
-                "n": min(photo_count, 4),
+                "n": str(min(photo_count, 4)),
                 "size": "1024x1536",
                 "quality": "high",
+                "output_format": "jpeg",
+                "output_compression": "90",
             }
-            response = await self.openai.post("/images/generations", json=payload)
+            source_files = await self._openai_source_files(source_image_urls)
+            if source_files:
+                response = await self.openai.post("/images/edits", data=common, files=source_files)
+            else:
+                payload = {**common, "n": int(common["n"]), "output_compression": 90}
+                response = await self.openai.post("/images/generations", json=payload)
         else:
             # DALL-E 3
             payload = {
@@ -507,9 +505,7 @@ class GenerationService:
         response.raise_for_status()
         data = response.json()
 
-        # Store the result URLs in a predictable format
-        images = data.get("data", [])
-        urls = [img.get("url", "") for img in images if img.get("url")]
+        urls = self._store_openai_images(job_id, data)
 
         # For OpenAI we return a synthetic ID — the results are already available
         synthetic_id = f"openai_{nanoid(size=12)}"
@@ -519,6 +515,44 @@ class GenerationService:
         # Stash URLs on the instance so the router can grab them
         self._openai_results[synthetic_id] = urls
         return synthetic_id
+
+    async def _openai_source_files(self, source_image_urls: list[str]) -> list[tuple[str, tuple[str, bytes, str]]]:
+        """Load source images as multipart files for GPT Image edit requests."""
+        loaded: list[tuple[str, bytes, str]] = []
+        for index, url in enumerate(source_image_urls[:4]):
+            local = self.storage.local_bytes_for_url(url)
+            if local:
+                data, content_type = local
+            else:
+                async with httpx.AsyncClient(timeout=30.0) as client:
+                    response = await client.get(url)
+                    response.raise_for_status()
+                    data = response.content
+                    content_type = response.headers.get("content-type", "image/jpeg").split(";", 1)[0]
+            ext = {
+                "image/png": "png",
+                "image/webp": "webp",
+                "image/heic": "heic",
+            }.get(content_type, "jpg")
+            loaded.append((f"source_{index}.{ext}", data, content_type))
+
+        return [("image[]", file_tuple) for file_tuple in loaded]
+
+    def _store_openai_images(self, job_id: str, data: dict) -> list[str]:
+        """Persist GPT image base64 outputs and return URLs the iOS app can load."""
+        urls: list[str] = []
+        output_format = (data.get("output_format") or "jpeg").lower()
+        content_type = f"image/{'jpeg' if output_format in ('jpg', 'jpeg') else output_format}"
+        ext = "jpg" if content_type == "image/jpeg" else output_format
+
+        for index, img in enumerate(data.get("data", [])):
+            if img.get("b64_json"):
+                raw = base64.b64decode(img["b64_json"])
+                key = f"result/openai/{job_id}/{index}_{nanoid(size=10)}.{ext}"
+                urls.append(self.storage.upload_bytes(key, raw, content_type=content_type))
+            elif img.get("url"):
+                urls.append(img["url"])
+        return urls
 
     _openai_results: dict[str, list[str]] = {}
 

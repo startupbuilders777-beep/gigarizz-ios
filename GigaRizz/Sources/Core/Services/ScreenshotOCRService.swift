@@ -1,6 +1,6 @@
 import Foundation
 import UIKit
-import Vision
+@preconcurrency import Vision
 
 // MARK: - ScreenshotOCRService
 //

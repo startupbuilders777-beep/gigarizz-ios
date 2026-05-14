@@ -30,6 +30,7 @@ final class FeatureFlagsCodableTests: XCTestCase {
         XCTAssertEqual(flags.maxGoldGenerations, 999)
         XCTAssertFalse(flags.showPromoBanner)
         XCTAssertEqual(flags.minAppVersion, "1.0.0")
+        XCTAssertTrue(flags.enableV2UpgradeFlow)
     }
 
     func testDecode_fromServerJSON() throws {
@@ -132,6 +133,7 @@ final class FeatureFlagsCodableTests: XCTestCase {
         XCTAssertTrue(manager.isEnabled(.poseLibrary))
         XCTAssertTrue(manager.isEnabled(.introOffer))
         XCTAssertFalse(manager.isEnabled(.promoBanner))
+        XCTAssertTrue(manager.isEnabled(.v2UpgradeFlow))
     }
 
     // MARK: - maxGenerations

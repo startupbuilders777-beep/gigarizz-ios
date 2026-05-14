@@ -21,7 +21,7 @@ final class PostHogManager: ObservableObject {
     /// Called after PostHogSDK.shared.setup() is done in GigaRizzApp.init().
     /// This simply flips the gate so track calls start flowing.
     func markInitialized() {
-        isInitialized = true
+        isInitialized = AppConstants.isPostHogConfigured
     }
 
     /// Legacy entry point — kept for call-site compatibility.
@@ -37,6 +37,7 @@ final class PostHogManager: ObservableObject {
     }
 
     func reset() {
+        guard isInitialized else { return }
         PostHogSDK.shared.reset()
     }
 

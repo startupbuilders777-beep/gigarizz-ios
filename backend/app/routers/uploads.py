@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from nanoid import generate as nanoid
 
 from app.config import get_settings
@@ -52,7 +52,7 @@ async def request_presigned_upload(
         )
 
     settings = get_settings()
-    if not settings.aws_access_key_id and settings.environment != "development":
+    if not storage.uses_local_storage and not storage._has_usable_s3_credentials() and settings.environment != "development":
         raise HTTPException(
             status_code=503,
             detail="Photo upload temporarily unavailable (storage not configured).",
@@ -88,3 +88,25 @@ async def request_presigned_upload(
         key=key,
         expires_in=presigned.get("expires_in", 3600),
     )
+
+
+@router.put("/local/{key:path}", status_code=204)
+async def upload_local_media(
+    key: str,
+    request: Request,
+    storage: StorageService = Depends(get_storage_service),
+):
+    """Development-only PUT target that mimics a presigned S3 upload.
+
+    This keeps Simulator QA fully local when AWS/R2 credentials are absent.
+    Production still uses real presigned S3/R2 URLs.
+    """
+    if not storage.uses_local_storage:
+        raise HTTPException(status_code=404, detail="Local upload endpoint disabled")
+
+    content_type = request.headers.get("content-type", "image/jpeg").split(";", 1)[0].strip()
+    if content_type not in ALLOWED_CONTENT_TYPES:
+        raise HTTPException(status_code=400, detail=f"Unsupported content_type {content_type!r}")
+
+    storage.write_local_upload(key, await request.body(), content_type=content_type)
+    return Response(status_code=204)

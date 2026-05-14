@@ -208,47 +208,34 @@ enum DesignSystem {
 
     // MARK: - Haptics
 
+    @MainActor
     enum Haptics {
         static func light() {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.light()
         }
 
         static func medium() {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.medium()
         }
 
         static func heavy() {
-            let generator = UIImpactFeedbackGenerator(style: .heavy)
-            generator.prepare()
-            generator.impactOccurred()
+            HapticManager.heavy()
         }
 
         static func success() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.success)
+            HapticManager.success()
         }
 
         static func warning() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.warning)
+            HapticManager.warning()
         }
 
         static func error() {
-            let generator = UINotificationFeedbackGenerator()
-            generator.prepare()
-            generator.notificationOccurred(.error)
+            HapticManager.error()
         }
 
         static func selection() {
-            let generator = UISelectionFeedbackGenerator()
-            generator.prepare()
-            generator.selectionChanged()
+            HapticManager.selection()
         }
     }
 }

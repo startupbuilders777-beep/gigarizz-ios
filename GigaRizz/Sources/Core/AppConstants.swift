@@ -1,7 +1,6 @@
 import Foundation
 
-/// Centralized app constants — URLs, API keys, and configuration.
-/// Replace placeholder keys before App Store submission.
+/// Centralized app constants for URLs, service keys, and configuration.
 enum AppConstants {
 
     // MARK: - Legal URLs
@@ -14,21 +13,37 @@ enum AppConstants {
 
     // MARK: - RevenueCat
 
-    /// Replace with your real RevenueCat Apple API key from https://app.revenuecat.com
-    static let revenueCatAPIKey = "appl_REPLACE_WITH_YOUR_REVENUECAT_KEY"
+    static let revenueCatAPIKey = bundleString("REVENUECAT_API_KEY")
+
+    static var isRevenueCatConfigured: Bool {
+        isUsableSecret(revenueCatAPIKey)
+    }
 
     // MARK: - PostHog
 
-    /// Replace with your real PostHog project API key from https://us.posthog.com
-    static let postHogAPIKey = "phc_REPLACE_WITH_YOUR_POSTHOG_KEY"
+    static let postHogAPIKey = bundleString("POSTHOG_API_KEY")
     static let postHogHost = "https://us.i.posthog.com"
+
+    static var isPostHogConfigured: Bool {
+        isUsableSecret(postHogAPIKey)
+    }
 
     // MARK: - Backend API
 
     /// GigaRizz FastAPI backend URL.
     /// In development, points to local server. In production, update to your deployed URL.
     #if DEBUG
-    static let backendBaseURL = "http://localhost:8000"
+    static var backendBaseURL: String {
+        if let argIndex = CommandLine.arguments.firstIndex(of: "-dev_backend_base_url"),
+           CommandLine.arguments.indices.contains(argIndex + 1) {
+            return CommandLine.arguments[argIndex + 1]
+        }
+        if let override = UserDefaults.standard.string(forKey: "dev_backend_base_url"),
+           !override.isEmpty {
+            return override
+        }
+        return "http://localhost:8000"
+    }
     #else
     static let backendBaseURL = "https://api.gigarizz.app"
     #endif
@@ -48,4 +63,19 @@ enum AppConstants {
     static let dailyPhotosDateKey = "daily_photos_date"
     static let onboardingCompletedKey = "onboarding_has_completed"
     static let onboardingSeenKey = "onboarding_has_seen"
+
+    // MARK: - Helpers
+
+    private static func bundleString(_ key: String) -> String {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) as? String else {
+            return ""
+        }
+        return value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private static func isUsableSecret(_ value: String) -> Bool {
+        !value.isEmpty
+            && !value.contains("REPLACE")
+            && !value.contains("$(")
+    }
 }
