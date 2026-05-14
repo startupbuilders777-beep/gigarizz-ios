@@ -242,6 +242,47 @@ STYLE_PROMPTS: dict[str, str] = {
         "while preserving facial bone structure, eye color, and natural expression. "
         "Realistic skin texture, no over-smoothing. Photorealistic, vertical 3:4."
     ),
+
+    # V3 Sprint 1 — Face Refine Studio. Each preserves identity exactly except
+    # for the named feature edit. The client gates intensity via the naturalness
+    # slider and runs FaceCheck Pre-Flight on the result.
+    "smile_enhance": (
+        "Same person as the reference photo, same face, same lighting, same background. "
+        "Enhance the existing smile to look relaxed and natural — small lift at the "
+        "corners of the mouth, eye crinkle. Do NOT widen the mouth, do NOT add teeth. "
+        "Identity must read identical to the source. Photorealistic, vertical 3:4."
+    ),
+    "add_smile": (
+        "Same person as the reference photo, same face, same lighting, same background. "
+        "Add a genuine, warm closed-lip smile. Subtle eye crinkle. Keep the face shape, "
+        "jawline, and proportions exactly as in the source. Photorealistic, vertical 3:4."
+    ),
+    "jaw_refine": (
+        "Same person as the reference photo, same identity. Subtly refine the jawline "
+        "to look slightly more defined while keeping the bone structure recognizable. "
+        "No cartoon sharpening, no chiseling — small natural improvement only. "
+        "Photorealistic, vertical 3:4."
+    ),
+    "nose_refine": (
+        "Same person as the reference photo, same identity. Subtly refine the nose shape "
+        "to look slightly straighter and more proportioned, preserving the bridge profile "
+        "and overall character of the face. Photorealistic, vertical 3:4."
+    ),
+    "lip_enhance": (
+        "Same person as the reference photo, same identity. Subtly enhance the lips for "
+        "a fuller natural look — no over-plumping, no cosmetic-procedure look. "
+        "Photorealistic, vertical 3:4."
+    ),
+    "eye_color_swap": (
+        "Same person as the reference photo, same identity, same lighting. Change ONLY "
+        "the iris color to the requested color (see custom_prompt for target). Preserve "
+        "the eye shape, eyelash detail, and natural reflections. Photorealistic, vertical 3:4."
+    ),
+    "ai_portrait": (
+        "Editorial AI portrait of the same person from the reference photo, same identity. "
+        "Cinematic lighting, magazine-style composition, neutral or branded background. "
+        "Preserve facial bone structure, skin tone, and eye color. Photorealistic, vertical 3:4."
+    ),
 }
 
 

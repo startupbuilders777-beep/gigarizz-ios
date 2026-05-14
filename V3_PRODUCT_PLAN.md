@@ -18,25 +18,37 @@
 
 | Sprint | Hero shipped | Status |
 |--------|--------------|--------|
-| 0 (today) | IdentityMatchService (on-device face similarity), Naturalness intensity slider (Conservative/Standard/Bold), Glow Up Studio scaffold, backend `_wrap_natural` intensity-aware | ✅ Shipped 2026-05-14 |
-| 1 | FaceCheck Pre-Flight — predict pass/fail for Hinge + Tinder verification before upload | Next |
-| 2 | Identity Match Certificate — signed JSON edit receipt attached to every generated photo | Next |
-| 3 | Audit-Driven Glow Up — chain the audit critique into one-tap multi-tool fix sequence (lighting → face restore → background) | Sprint 3 |
-| 4 | Conversational Photo Brief — plain English "what photo do you want" → drift-checked variants | Sprint 4 |
-| 5 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Sprint 5 |
-| 6 | Age-Faithful Lock + Generation Receipt UI | Sprint 6 |
+| 0 | IdentityMatchService (on-device face similarity), Naturalness intensity slider (Conservative/Standard/Bold), Glow Up Studio scaffold, backend `_wrap_natural` intensity-aware | ✅ Shipped 2026-05-14 |
+| 1 | FaceCheck Pre-Flight, Identity Match Certificate, FaceDriftDetector (oversmoothing / eye widening / jaw narrowing / brightness / face size / mouth open), Face Refine Studio (smile enhance + add smile + jaw refine + nose refine + lip enhance + eye color + AI portrait), Glow Up Chain coordinator with rollback | ✅ Shipped 2026-05-14 |
+| 2 | Conversational Photo Brief — plain English "what photo do you want" → drift-checked variants | Next |
+| 3 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Sprint 3 |
+| 4 | Reference Selfie Vault — auto-pick best baseline selfie, surface IdentityMatch chips throughout the gallery | Sprint 4 |
+| 5 | Age-Faithful Lock + Generation Receipt embedding (PNG/JPEG metadata) | Sprint 5 |
+| 6 | Live preview Glow Up — show step-by-step chain in motion in the UI with before/during/after slider | Sprint 6 |
 
 Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
 
 ### What shipped on 2026-05-14 (code)
 
-- `Core/Services/IdentityMatchService.swift` — on-device Vision-framework face similarity. Detects largest face in candidate + reference, crops both, generates `VNFeaturePrintObservation`, computes distance, maps to band (Excellent / Acceptable / Borderline / Rejected).
-- `Core/Services/NaturalnessSettings.swift` — extended from binary toggle to 0–100 intensity slider with three named levels (Conservative default, Standard, Bold). Each level has its own backend prompt wrapper and Identity Match threshold.
-- `Features/Upgrade/GlowUpStudioView.swift` — audit-driven photo improver. Takes a UIImage, runs PhotoQualityAnalyzer + IdentityMatchService, routes each detected issue to the right existing tool (FaceEnhancement / ColorGrade / re-roll). Beats Facetune's freeform palette by only surfacing fixes that help *this* specific photo.
-- `Features/Settings/SettingsView.swift` — naturalness slider with live "Conservative / Standard / Bold" band labels and Identity Match threshold preview.
-- `backend/app/services/generation_service.py` `_wrap_natural(prompt, intensity)` — variable identity-preservation prefix per intensity band. Conservative locks features harder; Bold allows more styling.
-- `backend/app/models/schemas.py` + router — accepts new `naturalness_intensity` int field on `/api/v1/generate`.
-- `Core/Services/GigaRizzAPIClient.swift` — sends the intensity on every generation request.
+**Sprint 0 (foundations):**
+- `Core/Services/IdentityMatchService.swift` — on-device Vision-framework face similarity. Largest-face detection, padded face crop, `VNFeaturePrintObservation` distance, mapping to four bands.
+- `Core/Services/NaturalnessSettings.swift` — 0–100 intensity slider with three named levels (Conservative default / Standard / Bold). Each maps to a backend prompt wrapper and an identity-match threshold.
+- `Features/Upgrade/GlowUpStudioView.swift` — audit-driven photo improver routing each detected issue to the right tool. Only surfaces fixes that help *this* photo.
+- `Features/Settings/SettingsView.swift` — naturalness slider UI with live band labels.
+- `backend/app/services/generation_service.py` `_wrap_natural(prompt, intensity)` — three prompt wrappers per band (Conservative locks features harder; Bold allows more styling).
+- Schema + router + iOS API client wire `naturalness_intensity` through `/api/v1/generate`.
+
+**Sprint 1 (photo improvement engine):**
+- `Core/Services/FaceDriftDetector.swift` — six on-device drift signals using Vision face landmarks: oversmoothing (skin Laplacian variance), eye widening (eye/face ratio), jaw narrowing (jaw/face ratio), brightness shift, face size shift, mouth open change. Returns a structured `Report` consumed by FaceCheck Pre-Flight.
+- `Core/Models/IdentityMatchCertificate.swift` — Codable signed JSON edit receipt + `IdentityMatchCertificateService.issue/verify` using HMAC-SHA256 with a per-device key. Counters FaceApp/Facetune opacity.
+- `Features/Upgrade/FaceCheckPreflightView.swift` — predicts Hinge + Tinder Face Check pass/fail. Combines Identity Match similarity + drift signals into a Pass / Borderline / Fail verdict with named reasons. One-tap "Regenerate at lower intensity" CTA.
+- `Features/Upgrade/FaceRefineStudioView.swift` — the generative companion to FaceEnhancementView. Smile enhance / Add smile / Jaw refine / Nose refine / Lip enhance / Eye color (Blue/Green/Hazel/Brown/Gray) / Editorial AI portrait. Each routes to backend GPT Image 2 / Nano Banana 2 with the identity-preserving wrapper at the user's chosen intensity. Result auto-runs IdentityMatchService + FaceDriftDetector and issues an Identity Match Certificate.
+- `Features/Upgrade/GlowUpChainCoordinator.swift` — sequential apply with per-step Identity Match scoring + rollback. V1 chain: local face enhance (CIFilter skin smooth/saturation) → color grade (exposure lift). Stops at the first regression beyond the tolerance.
+- `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
+- `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
+
+**Backend tests:** `33/33` passing after every change.
+**iOS Debug simulator build:** clean (`exit 0`) on every regenerate-and-build cycle.
 
 ### FaceCheck Pre-Flight (Sprint 1 hero)
 

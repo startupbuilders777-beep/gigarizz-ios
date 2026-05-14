@@ -29,6 +29,7 @@ struct GlowUpStudioView: View {
     @State private var matchResult: IdentityMatchService.MatchResult?
     @State private var isAnalyzing = true
     @State private var routingTo: GlowUpRoute?
+    @StateObject private var chain = GlowUpChainCoordinator()
 
     var body: some View {
         ScrollView {
@@ -144,15 +145,19 @@ struct GlowUpStudioView: View {
             }
             if !detectedIssues.isEmpty {
                 Button {
-                    routingTo = .faceEnhance
+                    Task { await chain.run(sourceImage: photo, reference: referenceSelfie) }
                 } label: {
                     HStack {
-                        Image(systemName: "wand.and.sparkles")
-                        Text("Apply Glow Up (Face Enhance)")
+                        if chain.isRunning {
+                            ProgressView().tint(.white)
+                        } else {
+                            Image(systemName: "wand.and.sparkles")
+                        }
+                        Text(chain.isRunning ? "Running Glow Up…" : "Apply Glow Up Chain")
                             .fontWeight(.semibold)
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                            .foregroundStyle(.white.opacity(0.7))
                     }
                     .padding(DesignSystem.Spacing.medium)
                     .frame(maxWidth: .infinity)
@@ -160,9 +165,47 @@ struct GlowUpStudioView: View {
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
                 }
-                .accessibilityLabel("Apply Glow Up using Face Enhance")
+                .disabled(chain.isRunning)
+                .accessibilityLabel("Run the audit-driven Glow Up chain")
+            }
+            if !chain.stepResults.isEmpty {
+                chainResultsPanel
             }
         }
+    }
+
+    @ViewBuilder
+    private var chainResultsPanel: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+            Text("Glow Up steps")
+                .font(DesignSystem.Typography.callout)
+                .foregroundStyle(DesignSystem.Colors.textPrimary)
+            ForEach(chain.stepResults) { step in
+                HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
+                    Image(systemName: step.didRollback ? "arrow.uturn.backward" : "checkmark.circle.fill")
+                        .foregroundStyle(step.didRollback ? DesignSystem.Colors.warning : DesignSystem.Colors.success)
+                        .frame(width: 22)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(step.kind.displayName)
+                            .font(DesignSystem.Typography.subheadline)
+                            .foregroundStyle(DesignSystem.Colors.textPrimary)
+                        Text("Identity \(Int(step.identityScore * 100))% (\(step.identityBand.rawValue))\(step.didRollback ? " — rolled back" : "")")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    }
+                }
+            }
+            if let finalImage = chain.finalImage {
+                Image(uiImage: finalImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+            }
+        }
+        .padding(DesignSystem.Spacing.medium)
+        .background(DesignSystem.Colors.surfaceSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
     }
 
     private func fixRow(_ fix: GlowUpFix) -> some View {

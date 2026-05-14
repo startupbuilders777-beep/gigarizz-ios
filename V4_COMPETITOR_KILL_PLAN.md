@@ -11,9 +11,17 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-14 (V4 counters active in code)
 
+**Sprint 0 (foundations):**
 - **Naturalness intensity slider** (counters Aragon, Sway, YourMove, PhotoAI) — three bands plus on-device drift threshold. Backend wrapper varies prompt strength per band.
-- **IdentityMatchService** (counters every "doesn't look like me" complaint across the segment) — on-device face similarity, no data leaves the phone. Foundation for FaceCheck Pre-Flight + Identity Match Certificate.
+- **IdentityMatchService** (counters every "doesn't look like me" complaint across the segment) — on-device face similarity, no data leaves the phone.
 - **Glow Up Studio** (counters Facetune's freeform palette + FaceApp's preset filters) — audit-driven, only shows fixes that help *this* specific photo.
+
+**Sprint 1 (face improvement engine):**
+- **FaceDriftDetector** (counters Aragon "3-5 usable per 100", Sway "older than actual age" reviews) — six named drift signals computed on-device from Vision face landmarks.
+- **FaceCheck Pre-Flight** (counters FaceApp + Facetune *structurally*) — predicts Hinge + Tinder verification pass/fail before upload. They cannot ship this without cannibalizing power-user behavior.
+- **Identity Match Certificate** (counters FaceApp + Facetune opacity) — signed JSON edit receipt per export.
+- **Face Refine Studio** (counters Facetune AI Studio + FaceApp transformations directly) — smile enhance, add smile, jaw refine, nose refine, lip enhance, eye color swap, AI portrait. Each routes through identity-preserving GPT Image 2 / Nano Banana 2 with the naturalness slider gating prompt intensity.
+- **Glow Up Chain** (counters Facetune's freeform tool palette) — sequential apply with per-step Identity Match scoring + automatic rollback if the score regresses.
 
 ### Sprint 1 photo counters (next 2 weeks)
 

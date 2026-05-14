@@ -93,17 +93,25 @@ Instance currently stopped. Restart, allocate elastic IP, run `backend/deploy.sh
 ### Gender swap
 FaceApp ships it; we will not. Brand liability for a dating product.
 
-### Aggressive face reshape (jawline / nose / lip plumping)
-Facetune ships these; we will not. Documented as a Hinge Face Check failure cause.
+### Removed from killed list — now active in V3 Sprint 1
 
-### Smile-from-no-smile generation
-FaceApp's "add smile" creates Cheshire-cat artifacts and fails FaceCheck likeness checks. We only do **smile enhance** (restore an existing partial smile), never **smile add**.
+The following features were briefly killed during the FaceCheck research pass. They are back in the product because:
 
-### Eye color change
-Facetune ships it; FaceCheck flags it. Killed.
+1. **FaceCheck/Selfie Verification isn't universal.** Tinder rolled out Face Check across the US in 2025 and Hinge made Selfie Verification mandatory in UK + Australia, but many users use apps and regions where verification is optional or absent. Refusing to ship features over a partial-coverage requirement leaves real lift on the table.
+2. **The naturalness slider + FaceCheck Pre-Flight is the safety net.** Conservative mode keeps every refinement within identity bounds; Pre-Flight catches the cases where it doesn't. Users who don't care about Face Check can opt into Bold intensity and the more aggressive refinements.
+3. **Beating Facetune means actually offering Facetune's tools.** The product position is *"better than Facetune, with identity preservation,"* not *"a less capable Facetune."*
 
-### AI Portraits / celebrity styles
-FaceApp's viral surface. Too transformative for dating use. Killed.
+| Resurrected feature | Now lives in |
+|---|---|
+| Jaw refine | FaceRefineStudio (`jaw_refine`) |
+| Nose refine | FaceRefineStudio (`nose_refine`) |
+| Lip enhance | FaceRefineStudio (`lip_enhance`) |
+| Eye color change | FaceRefineStudio (`eye_color_swap`) |
+| Smile-from-no-smile | FaceRefineStudio (`add_smile`) |
+| Smile enhance | FaceRefineStudio (`smile_enhance`) |
+| AI Portraits / editorial | FaceRefineStudio (`ai_portrait`) |
+
+The only still-killed item is **gender swap** — it remains off the roadmap because it's a brand liability for a dating product, not because of a verification concern.
 
 ## Notes
 

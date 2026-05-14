@@ -28,6 +28,16 @@ class GenerationStyle(str, Enum):
     outfit_swap = "outfit_swap"
     hairstyle_swap = "hairstyle_swap"
     age_modify = "age_modify"
+    # V3 Sprint 1 — Face Refine Studio. Each routes to GPT Image 2 / Nano Banana 2
+    # with identity-preserving wrappers. The naturalness slider gates intensity;
+    # FaceCheck Pre-Flight on the client rejects outputs that fail drift checks.
+    smile_enhance = "smile_enhance"
+    add_smile = "add_smile"
+    jaw_refine = "jaw_refine"
+    nose_refine = "nose_refine"
+    lip_enhance = "lip_enhance"
+    eye_color_swap = "eye_color_swap"
+    ai_portrait = "ai_portrait"
     custom = "custom"
 
 
