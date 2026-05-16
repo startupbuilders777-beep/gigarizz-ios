@@ -24,7 +24,8 @@
 | 3 | Reference Selfie Vault (set baseline once; auto-injected into Photo Brief Studio + Glow Up Studio + Settings) + Photo Sequence Optimizer per platform (Hinge/Tinder/Bumble per-slot ranking with rationale) | ✅ Shipped 2026-05-15 |
 | 4 | Reference Selfie Quality Coach + 8 more dating scenes (gym, sailing race, sushi bar, vineyard, observation deck, dog park, golf course, dance studio) bringing the catalog to 21 environments + Generation Receipt JPEG embedding via EXIF UserComment | ✅ Shipped 2026-05-15 |
 | 5 | Age-Faithful drift signal (composite of skin texture amplification + face darkening — Sway AI counter), Before/After compare slider in Photo Brief Studio variant detail, Glow Up Chain V2 with backend `face_restore` step | ✅ Shipped 2026-05-15 |
-| 6 | Live step-by-step preview during Glow Up Chain (in-flight progress + per-step thumbnail) | Next |
+| 6 | Live in-flight Glow Up Chain preview (per-step thumbnails + final before/after slider in GlowUpStudioView), Save-with-receipt to Photos (JPEG bytes preserved so EXIF UserComment cert survives), Inline Naturalness slider directly in Photo Brief Studio | ✅ Shipped 2026-05-15 |
+| 7 | Multi-photo Reference Selfie Vault — auto-pick best baseline from a stored album | Next |
 
 Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
 
@@ -46,6 +47,12 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpChainCoordinator.swift` — sequential apply with per-step Identity Match scoring + rollback. V1 chain: local face enhance (CIFilter skin smooth/saturation) → color grade (exposure lift). Stops at the first regression beyond the tolerance.
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
+
+**Sprint 6 (Live Chain Preview + Save-with-Receipt + Inline Naturalness):**
+- `Features/Upgrade/GlowUpChainCoordinator.swift` — adds `@Published currentStep` so the studio UI can render the in-flight step. State is reset between runs.
+- `Features/Upgrade/GlowUpStudioView.swift` — chain results panel now shows per-step thumbnails (44pt), an in-flight row with spinner for the current step, and a `BeforeAfterCompare` slider on the final image vs the user's reference selfie when one is available.
+- `Core/Services/PhotoLibraryService.swift` — adds `saveJPEGData(_:)` that calls `addResource(with: .photo, data:, options:)` so the JPEG bytes (with embedded EXIF UserComment certificate) survive into the user's library. The legacy `creationRequestForAsset(from: UIImage)` path strips custom EXIF.
+- `Features/Upgrade/PhotoBriefStudioView.swift` (BriefResultDetailSheet) — new "Save with receipt to Photos" button with idle / saving / saved / failed states. Inline Naturalness slider in the studio footer (was previously Settings-only) so users can tune intensity without leaving the generation flow.
 
 **Sprint 5 (Age-Faithful Lock + Compare Slider + Chain V2):**
 - `Core/Services/FaceDriftDetector.swift` — adds `apparentAgeShift` Signal triggered by (a) skin variance ratio >1.5 OR (b) skin variance ratio >1.2 paired with a >0.15 face brightness drop. Direct counter to Sway AI's "looks older than actual age" complaint cluster. Surfaces in FaceCheck Pre-Flight + Photo Brief Studio variant detail.

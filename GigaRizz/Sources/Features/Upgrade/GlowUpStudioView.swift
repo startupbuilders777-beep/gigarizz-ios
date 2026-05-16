@@ -187,10 +187,15 @@ struct GlowUpStudioView: View {
                 .font(DesignSystem.Typography.callout)
                 .foregroundStyle(DesignSystem.Colors.textPrimary)
             ForEach(chain.stepResults) { step in
-                HStack(alignment: .top, spacing: DesignSystem.Spacing.small) {
+                HStack(alignment: .center, spacing: DesignSystem.Spacing.small) {
                     Image(systemName: step.didRollback ? "arrow.uturn.backward" : "checkmark.circle.fill")
                         .foregroundStyle(step.didRollback ? DesignSystem.Colors.warning : DesignSystem.Colors.success)
                         .frame(width: 22)
+                    Image(uiImage: step.image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 44, height: 44)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     VStack(alignment: .leading, spacing: 2) {
                         Text(step.kind.displayName)
                             .font(DesignSystem.Typography.subheadline)
@@ -199,14 +204,39 @@ struct GlowUpStudioView: View {
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(DesignSystem.Colors.textSecondary)
                     }
+                    Spacer()
                 }
             }
-            if let finalImage = chain.finalImage {
-                Image(uiImage: finalImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 200)
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+            if let inFlight = chain.currentStep, chain.isRunning,
+               !chain.stepResults.contains(where: { $0.kind == inFlight }) {
+                HStack(spacing: DesignSystem.Spacing.small) {
+                    ProgressView().tint(DesignSystem.Colors.flameOrange)
+                        .frame(width: 22)
+                    Text(inFlight.displayName)
+                        .font(DesignSystem.Typography.subheadline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    Text("running…")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    Spacer()
+                }
+            }
+            if let finalImage = chain.finalImage, !chain.isRunning {
+                Divider().background(DesignSystem.Colors.divider).padding(.vertical, 4)
+                if let reference = effectiveReference {
+                    Text("Before / after")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                    BeforeAfterCompare(before: reference, after: finalImage)
+                        .frame(height: 220)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+                } else {
+                    Image(uiImage: finalImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 220)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+                }
             }
         }
         .padding(DesignSystem.Spacing.medium)

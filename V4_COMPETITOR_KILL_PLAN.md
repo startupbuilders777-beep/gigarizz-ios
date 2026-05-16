@@ -11,6 +11,11 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-15 (V4 counters active in code)
 
+**Sprint 6 (Live Chain Preview + Save-with-Receipt + Inline Naturalness):**
+- Live chain preview turns the audit-driven Glow Up into a visible step-by-step process the user can trust — Facetune cannot ship this without exposing how often their freeform edits drift identity.
+- Save-with-receipt makes the V3 Sprint 4 EXIF embedding actually round-trip through the iOS Photos library, defeating the metadata-strip behavior that competitor save flows fall back into.
+- Inline naturalness control closes the "edit in Settings" tax — every generation in the Brief Studio is now one slider away.
+
 **Sprint 5 (Age-Faithful Lock + Compare Slider + Chain V2):**
 - Age-Faithful Lock targets Sway's most-cited 1-star complaint with an on-device, transparent signal. Hits while the photo is still in the Brief Studio so the user doesn't ship an aged-looking variant.
 - Before/After compare slider is the visual proof of the V2/V3 trust contract. Most photo competitors use marketing copy here; we use the user's own reference selfie as the comparison ground truth.
@@ -77,7 +82,13 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **Before/After compare slider** — counter to **ReGen / Aragon / Sway** "trust us, it looks like you" framing. Direct visual proof against the user's stored baseline. Slider lives in the Photo Brief Studio variant detail.
 - **Glow Up Chain V2** — backend `face_restore` step (CodeFormer) added to the chain. Counters Facetune AI Studio's blur recovery + Aragon's editing toolkit by chaining identity-match-gated steps instead of a freeform tool palette.
 
-### Sprint 6 photo counters (next)
+### Sprint 6 photo counters — ✅ Shipped 2026-05-15
+
+- **Live in-flight Glow Up Chain preview** — counter to Facetune AI Studio's freeform tool palette. Where Facetune shows the user a tool drawer and lets them apply edits opaquely, GigaRizz shows the chain step-by-step with per-step thumbnails, identity-match score, and rollback when a step regresses.
+- **Save-with-receipt to Photos** — counter to ReGen / Aragon / Sway / FaceApp / Facetune all stripping their edit metadata at save time. Saves the JPEG bytes with the EXIF UserComment certificate intact so the file itself carries the trust contract, not just our app UI.
+- **Inline Naturalness slider in the Brief Studio** — counter to PhotoAI's prompt-engineering ceiling. Users can tune the identity-preservation intensity without leaving the generate flow, surfacing the V2/V3 trust contract as a live control.
+
+### Sprint 7 photo counters (next)
 
 ---
 

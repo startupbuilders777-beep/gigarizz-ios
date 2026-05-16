@@ -1,6 +1,7 @@
 import Photos
 import PhotosUI
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - Photo Library Service
 
@@ -154,6 +155,34 @@ final class PhotoLibraryService: ObservableObject {
         }
 
         return identifiers
+    }
+
+    /// Save raw JPEG bytes (with EXIF UserComment / certificate metadata
+    /// already embedded by `CertificateEmbedding`) into the user's library.
+    /// `creationRequestForAsset(from: UIImage)` re-encodes and strips our
+    /// custom EXIF, so V3 Sprint 6 ships this data-resource path instead.
+    @discardableResult
+    func saveJPEGData(_ data: Data) async throws -> String {
+        guard await requestAuthorization() else { throw PhotoLibraryError.permissionDenied }
+        return try await withCheckedThrowingContinuation { continuation in
+            PHPhotoLibrary.shared().performChanges {
+                let request = PHAssetCreationRequest.forAsset()
+                let options = PHAssetResourceCreationOptions()
+                options.uniformTypeIdentifier = UTType.jpeg.identifier
+                request.addResource(with: .photo, data: data, options: options)
+                request.creationDate = Date()
+            } completionHandler: { success, maybeError in
+                Task { @MainActor in
+                    if success {
+                        let fetch = PHAsset.fetchAssets(with: .image, options: nil)
+                        continuation.resume(returning: fetch.lastObject?.localIdentifier ?? "")
+                    } else {
+                        let err = maybeError ?? NSError(domain: "PhotoLibraryService", code: -1)
+                        continuation.resume(throwing: PhotoLibraryError.saveFailed(err.localizedDescription))
+                    }
+                }
+            }
+        }
     }
 
     /// Performs the actual save operation to photo library.

@@ -41,6 +41,7 @@ struct PhotoBriefStudioView: View {
 
     @StateObject private var vault = ReferenceSelfieVault.shared
     @State private var qualityReport: ReferenceSelfieQuality.Report?
+    @AppStorage("gigarizz_naturalness_intensity") private var naturalnessIntensity = NaturalnessSettings.Level.conservative.intensityValue
 
     private var referenceImage: UIImage? { vault.currentSelfie }
 
@@ -363,17 +364,29 @@ struct PhotoBriefStudioView: View {
     }
 
     private var naturalnessFooter: some View {
-        HStack(spacing: DesignSystem.Spacing.small) {
-            Image(systemName: "lock.shield.fill")
-                .foregroundStyle(DesignSystem.Colors.success)
-            Text("Naturalness: \(NaturalnessSettings.currentLevel.displayName) (\(NaturalnessSettings.intensity)/100)")
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+            HStack(spacing: DesignSystem.Spacing.small) {
+                Image(systemName: "lock.shield.fill")
+                    .foregroundStyle(DesignSystem.Colors.success)
+                Text("Naturalness: \(NaturalnessSettings.currentLevel(forIntensity: naturalnessIntensity).displayName) (\(naturalnessIntensity)/100)")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                Spacer()
+            }
+            Slider(value: Binding(
+                get: { Double(naturalnessIntensity) },
+                set: { naturalnessIntensity = Int($0) }
+            ), in: 0...100, step: 5)
+                .tint(DesignSystem.Colors.flameOrange)
+                .accessibilityLabel("Naturalness intensity")
+                .accessibilityValue("\(naturalnessIntensity) out of 100")
+            Text(NaturalnessSettings.currentLevel(forIntensity: naturalnessIntensity).subtitle)
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(DesignSystem.Colors.textSecondary)
-            Spacer()
-            Text("Edit in Settings")
-                .font(DesignSystem.Typography.caption)
-                .foregroundStyle(DesignSystem.Colors.flameOrange)
         }
+        .padding(DesignSystem.Spacing.medium)
+        .background(DesignSystem.Colors.surfaceSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
     }
 
     private func errorBanner(_ message: String) -> some View {
@@ -529,8 +542,17 @@ struct BriefResultDetailSheet: View {
     let result: BriefResult
 
     @State private var showCertificate = false
+    @State private var saveStatus: SaveStatus = .idle
     @StateObject private var vault = ReferenceSelfieVault.shared
+    @StateObject private var photoLibrary = PhotoLibraryService()
     @Environment(\.dismiss) private var dismiss
+
+    private enum SaveStatus: Equatable {
+        case idle
+        case saving
+        case saved
+        case failed(String)
+    }
 
     var body: some View {
         NavigationStack {
@@ -609,24 +631,93 @@ struct BriefResultDetailSheet: View {
     }
 
     private var actions: some View {
-        HStack(spacing: DesignSystem.Spacing.small) {
-            Button {
-                showCertificate = true
-            } label: {
-                Label("Receipt", systemImage: "doc.text.fill")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DesignSystem.Spacing.medium)
-            }
-            .buttonStyle(.bordered)
-            .tint(DesignSystem.Colors.flameOrange)
+        VStack(spacing: DesignSystem.Spacing.small) {
+            HStack(spacing: DesignSystem.Spacing.small) {
+                Button {
+                    showCertificate = true
+                } label: {
+                    Label("Receipt", systemImage: "doc.text.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DesignSystem.Spacing.medium)
+                }
+                .buttonStyle(.bordered)
+                .tint(DesignSystem.Colors.flameOrange)
 
-            ShareLink(item: shareItem, preview: SharePreview("GigaRizz photo", image: Image(uiImage: result.image))) {
-                Label("Share", systemImage: "square.and.arrow.up")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DesignSystem.Spacing.medium)
+                ShareLink(item: shareItem, preview: SharePreview("GigaRizz photo", image: Image(uiImage: result.image))) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DesignSystem.Spacing.medium)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(DesignSystem.Colors.success)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(DesignSystem.Colors.success)
+
+            Button {
+                Task { await saveToPhotos() }
+            } label: {
+                HStack {
+                    Image(systemName: saveButtonIcon)
+                    Text(saveButtonTitle)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, DesignSystem.Spacing.medium)
+                .background(DesignSystem.Colors.surface)
+                .foregroundStyle(saveButtonColor)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                        .stroke(saveButtonColor.opacity(0.6), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+            }
+            .disabled(saveStatus == .saving || saveStatus == .saved)
+            if case .failed(let message) = saveStatus {
+                Text(message)
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(DesignSystem.Colors.error)
+            }
+        }
+    }
+
+    private var saveButtonIcon: String {
+        switch saveStatus {
+        case .idle: return "square.and.arrow.down"
+        case .saving: return "ellipsis.circle"
+        case .saved: return "checkmark.circle.fill"
+        case .failed: return "exclamationmark.triangle.fill"
+        }
+    }
+
+    private var saveButtonTitle: String {
+        switch saveStatus {
+        case .idle: return "Save with receipt to Photos"
+        case .saving: return "Saving…"
+        case .saved: return "Saved with embedded receipt"
+        case .failed: return "Couldn't save — tap to retry"
+        }
+    }
+
+    private var saveButtonColor: Color {
+        switch saveStatus {
+        case .idle, .saving: return DesignSystem.Colors.flameOrange
+        case .saved: return DesignSystem.Colors.success
+        case .failed: return DesignSystem.Colors.error
+        }
+    }
+
+    private func saveToPhotos() async {
+        saveStatus = .saving
+        let data = CertificateEmbedding.embed(certificate: result.certificate, into: result.image)
+            ?? result.image.jpegData(compressionQuality: 0.92)
+        guard let bytes = data else {
+            saveStatus = .failed("Couldn't encode photo for export.")
+            return
+        }
+        do {
+            _ = try await photoLibrary.saveJPEGData(bytes)
+            saveStatus = .saved
+        } catch {
+            saveStatus = .failed((error as? LocalizedError)?.errorDescription ?? "Save failed.")
         }
     }
 

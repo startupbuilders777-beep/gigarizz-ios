@@ -53,6 +53,8 @@ final class GlowUpChainCoordinator: ObservableObject {
     @Published private(set) var isRunning = false
     @Published private(set) var finalImage: UIImage?
     @Published private(set) var error: String?
+    /// Step currently in flight — drives the live timeline UI in GlowUpStudioView.
+    @Published private(set) var currentStep: StepKind?
 
     // MARK: - Tunables
 
@@ -65,11 +67,15 @@ final class GlowUpChainCoordinator: ObservableObject {
     /// Run the chain. Returns the final image (best passing step) or nil.
     func run(sourceImage: UIImage, reference: UIImage?, steps: [StepKind] = StepKind.allCases) async {
         isRunning = true
-        defer { isRunning = false }
+        defer {
+            isRunning = false
+            currentStep = nil
+        }
 
         stepResults = []
         finalImage = nil
         error = nil
+        currentStep = nil
 
         var current = sourceImage
         var previousScore: Double = 1.0
@@ -82,6 +88,7 @@ final class GlowUpChainCoordinator: ObservableObject {
         }
 
         for step in steps {
+            currentStep = step
             guard let processed = await apply(step, to: current) else {
                 continue
             }
