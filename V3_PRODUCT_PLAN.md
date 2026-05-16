@@ -21,8 +21,8 @@
 | 0 | IdentityMatchService (on-device face similarity), Naturalness intensity slider (Conservative/Standard/Bold), Glow Up Studio scaffold, backend `_wrap_natural` intensity-aware | ✅ Shipped 2026-05-14 |
 | 1 | FaceCheck Pre-Flight, Identity Match Certificate, FaceDriftDetector (oversmoothing / eye widening / jaw narrowing / brightness / face size / mouth open), Face Refine Studio (smile enhance + add smile + jaw refine + nose refine + lip enhance + eye color + AI portrait), Glow Up Chain coordinator with rollback | ✅ Shipped 2026-05-14 |
 | 2 | Photo Brief Studio — plain English brief + 13-scene curated catalog (helicopter, movie theatre, rooftop bar, art gallery, coffee shop, concert, yacht deck, ski lift, Tokyo street, Italian café, recording studio, motorcycle, private jet); per-variant Identity Match chips + drift count + signed certificate; backend `scene_*` GenerationStyle prompts with identity lock | ✅ Shipped 2026-05-15 |
-| 3 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Next |
-| 4 | Reference Selfie Vault — auto-pick best baseline selfie, surface IdentityMatch chips throughout the gallery | Sprint 4 |
+| 3 | Reference Selfie Vault (set baseline once; auto-injected into Photo Brief Studio + Glow Up Studio + Settings) + Photo Sequence Optimizer per platform (Hinge/Tinder/Bumble per-slot ranking with rationale) | ✅ Shipped 2026-05-15 |
+| 4 | Auto-pick best baseline selfie + surface Identity Match chips throughout the gallery | Next |
 | 5 | Age-Faithful Lock + Generation Receipt embedding (PNG/JPEG metadata) | Sprint 5 |
 | 6 | Live preview Glow Up — show step-by-step chain in motion in the UI with before/during/after slider | Sprint 6 |
 
@@ -46,6 +46,12 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpChainCoordinator.swift` — sequential apply with per-step Identity Match scoring + rollback. V1 chain: local face enhance (CIFilter skin smooth/saturation) → color grade (exposure lift). Stops at the first regression beyond the tolerance.
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
+
+**Sprint 3 (Reference Vault + Photo Sequence Optimizer):**
+- `Core/Services/ReferenceSelfieVault.swift` — `@MainActor ObservableObject` singleton. Persists the user's baseline selfie to Application Support (excluded from backups). Now auto-injected into PhotoBriefStudioView + GlowUpStudioView so users set their reference once and every photo-aware feature trusts it. Old "pick a selfie every time" friction is gone.
+- `Features/Settings/SettingsView.swift` — new "Reference Selfie Vault" section with thumbnail preview, replace, and forget. Replaces the previous "go set a selfie elsewhere" coaching cards across the photo features.
+- `Features/Upgrade/PhotoSequenceOptimizerView.swift` — per-platform lineup ranker (Hinge / Tinder / Bumble / Raya). Reuses `ProfileKitOrderer` for the algorithm and adds per-slot **rationale** text ("Hinge swipers spend 92% of their attention on slot 1…", "Tinder reward stacking: a strong second-slot face shot lifts swipe-through ~18%…"). Surfaces unfilled slot types per platform.
+- `Features/Upgrade/ProfileDiagnosisView.swift` — new "Photo Sequence Optimizer" entry card with Hinge/Tinder/Bumble icon. Maps the audit's wire-format platform strings to typed `DatingPlatform` values.
 
 **Sprint 2 (scene catalog + conversational brief):**
 - `Core/Models/PhotoScene.swift` — 13-scene curated dating catalog organized by category (Adventure, Cinematic, Lifestyle, Travel, Professional). Each scene maps to a backend `scene_*` GenerationStyle and seeds the brief field.

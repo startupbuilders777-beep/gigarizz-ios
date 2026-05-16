@@ -30,6 +30,12 @@ struct GlowUpStudioView: View {
     @State private var isAnalyzing = true
     @State private var routingTo: GlowUpRoute?
     @StateObject private var chain = GlowUpChainCoordinator()
+    @StateObject private var vault = ReferenceSelfieVault.shared
+
+    /// Reference selfie used for Identity Match scoring. Falls back to the
+    /// vault when the caller doesn't pass one — Sprint 3 makes the studio
+    /// stop pestering users to pick a reference if they've already set one.
+    private var effectiveReference: UIImage? { referenceSelfie ?? vault.currentSelfie }
 
     var body: some View {
         ScrollView {
@@ -102,7 +108,7 @@ struct GlowUpStudioView: View {
             .padding(DesignSystem.Spacing.medium)
             .background(DesignSystem.Colors.surfaceSecondary)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
-        } else if referenceSelfie == nil {
+        } else if effectiveReference == nil {
             // Coach the user to upload a reference selfie so the badge can light up.
             HStack(spacing: DesignSystem.Spacing.small) {
                 Image(systemName: "person.crop.circle.badge.questionmark")
@@ -145,7 +151,7 @@ struct GlowUpStudioView: View {
             }
             if !detectedIssues.isEmpty {
                 Button {
-                    Task { await chain.run(sourceImage: photo, reference: referenceSelfie) }
+                    Task { await chain.run(sourceImage: photo, reference: effectiveReference) }
                 } label: {
                     HStack {
                         if chain.isRunning {
@@ -315,7 +321,7 @@ struct GlowUpStudioView: View {
         let issues = await PhotoQualityAnalyzer.analyze(image: photo)
         detectedIssues = issues
 
-        if let reference = referenceSelfie {
+        if let reference = effectiveReference {
             do {
                 matchResult = try await IdentityMatchService.match(candidate: photo, against: reference)
             } catch {

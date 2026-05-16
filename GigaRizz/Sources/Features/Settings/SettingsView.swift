@@ -1,11 +1,16 @@
+import PhotosUI
 import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @StateObject private var referenceVault = ReferenceSelfieVault.shared
     @State private var showDeleteConfirmation = false
     @State private var showPaywall = false
     @State private var showTierComparison = false
+    @State private var showVaultPicker = false
+    @State private var vaultPickerItem: PhotosPickerItem?
+    @State private var showVaultClearConfirmation = false
     @State private var errorMessage: String?
     @AppStorage("dev_use_real_ai") private var useRealAI = false
     @AppStorage("gigarizz_keep_me_natural") private var keepMeNatural = true
@@ -129,6 +134,74 @@ struct SettingsView: View {
                     } header: { Text("Trust & Privacy").foregroundStyle(DesignSystem.Colors.textSecondary) }
                     .listRowBackground(DesignSystem.Colors.surface)
 
+                    // V3 Sprint 3 — Reference Selfie Vault. Once a baseline is
+                    // stored here, every photo-aware feature uses it without
+                    // re-asking. Stored in Application Support, excluded from
+                    // backups.
+                    Section {
+                        HStack(spacing: DesignSystem.Spacing.medium) {
+                            ZStack {
+                                if let selfie = referenceVault.currentSelfie {
+                                    Image(uiImage: selfie)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 56, height: 56)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                } else {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(DesignSystem.Colors.surfaceSecondary)
+                                        .frame(width: 56, height: 56)
+                                        .overlay {
+                                            Image(systemName: "person.crop.square.badge.camera")
+                                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                                        }
+                                }
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Reference selfie")
+                                    .font(DesignSystem.Typography.callout)
+                                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+                                Text(referenceVault.hasSelfie
+                                     ? "Used by Identity Match across the app."
+                                     : "Set once. Used for every Identity Match check.")
+                                    .font(DesignSystem.Typography.footnote)
+                                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                            }
+                            Spacer()
+                        }
+                        PhotosPicker(selection: $vaultPickerItem, matching: .images) {
+                            HStack(spacing: DesignSystem.Spacing.medium) {
+                                Image(systemName: referenceVault.hasSelfie ? "arrow.triangle.2.circlepath" : "plus.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundStyle(DesignSystem.Colors.flameOrange)
+                                    .frame(width: 28)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(referenceVault.hasSelfie ? "Replace reference selfie" : "Add reference selfie")
+                                        .font(DesignSystem.Typography.callout)
+                                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                                    Text("Stored on this device only.")
+                                        .font(DesignSystem.Typography.footnote)
+                                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                                }
+                                Spacer()
+                            }
+                            .accessibilityLabel(referenceVault.hasSelfie ? "Replace reference selfie" : "Add reference selfie")
+                        }
+                        .onChange(of: vaultPickerItem) { _, newItem in
+                            guard let newItem else { return }
+                            Task { await loadVault(item: newItem) }
+                        }
+                        if referenceVault.hasSelfie {
+                            Button {
+                                showVaultClearConfirmation = true
+                            } label: {
+                                settingsRow(icon: "trash", title: "Forget reference selfie", subtitle: "", color: DesignSystem.Colors.error, accessibilityLabel: "Forget reference selfie")
+                            }
+                            .accessibilityAddTraits(.isButton)
+                        }
+                    } header: { Text("Reference Selfie Vault").foregroundStyle(DesignSystem.Colors.textSecondary) }
+                    .listRowBackground(DesignSystem.Colors.surface)
+
                     Section {
                         settingsRow(icon: "info.circle.fill", title: "Version", subtitle: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0", color: DesignSystem.Colors.textSecondary, accessibilityLabel: "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
                         Link(destination: AppConstants.termsURL) {
@@ -203,12 +276,24 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete", role: .destructive) { Task { try? await authManager.deleteAccount(); dismiss() } }
             } message: { Text("This will permanently delete your account and all data. This cannot be undone.") }
+            .alert("Forget reference selfie?", isPresented: $showVaultClearConfirmation) {
+                Button("Cancel", role: .cancel) { }
+                Button("Forget", role: .destructive) { referenceVault.clearSelfie() }
+            } message: { Text("Identity Match scoring will be off until you add a new selfie.") }
             .sheet(isPresented: $showPaywall) { PaywallView() }
             .sheet(isPresented: $showTierComparison) { TierComparisonView() }
             .alert("Error", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
                 Button("OK", role: .cancel) { }
             } message: { Text(errorMessage ?? "") }
         }
+    }
+
+    private func loadVault(item: PhotosPickerItem) async {
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let image = UIImage(data: data) {
+            referenceVault.setSelfie(image)
+        }
+        vaultPickerItem = nil
     }
 
     private func settingsRow(icon: String, title: String, subtitle: String, color: Color, accessibilityLabel: String) -> some View {

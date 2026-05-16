@@ -13,6 +13,7 @@ struct ProfileDiagnosisView: View {
     @StateObject private var kitStore = ProfileKitStore.shared
     @State private var showKit = false
     @State private var showPhotoBriefStudio = false
+    @State private var showSequenceOptimizer = false
     @State private var slotSheet: PhotoArchetype?
 
     var body: some View {
@@ -21,6 +22,7 @@ struct ProfileDiagnosisView: View {
                 heroSection
                 buildKitCTA
                 photoBriefStudioCTA
+                sequenceOptimizerCTA
                 topFixesSection
                 if !audit.missingArchetypes.isEmpty {
                     missingArchetypesSection
@@ -42,6 +44,14 @@ struct ProfileDiagnosisView: View {
         }
         .navigationDestination(isPresented: $showPhotoBriefStudio) {
             PhotoBriefStudioView()
+        }
+        .navigationDestination(isPresented: $showSequenceOptimizer) {
+            PhotoSequenceOptimizerView(
+                audit: audit,
+                currentPhotoUrls: photoUrls,
+                generatedPhotoUrls: kitStore.current?.generatedPhotoUrls ?? [],
+                availablePlatforms: resolvedPlatforms()
+            )
         }
         .sheet(item: $slotSheet) { archetype in
             MissingSlotActionSheet(archetype: archetype) {
@@ -138,6 +148,60 @@ struct ProfileDiagnosisView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("diagnosis_photo_brief_studio")
+    }
+
+    /// Map the audit's wire-format platform strings ("hinge", "tinder", …) into
+    /// `DatingPlatform` enum cases. The kit's stored `targetPlatforms` (already
+    /// typed) wins when present.
+    private func resolvedPlatforms() -> [DatingPlatform] {
+        if let kitPlatforms = kitStore.current?.targetPlatforms, !kitPlatforms.isEmpty {
+            return kitPlatforms
+        }
+        let mapped = audit.targetPlatforms.compactMap { raw -> DatingPlatform? in
+            DatingPlatform.allCases.first { $0.rawValue.lowercased() == raw.lowercased() }
+        }
+        return mapped.isEmpty ? [.hinge] : mapped
+    }
+
+    // MARK: - Photo Sequence Optimizer CTA (V3 Sprint 3)
+
+    private var sequenceOptimizerCTA: some View {
+        Button {
+            DesignSystem.Haptics.medium()
+            showSequenceOptimizer = true
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(DesignSystem.Colors.hinge.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "rectangle.stack.fill.badge.person.crop")
+                        .foregroundStyle(DesignSystem.Colors.hinge)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Photo Sequence Optimizer")
+                        .font(DesignSystem.Typography.headline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    Text("Hinge / Tinder / Bumble lineup ranking with per-slot reasoning.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+            }
+            .padding(DesignSystem.Spacing.medium)
+            .background(DesignSystem.Colors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card)
+                    .stroke(DesignSystem.Colors.hinge.opacity(0.6), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("diagnosis_sequence_optimizer")
     }
 
     // MARK: - Top fixes

@@ -31,7 +31,6 @@ import UIKit
 struct PhotoBriefStudioView: View {
     @State private var brief: String = ""
     @State private var selectedScene: PhotoScene?
-    @State private var referenceImage: UIImage?
     @State private var pickerItem: PhotosPickerItem?
     @State private var variantCount: Int = 4
     @State private var isGenerating = false
@@ -39,6 +38,10 @@ struct PhotoBriefStudioView: View {
     @State private var results: [BriefResult] = []
     @State private var showScenePicker = false
     @State private var detailResult: BriefResult?
+
+    @StateObject private var vault = ReferenceSelfieVault.shared
+
+    private var referenceImage: UIImage? { vault.currentSelfie }
 
     private let kitId: UUID? = nil
     private let briefCharLimit = 250
@@ -356,7 +359,7 @@ struct PhotoBriefStudioView: View {
         guard let item = pickerItem else { return }
         if let data = try? await item.loadTransferable(type: Data.self),
            let image = UIImage(data: data) {
-            referenceImage = image
+            vault.setSelfie(image)
         }
     }
 
