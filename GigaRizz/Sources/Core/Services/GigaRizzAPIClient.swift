@@ -280,14 +280,20 @@ actor GigaRizzAPIClient {
     struct AuditRequestBody: Codable {
         let photoUrls: [String]
         let targetPlatforms: [String]
+        let roastMode: Bool
 
         enum CodingKeys: String, CodingKey {
             case photoUrls = "photo_urls"
             case targetPlatforms = "target_platforms"
+            case roastMode = "roast_mode"
         }
     }
 
-    func runAudit(photoUrls: [String], targetPlatforms: [DatingPlatform]) async throws -> ProfileAuditResult {
+    func runAudit(
+        photoUrls: [String],
+        targetPlatforms: [DatingPlatform],
+        roastMode: Bool = false
+    ) async throws -> ProfileAuditResult {
         #if DEBUG
         if ServiceMode.current == .mock {
             try? await Task.sleep(nanoseconds: 700_000_000)
@@ -297,7 +303,8 @@ actor GigaRizzAPIClient {
 
         let body = AuditRequestBody(
             photoUrls: photoUrls,
-            targetPlatforms: targetPlatforms.map { $0.rawValue.lowercased() }
+            targetPlatforms: targetPlatforms.map { $0.rawValue.lowercased() },
+            roastMode: roastMode
         )
         return try await post("/api/v1/audit", body: body)
     }

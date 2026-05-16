@@ -11,6 +11,10 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-15 (V4 counters active in code)
 
+**Sprint 8 (Roast Mode + Variant Compare + Bulk Save):**
+- Roast Mode kills the Roast.dating narrative without us inheriting any of their UX. Same audit engine, voice swap.
+- Variant Compare + Bulk Save make the 4-variant generation flow usable at scale and stamp every saved photo with the EXIF certificate.
+
 **Sprint 7 (Vault Onboarding + FaceCheck Route + 27 Scenes):**
 - The Vault onboarding card removes the *first-run* friction that every competitor still ships — most photo apps just start asking for source uploads without any persistent baseline.
 - FaceCheck Pre-Flight from variant detail is the conversion-time trust beat: at the exact moment the user decides whether to upload, they see whether Hinge/Tinder will accept it.
@@ -99,7 +103,12 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **FaceCheck Pre-Flight route from Brief Studio variants** — counter to FaceApp + Facetune at the most-decision-point moment. The user generates a variant, taps "Run FaceCheck Pre-Flight," and sees the Pass / Borderline / Fail verdict against Hinge + Tinder verification before they upload.
 - **Scene catalog at 27 environments** (added rooftop pool, ramen shop, library, museum, beach sunset, boxing gym) — keeps the ReGen catalog-breadth gap growing. Cinematic + Active categories now have enough density to credibly cover any dating archetype on their own.
 
-### Sprint 8 photo counters (next)
+### Sprint 8 photo counters — ✅ Shipped 2026-05-15
+
+- **Roast Mode audit toggle** — direct **Roast.dating** counter. Same Vision audit engine, brutally honest mentor voice + slightly higher temperature. Roast.dating's "roasted by humans" hook now has a free, instant in-app alternative that uses the user's own audit pipeline. Toggleable per-audit so the supportive default ships unchanged.
+- **Variant Compare sheet + bulk Save-with-receipts** — counters every photo competitor (ReGen, Aragon, Sway, PhotoAI) that ships a "scroll through 30+ outputs" UX without per-result identity-match signal or batch operations. The user sees the full set sorted by Identity Match, can pick the best in one tap, or batch-save all with embedded EXIF certificates.
+
+### Sprint 9 photo counters (next)
 
 ---
 

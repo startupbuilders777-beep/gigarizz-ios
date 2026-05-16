@@ -50,7 +50,7 @@ class FakeModerationService:
 
 class FakeAuditService:
     """Stub that returns a deterministic audit (no OpenAI vision call)."""
-    async def audit_photo_set(self, photo_urls, target_platforms=None):
+    async def audit_photo_set(self, photo_urls, target_platforms=None, roast_mode=False):
         n = len(photo_urls)
         per_photo = [
             PhotoCritique(

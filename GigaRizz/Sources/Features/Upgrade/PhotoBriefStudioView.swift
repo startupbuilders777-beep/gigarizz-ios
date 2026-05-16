@@ -37,7 +37,16 @@ struct PhotoBriefStudioView: View {
     @State private var generationError: String?
     @State private var results: [BriefResult] = []
     @State private var showScenePicker = false
+    @State private var showVariantCompare = false
+    @State private var bulkSaveStatus: BulkSaveStatus = .idle
     @State private var detailResult: BriefResult?
+
+    private enum BulkSaveStatus: Equatable {
+        case idle
+        case saving(saved: Int, total: Int)
+        case done(saved: Int)
+        case failed(String)
+    }
 
     @StateObject private var vault = ReferenceSelfieVault.shared
     @State private var qualityReport: ReferenceSelfieQuality.Report?
@@ -84,6 +93,12 @@ struct PhotoBriefStudioView: View {
         }
         .sheet(item: $detailResult) { result in
             BriefResultDetailSheet(result: result)
+        }
+        .sheet(isPresented: $showVariantCompare) {
+            VariantCompareSheet(
+                results: results,
+                onSelect: { detailResult = $0 }
+            )
         }
         .onChange(of: pickerItem) { _, _ in
             Task { await loadReference() }
@@ -343,9 +358,21 @@ struct PhotoBriefStudioView: View {
 
     private var resultsGrid: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-            Text("Variants")
-                .font(DesignSystem.Typography.callout)
-                .foregroundStyle(DesignSystem.Colors.textPrimary)
+            HStack {
+                Text("Variants")
+                    .font(DesignSystem.Typography.callout)
+                    .foregroundStyle(DesignSystem.Colors.textPrimary)
+                Spacer()
+                if results.count > 1 {
+                    Button {
+                        showVariantCompare = true
+                    } label: {
+                        Label("Compare", systemImage: "rectangle.split.2x2.fill")
+                            .font(DesignSystem.Typography.caption)
+                    }
+                    .tint(DesignSystem.Colors.flameOrange)
+                }
+            }
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
                 ForEach(results) { result in
                     Button {
@@ -356,7 +383,129 @@ struct PhotoBriefStudioView: View {
                     .buttonStyle(.plain)
                 }
             }
+            bulkSaveBar
         }
+    }
+
+    @ViewBuilder
+    private var bulkSaveBar: some View {
+        HStack(spacing: DesignSystem.Spacing.small) {
+            Button {
+                Task { await bulkSaveAll() }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: bulkSaveIcon)
+                    Text(bulkSaveTitle)
+                        .font(DesignSystem.Typography.subheadline)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, DesignSystem.Spacing.medium)
+                .background(DesignSystem.Colors.surfaceSecondary)
+                .foregroundStyle(bulkSaveColor)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                        .stroke(bulkSaveColor.opacity(0.5), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+            }
+            .disabled({
+                if case .saving = bulkSaveStatus { return true }
+                return false
+            }())
+            Button {
+                Task { await bulkSaveBest() }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "star.fill")
+                    Text("Save best")
+                        .font(DesignSystem.Typography.subheadline)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, DesignSystem.Spacing.medium)
+                .background(DesignSystem.Colors.flameOrange)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+            }
+            .disabled({
+                if case .saving = bulkSaveStatus { return true }
+                return false
+            }())
+        }
+        if case .failed(let message) = bulkSaveStatus {
+            Text(message)
+                .font(DesignSystem.Typography.caption)
+                .foregroundStyle(DesignSystem.Colors.error)
+        }
+    }
+
+    private var bulkSaveIcon: String {
+        switch bulkSaveStatus {
+        case .idle: return "square.and.arrow.down.on.square"
+        case .saving: return "ellipsis.circle"
+        case .done: return "checkmark.circle.fill"
+        case .failed: return "exclamationmark.triangle.fill"
+        }
+    }
+
+    private var bulkSaveTitle: String {
+        switch bulkSaveStatus {
+        case .idle: return "Save all with receipts"
+        case .saving(let saved, let total): return "Saving \(saved)/\(total)…"
+        case .done(let saved): return "Saved \(saved)"
+        case .failed: return "Couldn't save — tap to retry"
+        }
+    }
+
+    private var bulkSaveColor: Color {
+        switch bulkSaveStatus {
+        case .idle, .saving: return DesignSystem.Colors.flameOrange
+        case .done: return DesignSystem.Colors.success
+        case .failed: return DesignSystem.Colors.error
+        }
+    }
+
+    private func bulkSaveAll() async {
+        await bulkSave(results: results)
+    }
+
+    private func bulkSaveBest() async {
+        // "Best" = highest identity-match similarity. Ties resolved by drift
+        // count (fewer signals wins), then by insertion order.
+        guard let best = results.sorted(by: bestSort).first else { return }
+        await bulkSave(results: [best])
+    }
+
+    private func bestSort(_ lhs: BriefResult, _ rhs: BriefResult) -> Bool {
+        let lhsScore = lhs.matchResult?.similarity ?? 0
+        let rhsScore = rhs.matchResult?.similarity ?? 0
+        if lhsScore != rhsScore { return lhsScore > rhsScore }
+        return lhs.driftSignals.count < rhs.driftSignals.count
+    }
+
+    private func bulkSave(results: [BriefResult]) async {
+        guard !results.isEmpty else { return }
+        bulkSaveStatus = .saving(saved: 0, total: results.count)
+        let library = PhotoLibraryService()
+        var saved = 0
+        for (idx, result) in results.enumerated() {
+            let data = CertificateEmbedding.embed(certificate: result.certificate, into: result.image)
+                ?? result.image.jpegData(compressionQuality: 0.92)
+            guard let bytes = data else {
+                bulkSaveStatus = .failed("Couldn't encode photo for export.")
+                return
+            }
+            do {
+                _ = try await library.saveJPEGData(bytes)
+                saved += 1
+                bulkSaveStatus = .saving(saved: saved, total: results.count)
+                _ = idx
+            } catch {
+                bulkSaveStatus = .failed((error as? LocalizedError)?.errorDescription ?? "Save failed at variant \(saved + 1).")
+                return
+            }
+        }
+        bulkSaveStatus = .done(saved: saved)
     }
 
     private func resultTile(_ result: BriefResult) -> some View {

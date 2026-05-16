@@ -39,6 +39,7 @@ async def run_audit(
         return await audit_svc.audit_photo_set(
             photo_urls=req.photo_urls,
             target_platforms=req.target_platforms,
+            roast_mode=req.roast_mode,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

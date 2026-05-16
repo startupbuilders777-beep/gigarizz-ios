@@ -401,6 +401,10 @@ class AuditRequest(BaseModel):
     """Run a profile audit on a set of uploaded photos."""
     photo_urls: list[str] = Field(min_length=1, max_length=12)
     target_platforms: list[DatingPlatform] = []
+    # V3 Sprint 8 — Roast Mode toggle. When true, swaps the audit voice from
+    # the supportive coach default to a brutally honest mentor. Counter to
+    # Roast.dating's "roasted by humans" hook; same engine, attitude swap.
+    roast_mode: bool = False
 
 
 class MissingPhotoSlot(BaseModel):

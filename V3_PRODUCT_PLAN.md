@@ -26,7 +26,8 @@
 | 5 | Age-Faithful drift signal (composite of skin texture amplification + face darkening — Sway AI counter), Before/After compare slider in Photo Brief Studio variant detail, Glow Up Chain V2 with backend `face_restore` step | ✅ Shipped 2026-05-15 |
 | 6 | Live in-flight Glow Up Chain preview (per-step thumbnails + final before/after slider in GlowUpStudioView), Save-with-receipt to Photos (JPEG bytes preserved so EXIF UserComment cert survives), Inline Naturalness slider directly in Photo Brief Studio | ✅ Shipped 2026-05-15 |
 | 7 | Reference Vault onboarding card + FaceCheck Pre-Flight route directly from Brief Studio variant detail + 6 more scenes (rooftop pool, ramen shop, library, museum, beach sunset, boxing gym) — catalog now 27 environments | ✅ Shipped 2026-05-15 |
-| 8 | Multi-photo Reference Selfie Vault — auto-pick best baseline from a stored album | Next |
+| 8 | Roast Mode audit toggle (backend prompt voice swap), Variant comparison grid sheet, bulk Save-all-with-receipts + Save-best buttons in Brief Studio | ✅ Shipped 2026-05-15 |
+| 9 | Multi-photo Reference Selfie Vault — auto-pick best baseline from a stored album | Next |
 
 Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
 
@@ -48,6 +49,15 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpChainCoordinator.swift` — sequential apply with per-step Identity Match scoring + rollback. V1 chain: local face enhance (CIFilter skin smooth/saturation) → color grade (exposure lift). Stops at the first regression beyond the tolerance.
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
+
+**Sprint 8 (Roast Mode + Variant compare + Bulk save):**
+- `backend/app/services/audit_service.py` — refactored to split the audit prompt into a voice prefix (default supportive coach vs. brutally honest mentor) + a shared `AUDIT_SCORING_RUBRIC`. `audit_photo_set` gets a `roast_mode: bool = False` kwarg that swaps the system prompt and bumps the temperature 0.4 → 0.65 for spicier delivery.
+- `backend/app/models/schemas.py` + `backend/app/routers/audit.py` — `AuditRequest.roast_mode` plumbs through to the service.
+- `backend/tests/test_api.py` + `backend/tests/conftest.py` — `FakeAuditService` accepts the new kwarg; `test_audit_accepts_roast_mode` + `test_roast_audit_prompt_voice_swap` cover wire + prompt composition. Suite now `37/37`.
+- `GigaRizz/Sources/Core/Services/GigaRizzAPIClient.swift` — `runAudit(...)` exposes `roastMode: Bool = false`.
+- `GigaRizz/Sources/Features/Upgrade/UpgradeFlowView.swift` — `UpgradeFlowViewModel.roastMode` published flag, Roast Mode toggle row in the Photo Picker stage.
+- `GigaRizz/Sources/Features/Upgrade/VariantCompareSheet.swift` (new) — side-by-side grid of every variant in the current Brief Studio session, sorted by Identity Match similarity (ties broken by drift count). Tile shows Identity chip + drift count.
+- `GigaRizz/Sources/Features/Upgrade/PhotoBriefStudioView.swift` — adds Compare button next to the Variants header (when ≥2 variants), `bulkSaveBar` with "Save all with receipts" + "Save best" buttons that drive the new `PhotoLibraryService.saveJPEGData` path for receipt-preserving saves. State machine `BulkSaveStatus` covers idle / saving / done / failed.
 
 **Sprint 7 (Vault Onboarding + FaceCheck route + 6 more scenes):**
 - `Features/Upgrade/PhotoBriefStudioView.swift` — reference selfie card now becomes a hero onboarding CTA when no vault is set (orange-bordered card with PhotosPicker), funneling first-run users through the trust step before any generation. Reverts to a compact swap card once a vault exists.
@@ -95,8 +105,8 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `backend/tests/test_api.py` — `test_generation_accepts_v3_sprint2_scene_styles` (schema validation across all 13 styles) + `test_scene_prompts_are_identity_preserving` (every prompt enforces the identity lock + 3:4 aspect).
 - `Core/Services/IdentityMatchService.swift` — refactored to a single nonisolated detached worker so non-Sendable Vision observations never cross actor boundaries (iOS 26 Sendable strictness fix uncovered while wiring Sprint 2).
 
-**Backend tests:** `35/35` passing through Sprint 4 (test count covers Sprint 2 + 4 scene additions; idempotent and identity-preserving asserts updated to 21 scenes).
-**iOS Debug simulator build:** clean (`** BUILD SUCCEEDED **`) after every regenerate-and-build cycle through Sprint 4.
+**Backend tests:** `37/37` passing through Sprint 8 (test count grew Sprint 2 +2 scenes, Sprint 8 +2 for Roast Mode wire + prompt voice swap; identity-preserving asserts updated to 27 scenes).
+**iOS Debug simulator build:** clean (`** BUILD SUCCEEDED **`) after every regenerate-and-build cycle through Sprint 8.
 
 ### FaceCheck Pre-Flight (Sprint 1 hero)
 

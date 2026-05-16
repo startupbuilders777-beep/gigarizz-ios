@@ -542,6 +542,37 @@ async def test_generation_accepts_v3_sprint2_scene_styles(client: AsyncClient):
         assert resp.status_code in (202, 500), f"{style} got {resp.status_code}: {resp.text}"
 
 
+@pytest.mark.asyncio
+async def test_audit_accepts_roast_mode(client: AsyncClient):
+    """V3 Sprint 8 — audit endpoint accepts roast_mode flag without 422."""
+    resp = await client.post(
+        "/api/v1/audit",
+        json={
+            "photo_urls": ["https://example.com/p1.jpg"],
+            "target_platforms": ["hinge"],
+            "roast_mode": True,
+        },
+    )
+    assert resp.status_code == 200, resp.text
+
+
+def test_roast_audit_prompt_voice_swap():
+    """Roast Mode swaps the system prompt to the brutally honest mentor voice
+    while preserving the shared scoring rubric."""
+    from app.services.audit_service import (
+        AUDIT_SYSTEM_PROMPT,
+        ROAST_AUDIT_SYSTEM_PROMPT,
+        AUDIT_SCORING_RUBRIC,
+    )
+
+    assert AUDIT_SCORING_RUBRIC in AUDIT_SYSTEM_PROMPT
+    assert AUDIT_SCORING_RUBRIC in ROAST_AUDIT_SYSTEM_PROMPT
+    assert "brutally honest" in ROAST_AUDIT_SYSTEM_PROMPT
+    assert "senior dating-profile photographer" in AUDIT_SYSTEM_PROMPT
+    # The voice prefixes must differ so the prompts are actually distinct.
+    assert AUDIT_SYSTEM_PROMPT != ROAST_AUDIT_SYSTEM_PROMPT
+
+
 def test_scene_prompts_are_identity_preserving():
     """Every scene_* prompt must lead with the identity-lock contract so providers
     can't drift the face — the whole point of Photo Brief Studio is changing the
@@ -600,6 +631,7 @@ async def test_audit_returns_structured_result(client: AsyncClient):
                 "https://example.com/p3.jpg",
             ],
             "target_platforms": ["hinge", "tinder"],
+            "roast_mode": False,
         },
     )
     assert resp.status_code == 200, resp.text

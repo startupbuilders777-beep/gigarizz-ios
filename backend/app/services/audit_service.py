@@ -33,6 +33,21 @@ VISION_MODEL = "gpt-4o"
 AUDIT_SYSTEM_PROMPT = """You are a senior dating-profile photographer who has reviewed
 50,000+ Hinge, Tinder, and Bumble profiles. You give honest, actionable, specific
 feedback — never generic horoscope text. You speak like a friend, not a corporate AI.
+"""
+
+# V3 Sprint 8 — Roast Mode. Brutally honest mentor voice for the same vision
+# audit. Counter to Roast.dating's roast-my-photo hook: same engine, much
+# spicier delivery, no human wait time.
+ROAST_AUDIT_SYSTEM_PROMPT = """You are a brutally honest dating-profile mentor. You
+have seen everything and you do not coddle. You roast the bad calls with surgical
+precision but you are never cruel about the *person* — only the photo choices.
+Funny, sharp, useful. Think senior creative director who has lost patience with
+mid work. Your job is to make the user laugh, sting, and then immediately fix it.
+"""
+
+# Shared scoring rubric — same regardless of which voice ships above.
+AUDIT_SCORING_RUBRIC = """
+
 
 Score each photo on six dimensions (0-10):
 - clarity: face sharpness, focus, resolution
@@ -66,6 +81,12 @@ when generation can solve it.
 Return ONLY valid JSON matching the schema. No prose, no markdown, no comments.
 """
 
+# Compose the actual prompts by concatenating voice + shared rubric. The
+# rubric carries the scoring axes + archetype list + JSON contract; the voice
+# prefix only changes tone.
+AUDIT_SYSTEM_PROMPT = AUDIT_SYSTEM_PROMPT + AUDIT_SCORING_RUBRIC
+ROAST_AUDIT_SYSTEM_PROMPT = ROAST_AUDIT_SYSTEM_PROMPT + AUDIT_SCORING_RUBRIC
+
 
 class AuditService:
     """Run a vision audit over a user's photo set."""
@@ -79,8 +100,13 @@ class AuditService:
         self,
         photo_urls: list[str],
         target_platforms: list[DatingPlatform] | None = None,
+        roast_mode: bool = False,
     ) -> ProfileAuditResult:
-        """Audit a set of dating-profile photos and return a structured result."""
+        """Audit a set of dating-profile photos and return a structured result.
+
+        ``roast_mode=True`` swaps the system prompt to the brutally honest
+        mentor voice while preserving the same scoring rubric and JSON shape.
+        """
         if not photo_urls:
             raise ValueError("audit_photo_set requires at least one photo URL")
 
@@ -88,6 +114,8 @@ class AuditService:
         platform_str = (
             ", ".join(p.value for p in target_platforms) if target_platforms else "Hinge, Tinder, Bumble"
         )
+
+        system_prompt = ROAST_AUDIT_SYSTEM_PROMPT if roast_mode else AUDIT_SYSTEM_PROMPT
 
         # Build user message with all images plus the schema reminder.
         content: list[dict] = [
@@ -132,11 +160,11 @@ class AuditService:
             response = await self.client.chat.completions.create(
                 model=VISION_MODEL,
                 messages=[
-                    {"role": "system", "content": AUDIT_SYSTEM_PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": content},
                 ],
                 response_format={"type": "json_object"},
-                temperature=0.4,
+                temperature=0.4 if not roast_mode else 0.65,
                 max_tokens=2500,
             )
         except Exception:

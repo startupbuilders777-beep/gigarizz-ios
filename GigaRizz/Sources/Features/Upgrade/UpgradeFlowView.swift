@@ -102,6 +102,7 @@ final class UpgradeFlowViewModel: ObservableObject {
     @Published var pickedImages: [UIImage] = []
     @Published var uploadProgress: Double = 0
     @Published var uploadedURLs: [URL] = []
+    @Published var roastMode: Bool = false
 
     private let store = ProfileKitStore.shared
 
@@ -172,7 +173,8 @@ final class UpgradeFlowViewModel: ObservableObject {
         do {
             let audit = try await GigaRizzAPIClient.shared.runAudit(
                 photoUrls: uploadedURLs.map { $0.absoluteString },
-                targetPlatforms: Array(selectedPlatforms)
+                targetPlatforms: Array(selectedPlatforms),
+                roastMode: roastMode
             )
             store.updateAudit(audit)
             AuditUsageCounter.shared.incrementOnAuditCompleted()
@@ -475,6 +477,23 @@ private struct UpgradePhotoPicker: View {
                                 )
                         }
                     }
+
+                    // V3 Sprint 8 — Roast Mode toggle. Direct counter to
+                    // Roast.dating: same audit engine, brutally honest voice.
+                    Toggle(isOn: $viewModel.roastMode) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Roast Mode")
+                                .font(DesignSystem.Typography.subheadline)
+                                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                            Text("Audit voice swap — brutally honest mentor.")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                    }
+                    .tint(DesignSystem.Colors.flameOrange)
+                    .padding(DesignSystem.Spacing.medium)
+                    .background(DesignSystem.Colors.surfaceSecondary)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
 
                     V2TrustBadge()
 
