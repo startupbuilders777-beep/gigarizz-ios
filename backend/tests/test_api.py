@@ -492,6 +492,55 @@ async def test_generation_accepts_new_style_enums(client: AsyncClient):
         assert resp.status_code in (202, 500), f"{style} got {resp.status_code}: {resp.text}"
 
 
+@pytest.mark.asyncio
+async def test_generation_accepts_v3_sprint2_scene_styles(client: AsyncClient):
+    """V3 Sprint 2 scene catalog (Photo Brief Studio). Each environment style must
+    pass schema validation. These are the prompts that beat ReGen's preset library —
+    helicopter, movie theatre, rooftop bar, etc."""
+    scene_styles = [
+        "scene_helicopter",
+        "scene_movie_theatre",
+        "scene_rooftop_bar",
+        "scene_art_gallery",
+        "scene_coffee_shop",
+        "scene_concert",
+        "scene_yacht_deck",
+        "scene_ski_lift",
+        "scene_tokyo_street",
+        "scene_italian_cafe",
+        "scene_recording_studio",
+        "scene_motorcycle",
+        "scene_private_jet",
+    ]
+    for style in scene_styles:
+        resp = await client.post(
+            "/api/v1/generate",
+            json={
+                "style": style,
+                "prompt": "test prompt",
+                "photo_count": 1,
+                "model": "nano_banana_2",
+                "naturalness_intensity": 25,
+            },
+        )
+        assert resp.status_code in (202, 500), f"{style} got {resp.status_code}: {resp.text}"
+
+
+def test_scene_prompts_are_identity_preserving():
+    """Every scene_* prompt must lead with the identity-lock contract so providers
+    can't drift the face — the whole point of Photo Brief Studio is changing the
+    environment, not the person."""
+    from app.services.generation_service import STYLE_PROMPTS
+
+    scene_keys = [k for k in STYLE_PROMPTS.keys() if k.startswith("scene_")]
+    assert len(scene_keys) == 13, f"Expected 13 scene prompts, found {len(scene_keys)}"
+    for key in scene_keys:
+        prompt = STYLE_PROMPTS[key]
+        assert "Same person as the reference photo" in prompt, f"{key} missing identity lock"
+        assert "Do not alter the face" in prompt, f"{key} missing face-lock guard"
+        assert "vertical 3:4" in prompt.lower(), f"{key} missing dating-app aspect ratio"
+
+
 # ────────────────────────────────────────────────────────────────────────────
 # Naturalness wrap (V2 trust default)
 # ────────────────────────────────────────────────────────────────────────────

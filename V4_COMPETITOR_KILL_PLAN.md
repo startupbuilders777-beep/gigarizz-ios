@@ -9,6 +9,13 @@
 
 V4 also re-prioritizes around the photo wedge. Every counter that is not a photo feature is paused until V3 photo sprints 1–3 ship. The non-photo counters stay on the roadmap but appear in `BACKLOG.md`.
 
+### What shipped on 2026-05-15 (V4 counters active in code)
+
+**Sprint 2 (Photo Brief Studio + Scene Catalog):**
+- **Photo Brief Studio** ships the conversational + curated dual-input model that ReGen structurally cannot — they ship a fixed preset library, we ship 13 curated environments PLUS a plain-English override field.
+- The 13-scene catalog directly attacks ReGen's *only* differentiator (preset variety) by shipping more interesting environments (helicopter, movie theatre, Tokyo street, recording studio) under a unified identity-lock contract.
+- Per-variant Identity Match chip + drift count in the result grid is the visible expression of "looks like you" — the trust beat that ReGen's small-brand marketing claim cannot match.
+
 ### What shipped on 2026-05-14 (V4 counters active in code)
 
 **Sprint 0 (foundations):**
@@ -29,10 +36,20 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **"Why this photo" rationale on every audit + generation result** — counters RIZZ's templated outputs and Aragon's silent grid.
 - **Comparison landing page** (`facetune-vs-gigarizz`, `faceapp-vs-gigarizz`, `rizz-vs-gigarizz`) — copy ready.
 
-### Sprint 2 photo counters
+### Sprint 2 photo counters — ✅ Shipped 2026-05-15
 
-- **Identity Match Certificate** — signed JSON edit receipt per export. Counters FaceApp/Facetune opacity.
+- **Photo Brief Studio + Scene Catalog (13 environments)** — direct counter to **ReGen's preset library**. Where ReGen ships pre-canned poses with no narrative control, GigaRizz ships:
+  - 13 scroll-stopping curated dating environments (helicopter, movie theatre, rooftop bar, art gallery, coffee shop, concert, yacht deck, ski lift, Tokyo street, Italian café, recording studio, motorcycle, private jet)
+  - **Plain-English brief** field (250 char) — users can rewrite or extend any scene
+  - Per-variant **Identity Match chip** + **drift count** displayed in the result grid (ReGen shows no signal)
+  - **Signed Identity Match Certificate** issued per generated variant (HMAC-SHA256)
+  - **Naturalness intensity** lock at the user's chosen band so every output stays within FaceCheck-passing range
+- **Identity Match Certificate** in the variant detail sheet — signed JSON edit receipt per export. Counters FaceApp/Facetune opacity AND ReGen's lack of edit receipts.
+
+### Sprint 3 photo counters (next)
+
 - **Age-Faithful Lock** — fails any generation that drifts the apparent age >5 years from the user's reference. Direct Sway AI counter.
+- **Photo Sequence Optimizer** — Hinge/Tinder/Bumble lineup ranking with reasoning.
 
 ---
 

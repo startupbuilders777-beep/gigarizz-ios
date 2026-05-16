@@ -20,8 +20,8 @@
 |--------|--------------|--------|
 | 0 | IdentityMatchService (on-device face similarity), Naturalness intensity slider (Conservative/Standard/Bold), Glow Up Studio scaffold, backend `_wrap_natural` intensity-aware | ✅ Shipped 2026-05-14 |
 | 1 | FaceCheck Pre-Flight, Identity Match Certificate, FaceDriftDetector (oversmoothing / eye widening / jaw narrowing / brightness / face size / mouth open), Face Refine Studio (smile enhance + add smile + jaw refine + nose refine + lip enhance + eye color + AI portrait), Glow Up Chain coordinator with rollback | ✅ Shipped 2026-05-14 |
-| 2 | Conversational Photo Brief — plain English "what photo do you want" → drift-checked variants | Next |
-| 3 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Sprint 3 |
+| 2 | Photo Brief Studio — plain English brief + 13-scene curated catalog (helicopter, movie theatre, rooftop bar, art gallery, coffee shop, concert, yacht deck, ski lift, Tokyo street, Italian café, recording studio, motorcycle, private jet); per-variant Identity Match chips + drift count + signed certificate; backend `scene_*` GenerationStyle prompts with identity lock | ✅ Shipped 2026-05-15 |
+| 3 | Photo Sequence Optimizer per platform — Hinge/Tinder/Bumble lineup ranking with reasoning | Next |
 | 4 | Reference Selfie Vault — auto-pick best baseline selfie, surface IdentityMatch chips throughout the gallery | Sprint 4 |
 | 5 | Age-Faithful Lock + Generation Receipt embedding (PNG/JPEG metadata) | Sprint 5 |
 | 6 | Live preview Glow Up — show step-by-step chain in motion in the UI with before/during/after slider | Sprint 6 |
@@ -47,8 +47,19 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
 
-**Backend tests:** `33/33` passing after every change.
-**iOS Debug simulator build:** clean (`exit 0`) on every regenerate-and-build cycle.
+**Sprint 2 (scene catalog + conversational brief):**
+- `Core/Models/PhotoScene.swift` — 13-scene curated dating catalog organized by category (Adventure, Cinematic, Lifestyle, Travel, Professional). Each scene maps to a backend `scene_*` GenerationStyle and seeds the brief field.
+- `Features/Upgrade/PhotoBriefStudioView.swift` — hero view: reference selfie picker, scene picker (or skip), plain-English brief field (250 char), variant count picker. Each generation runs through identity lock + drift detection + signed certificate per variant. Result tiles show IdentityMatch chip + drift count.
+- `Features/Upgrade/ScenePickerSheet.swift` — visual catalog sheet with 5 categories, blurb per scene, "Built to beat ReGen" framing.
+- `Features/Upgrade/BriefResultDetailSheet.swift` (in PhotoBriefStudioView.swift) — full-screen variant detail with metrics, drift report, share, certificate sheet.
+- `Features/Upgrade/ProfileDiagnosisView.swift` — new "Photo Brief Studio" entry card directly under the Build Kit CTA so users land in the new flow after audit.
+- `backend/app/models/schemas.py` — 13 new `GenerationStyle` enums (`scene_helicopter`, `scene_movie_theatre`, `scene_rooftop_bar`, `scene_art_gallery`, `scene_coffee_shop`, `scene_concert`, `scene_yacht_deck`, `scene_ski_lift`, `scene_tokyo_street`, `scene_italian_cafe`, `scene_recording_studio`, `scene_motorcycle`, `scene_private_jet`).
+- `backend/app/services/generation_service.py` — matching `STYLE_PROMPTS` templates. Every prompt opens with the "Same person as the reference photo, same face" lock and ends with "Do not alter the face" — identity-preservation contract is enforced at the prompt layer.
+- `backend/tests/test_api.py` — `test_generation_accepts_v3_sprint2_scene_styles` (schema validation across all 13 styles) + `test_scene_prompts_are_identity_preserving` (every prompt enforces the identity lock + 3:4 aspect).
+- `Core/Services/IdentityMatchService.swift` — refactored to a single nonisolated detached worker so non-Sendable Vision observations never cross actor boundaries (iOS 26 Sendable strictness fix uncovered while wiring Sprint 2).
+
+**Backend tests:** `35/35` passing (was 33; +2 new for Sprint 2 scene catalog).
+**iOS Debug simulator build:** clean (`** BUILD SUCCEEDED **`) after every regenerate-and-build cycle.
 
 ### FaceCheck Pre-Flight (Sprint 1 hero)
 

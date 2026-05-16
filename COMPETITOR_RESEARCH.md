@@ -32,10 +32,17 @@ Two strong patterns from third-party blog tests of AI photo generators (TruShot 
 - **Pricing:** Pro $9.99/mo, Pro Annual $24.99, Ultra $19.99/mo; consumable credit packs $44.99–$139.99
 - **Value prop:** Hyper-realistic AI photo variations from your own uploads, no shoot planning needed.
 - **Strengths:** (1) Aggressive cheap annual ($24.99/yr) — undercuts most photo competitors. (2) Hybrid sub + consumable model captures both casual and heavy users. (3) "Looks like you" framing is on-message.
-- **Weaknesses:** (1) Tiny review base, no proof. (2) Photo-only — no bio, no openers, no platform packaging. (3) Pre-canned poses/environments only; no audit.
+- **Weaknesses:** (1) Tiny review base, no proof. (2) Photo-only — no bio, no openers, no platform packaging. (3) Pre-canned poses/environments only; no audit. (4) No edit receipts or per-photo identity-match signal.
 - **Key features:** Upload selfies, choose pose/environment library, generate variations, download.
 - **Screenshot narrative (inferred):** Before/after pairs + grid of generated portraits.
 - **Positioning:** "Built to look like you. Optimized to present you at your best."
+- **GigaRizz V3 Sprint 2 counter (shipped 2026-05-15):** Photo Brief Studio. ReGen's preset library now competes against:
+  - 13 curated dating environments under one identity-lock contract (helicopter, movie theatre, rooftop bar, art gallery, coffee shop, concert, yacht deck, ski lift, Tokyo street, Italian café, recording studio, motorcycle, private jet)
+  - A plain-English brief field on top of every scene (you can rewrite the scene)
+  - Per-variant Identity Match chip + drift count visible in the result grid
+  - Signed Identity Match Certificate per export
+  - Naturalness intensity slider so every variant stays within FaceCheck-passing range
+  - All of the above stacked on the V2 audit + bio + openers + platform export layer that ReGen doesn't ship at all
 
 ### 2.2 Aragon AI: Headshot Generator
 - **Bundle / URL:** `id6673918806` — https://apps.apple.com/us/app/aragon-ai-headshot-generator/id6673918806

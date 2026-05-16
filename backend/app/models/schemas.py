@@ -38,6 +38,23 @@ class GenerationStyle(str, Enum):
     lip_enhance = "lip_enhance"
     eye_color_swap = "eye_color_swap"
     ai_portrait = "ai_portrait"
+    # V3 Sprint 2 — Scene catalog. High-impact dating environments designed to
+    # outclass ReGen's preset library. Each preserves identity exactly; only the
+    # environment, outfit, and lighting change. Routed via Nano Banana 2 / GPT
+    # Image 2 for identity lock + scene fidelity.
+    scene_helicopter = "scene_helicopter"
+    scene_movie_theatre = "scene_movie_theatre"
+    scene_rooftop_bar = "scene_rooftop_bar"
+    scene_art_gallery = "scene_art_gallery"
+    scene_coffee_shop = "scene_coffee_shop"
+    scene_concert = "scene_concert"
+    scene_yacht_deck = "scene_yacht_deck"
+    scene_ski_lift = "scene_ski_lift"
+    scene_tokyo_street = "scene_tokyo_street"
+    scene_italian_cafe = "scene_italian_cafe"
+    scene_recording_studio = "scene_recording_studio"
+    scene_motorcycle = "scene_motorcycle"
+    scene_private_jet = "scene_private_jet"
     custom = "custom"
 
 

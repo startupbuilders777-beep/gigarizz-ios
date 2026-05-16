@@ -18,7 +18,6 @@ import Vision
 //
 // All work happens on-device. Nothing leaves the user's phone.
 
-@MainActor
 enum IdentityMatchService {
 
     // MARK: - Tunables
@@ -108,16 +107,23 @@ enum IdentityMatchService {
     ///   - candidate: the generated or edited photo to evaluate.
     ///   - reference: the user's baseline selfie.
     static func match(candidate: UIImage, against reference: UIImage) async throws -> MatchResult {
-        async let candidatePrint = featurePrint(for: candidate, role: .candidate)
-        async let referencePrint = featurePrint(for: reference, role: .reference)
+        guard let candidateCG = candidate.cgImage else { throw MatchError.noFaceInCandidate }
+        guard let referenceCG = reference.cgImage else { throw MatchError.noFaceInReference }
 
-        let (candObs, refObs) = try await (candidatePrint, referencePrint)
-        var distance: Float = 0
-        do {
-            try candObs.computeDistance(&distance, to: refObs)
-        } catch {
-            throw MatchError.visionFailed(error)
-        }
+        // Vision work is wrapped in a detached task so the non-Sendable
+        // VNFeaturePrintObservation values never cross actor isolation.
+        // The distance is the only value that escapes — Float is Sendable.
+        let distance: Float = try await Task.detached(priority: .userInitiated) {
+            let candObs = try featurePrint(for: candidateCG, role: .candidate)
+            let refObs = try featurePrint(for: referenceCG, role: .reference)
+            var d: Float = 0
+            do {
+                try candObs.computeDistance(&d, to: refObs)
+            } catch {
+                throw MatchError.visionFailed(error)
+            }
+            return d
+        }.value
 
         let similarity = similarityFromDistance(distance)
         return MatchResult(
@@ -150,11 +156,9 @@ enum IdentityMatchService {
 
     private enum Role { case candidate, reference }
 
-    private static func featurePrint(for image: UIImage, role: Role) async throws -> VNFeaturePrintObservation {
-        guard let cgImage = image.cgImage else {
-            throw role == .reference ? MatchError.noFaceInReference : MatchError.noFaceInCandidate
-        }
-
+    /// Synchronous worker — must run inside the detached task in `match` so the
+    /// non-Sendable observation never escapes a single isolation domain.
+    private static func featurePrint(for cgImage: CGImage, role: Role) throws -> VNFeaturePrintObservation {
         // Step 1 — detect face
         let faceRequest = VNDetectFaceRectanglesRequest()
         let faceHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])

@@ -12,6 +12,7 @@ struct ProfileDiagnosisView: View {
 
     @StateObject private var kitStore = ProfileKitStore.shared
     @State private var showKit = false
+    @State private var showPhotoBriefStudio = false
     @State private var slotSheet: PhotoArchetype?
 
     var body: some View {
@@ -19,6 +20,7 @@ struct ProfileDiagnosisView: View {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                 heroSection
                 buildKitCTA
+                photoBriefStudioCTA
                 topFixesSection
                 if !audit.missingArchetypes.isEmpty {
                     missingArchetypesSection
@@ -37,6 +39,9 @@ struct ProfileDiagnosisView: View {
             if let kit = kitStore.current {
                 ProfileKitView(kit: kit)
             }
+        }
+        .navigationDestination(isPresented: $showPhotoBriefStudio) {
+            PhotoBriefStudioView()
         }
         .sheet(item: $slotSheet) { archetype in
             MissingSlotActionSheet(archetype: archetype) {
@@ -88,6 +93,51 @@ struct ProfileDiagnosisView: View {
             kitStore.seedStarterCopyIfNeeded(from: audit)
             showKit = true
         }
+    }
+
+    // MARK: - Photo Brief Studio CTA (V3 Sprint 2)
+    //
+    // Surfaces the new generative scene catalog right after the kit CTA. Gives
+    // users an immediate "now generate environment-driven photos" path without
+    // forcing them through the full kit builder.
+
+    private var photoBriefStudioCTA: some View {
+        Button {
+            DesignSystem.Haptics.medium()
+            showPhotoBriefStudio = true
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(DesignSystem.Colors.flameOrange.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "wand.and.stars")
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Photo Brief Studio")
+                        .font(DesignSystem.Typography.headline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    Text("Helicopter, movie theatre, rooftop bar, Tokyo street + 9 more. Identity locked.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+            }
+            .padding(DesignSystem.Spacing.medium)
+            .background(DesignSystem.Colors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card)
+                    .stroke(DesignSystem.Colors.flameOrange.opacity(0.6), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("diagnosis_photo_brief_studio")
     }
 
     // MARK: - Top fixes

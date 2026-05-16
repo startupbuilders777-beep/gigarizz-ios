@@ -283,6 +283,92 @@ STYLE_PROMPTS: dict[str, str] = {
         "Cinematic lighting, magazine-style composition, neutral or branded background. "
         "Preserve facial bone structure, skin tone, and eye color. Photorealistic, vertical 3:4."
     ),
+
+    # V3 Sprint 2 — Scene catalog. Pair with Nano Banana 2 (identity-locked) or
+    # GPT Image 2 (scene-faithful). Every prompt opens with "Same person as the
+    # reference photo, same face..." so identity is preserved while ONLY the
+    # environment, outfit, and lighting change. This is what beats ReGen's
+    # preset library — same likeness contract, more interesting environments.
+    "scene_helicopter": (
+        "Same person as the reference photo, same face, same identity. Place them in the "
+        "open door of a helicopter mid-flight over a dramatic mountain or coastal landscape. "
+        "Aviator headset around the neck (not over the face), wind in the hair, soft late-afternoon "
+        "light, a confident relaxed half-smile. Door-frame and rotor visible. Cinematic, vertical "
+        "3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_movie_theatre": (
+        "Same person as the reference photo, same face, same identity. Seated alone in a plush "
+        "modern movie theatre, screen glow softly lighting one side of the face, deep red velvet "
+        "seats around them. Smart-casual outfit, popcorn or drink optional. Quiet confident "
+        "expression looking off camera. Cinematic ambient light, vertical 3:4, photorealistic. "
+        "Do not alter the face."
+    ),
+    "scene_rooftop_bar": (
+        "Same person as the reference photo, same face, same identity. Standing at a rooftop bar "
+        "at golden hour with a warm-lit city skyline behind. Tailored smart-casual outfit, drink "
+        "in hand, relaxed leaning posture. Soft bokeh string lights. Editorial dating-app look, "
+        "vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_art_gallery": (
+        "Same person as the reference photo, same face, same identity. Standing in a contemporary "
+        "art gallery with large abstract canvases on white walls, warm spot lighting. "
+        "Considered smart-casual outfit, hands at sides, gentle interested expression looking "
+        "slightly off camera. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_coffee_shop": (
+        "Same person as the reference photo, same face, same identity. Seated at the window of a "
+        "Brooklyn-style coffee shop, golden-hour light spilling in, latte in hand, soft natural "
+        "smile. Casual cozy outfit (knit sweater or hoodie). Authentic candid feel. "
+        "Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_concert": (
+        "Same person as the reference photo, same face, same identity. In the crowd at a live "
+        "concert venue, deep blue and magenta stage lights, soft motion behind, faces of the "
+        "crowd blurred. Smart-casual outfit, in-the-moment expression. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_yacht_deck": (
+        "Same person as the reference photo, same face, same identity. On the open deck of a "
+        "modern sailing yacht at sea, midday sun, salt air, sea horizon behind. Linen shirt or "
+        "polo, sunglasses optional but pushed up. Confident relaxed posture. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_ski_lift": (
+        "Same person as the reference photo, same face, same identity. Riding a ski chairlift "
+        "with snowy mountain peaks in the background, soft alpine light. Modern ski jacket "
+        "(zipped, no goggles over face), genuine cold-weather smile. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_tokyo_street": (
+        "Same person as the reference photo, same face, same identity. Walking a Shibuya-style "
+        "Tokyo street at night, neon signage in soft bokeh behind, light rain on pavement. "
+        "Modern smart-casual layered outfit. Confident expression, looking just past the camera. "
+        "Cinematic, vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_italian_cafe": (
+        "Same person as the reference photo, same face, same identity. Seated outside a small "
+        "Amalfi-coast Italian café, espresso on the table, soft Mediterranean light, lemon trees "
+        "in the background. Linen or breezy summer outfit, warm relaxed smile. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_recording_studio": (
+        "Same person as the reference photo, same face, same identity. In a professional music "
+        "recording studio, mixing console glowing in soft warm light, headphones around the neck "
+        "(not on the head), creative casual outfit. Quiet focused half-smile. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_motorcycle": (
+        "Same person as the reference photo, same face, same identity. Standing next to a modern "
+        "sport or cafe-racer motorcycle on a scenic coastal road, helmet held in one hand at the "
+        "side (NOT covering the face), riding jacket open. Confident grounded posture. Late golden "
+        "hour. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_private_jet": (
+        "Same person as the reference photo, same face, same identity. Seated in the cabin of a "
+        "modern private jet, soft warm cabin lighting, oval window with sky behind. Smart "
+        "tailored outfit, relaxed unposed expression. Editorial luxury feel without being "
+        "ostentatious. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
 }
 
 
