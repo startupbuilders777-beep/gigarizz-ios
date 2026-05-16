@@ -26,6 +26,7 @@ struct PhotoScene: Identifiable, Hashable {
         case lifestyle
         case travel
         case professional
+        case active
 
         var id: String { rawValue }
 
@@ -36,6 +37,7 @@ struct PhotoScene: Identifiable, Hashable {
             case .lifestyle: return "Lifestyle"
             case .travel: return "Travel"
             case .professional: return "Professional"
+            case .active: return "Active"
             }
         }
 
@@ -46,6 +48,7 @@ struct PhotoScene: Identifiable, Hashable {
             case .lifestyle: return "How you actually live, made cinematic."
             case .travel: return "Implies depth without leaving home."
             case .professional: return "Status without LinkedIn vibes."
+            case .active: return "Sport + craft. Implied competence."
             }
         }
 
@@ -56,6 +59,7 @@ struct PhotoScene: Identifiable, Hashable {
             case .lifestyle: return "cup.and.saucer.fill"
             case .travel: return "airplane"
             case .professional: return "briefcase.fill"
+            case .active: return "figure.run"
             }
         }
     }
@@ -193,6 +197,82 @@ extension PhotoScene {
             blurb: "Cabin window with sky behind, tailored outfit.",
             briefSeed: "Seated in the cabin of a modern private jet, soft warm cabin lighting, oval window with sky behind, smart tailored outfit, relaxed unposed expression.",
             iconName: "airplane.circle.fill"
+        ),
+        PhotoScene(
+            id: "observation_deck",
+            backendStyle: "scene_observation_deck",
+            category: .professional,
+            displayName: "Observation deck",
+            blurb: "NYC / Chicago skyline behind at blue hour.",
+            briefSeed: "Standing at the open-air observation deck of a high-rise (NYC / Chicago skyline behind), late blue hour, city lights starting to glow, smart-casual outfit, hands in pockets.",
+            iconName: "building.2.fill"
+        ),
+
+        // — Active —
+        PhotoScene(
+            id: "gym",
+            backendStyle: "scene_gym",
+            category: .active,
+            displayName: "Boutique gym",
+            blurb: "Mid-rep posture in a modern boutique gym.",
+            briefSeed: "In a modern boutique gym, soft warm overhead light, fitted athletic outfit, mid-rep posture (no strain face), confident grounded expression.",
+            iconName: "dumbbell.fill"
+        ),
+        PhotoScene(
+            id: "sailing_race",
+            backendStyle: "scene_sailing_race",
+            category: .active,
+            displayName: "Sailing race",
+            blurb: "Hand on a winch, sail behind, salt spray.",
+            briefSeed: "On the deck of a racing sailboat at sea, sail visible behind, salt spray, technical sailing jacket, hand on a winch, focused expression.",
+            iconName: "sailboat.fill"
+        ),
+        PhotoScene(
+            id: "golf_course",
+            backendStyle: "scene_golf_course",
+            category: .active,
+            displayName: "Golf course",
+            blurb: "Manicured tee box at sunrise, modern polo.",
+            briefSeed: "On a manicured golf course tee box at sunrise, rolling fairway behind, modern golf polo, club resting at the side, relaxed grounded posture.",
+            iconName: "figure.golf"
+        ),
+        PhotoScene(
+            id: "dance_studio",
+            backendStyle: "scene_dance_studio",
+            category: .active,
+            displayName: "Dance studio",
+            blurb: "Mirror wall, ballet barre, mid-movement.",
+            briefSeed: "In a sunlit dance studio with mirror wall and ballet barre, soft natural light, casual fitted athleisure, mid-movement relaxed pose, confident half-smile.",
+            iconName: "figure.dance"
+        ),
+
+        // — Lifestyle (additions) —
+        PhotoScene(
+            id: "sushi_bar",
+            backendStyle: "scene_sushi_bar",
+            category: .lifestyle,
+            displayName: "Sushi bar",
+            blurb: "Counter at an upscale modern sushi bar.",
+            briefSeed: "Seated at the counter of an upscale modern sushi bar, warm wood tones, chef faintly visible behind, smart-casual outfit, small confident smile.",
+            iconName: "fork.knife"
+        ),
+        PhotoScene(
+            id: "vineyard",
+            backendStyle: "scene_vineyard",
+            category: .lifestyle,
+            displayName: "Vineyard walk",
+            blurb: "Sunlit Tuscan vineyard at golden hour.",
+            briefSeed: "Walking through a sunlit Tuscan-style vineyard, rows of vines softly out of focus behind, linen shirt, glass of red wine in hand, late golden hour, relaxed warm expression.",
+            iconName: "leaf.arrow.triangle.circlepath"
+        ),
+        PhotoScene(
+            id: "dog_park",
+            backendStyle: "scene_dog_park",
+            category: .lifestyle,
+            displayName: "Dog park",
+            blurb: "Kneeling next to a friendly dog at golden hour.",
+            briefSeed: "In a sunlit park kneeling next to a friendly medium-sized dog, soft golden hour, casual cozy outfit, genuine warm smile, eye contact with camera.",
+            iconName: "pawprint.fill"
         )
     ]
 

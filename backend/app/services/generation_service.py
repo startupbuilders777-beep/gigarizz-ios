@@ -369,6 +369,51 @@ STYLE_PROMPTS: dict[str, str] = {
         "tailored outfit, relaxed unposed expression. Editorial luxury feel without being "
         "ostentatious. Vertical 3:4, photorealistic. Do not alter the face."
     ),
+    "scene_gym": (
+        "Same person as the reference photo, same face, same identity. In a modern boutique gym, "
+        "soft warm overhead light, fitted athletic outfit, mid-rep posture (no strain face). "
+        "Confident grounded expression. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_sailing_race": (
+        "Same person as the reference photo, same face, same identity. On the deck of a racing "
+        "sailboat at sea, sail visible behind, salt spray, technical sailing jacket, hand on a "
+        "winch. Bright midday sun, focused expression. Vertical 3:4, photorealistic. Do not alter "
+        "the face."
+    ),
+    "scene_sushi_bar": (
+        "Same person as the reference photo, same face, same identity. Seated at the counter of "
+        "an upscale modern sushi bar, warm wood tones, chef and pieces faintly visible behind, "
+        "smart-casual outfit, small confident smile. Vertical 3:4, photorealistic. Do not alter "
+        "the face."
+    ),
+    "scene_vineyard": (
+        "Same person as the reference photo, same face, same identity. Walking through a sunlit "
+        "Tuscan-style vineyard, rows of vines softly out of focus behind, linen shirt, glass of "
+        "red wine in hand, late golden hour. Relaxed warm expression. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
+    "scene_observation_deck": (
+        "Same person as the reference photo, same face, same identity. Standing at the open-air "
+        "observation deck of a high-rise (NYC / Chicago skyline behind), late blue hour, city "
+        "lights starting to glow, smart-casual outfit, hands in pockets. Confident relaxed "
+        "expression. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_dog_park": (
+        "Same person as the reference photo, same face, same identity. In a sunlit park kneeling "
+        "next to a friendly medium-sized dog, soft golden hour, casual cozy outfit, genuine warm "
+        "smile, eye contact with camera. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_golf_course": (
+        "Same person as the reference photo, same face, same identity. On a manicured golf course "
+        "tee box at sunrise, rolling fairway behind, modern golf polo, club resting at the side, "
+        "relaxed grounded posture. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_dance_studio": (
+        "Same person as the reference photo, same face, same identity. In a sunlit dance studio "
+        "with mirror wall and ballet barre, soft natural light, casual fitted athleisure, "
+        "mid-movement relaxed pose, confident half-smile. Vertical 3:4, photorealistic. Do not "
+        "alter the face."
+    ),
 }
 
 

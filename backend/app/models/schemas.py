@@ -55,6 +55,16 @@ class GenerationStyle(str, Enum):
     scene_recording_studio = "scene_recording_studio"
     scene_motorcycle = "scene_motorcycle"
     scene_private_jet = "scene_private_jet"
+    # V3 Sprint 4 — additional environments. All use the same identity-lock
+    # contract; intent is to widen the catalog ReGen has to compete against.
+    scene_gym = "scene_gym"
+    scene_sailing_race = "scene_sailing_race"
+    scene_sushi_bar = "scene_sushi_bar"
+    scene_vineyard = "scene_vineyard"
+    scene_observation_deck = "scene_observation_deck"
+    scene_dog_park = "scene_dog_park"
+    scene_golf_course = "scene_golf_course"
+    scene_dance_studio = "scene_dance_studio"
     custom = "custom"
 
 

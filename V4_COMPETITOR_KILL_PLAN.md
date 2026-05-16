@@ -11,6 +11,11 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-15 (V4 counters active in code)
 
+**Sprint 4 (Quality Coach + Scene Expansion + Receipt Embedding):**
+- Reference Selfie Quality Coach makes the V3 trust contract enforceable from the input side: if the baseline is bad, we say so and route the user to fix it instead of producing low-confidence outputs.
+- Scene catalog at 21 environments puts the gap with ReGen's preset library out of reach in one push. Adding the "Active" category covers fitness/golf/dance demographics that ReGen's lifestyle preset list misses.
+- EXIF UserComment receipt embedding closes the file-level transparency gap vs FaceApp / Facetune / ReGen — any downstream verifier can read the signed receipt without going through GigaRizz.
+
 **Sprint 3 (Reference Selfie Vault + Photo Sequence Optimizer):**
 - **Reference Selfie Vault** ends the per-generation friction every photo-only competitor still ships (ReGen / Aragon / Sway re-ask for the source on every batch).
 - **Photo Sequence Optimizer** is the cross-platform counter that the Match Group apps cannot ship — they have business reasons not to optimize you for their competitors. Per-slot rationale text closes the trust gap left by Tinder Photo Selector's silent picking.
@@ -55,7 +60,13 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **Photo Sequence Optimizer** — direct counter to **Tinder Photo Selector** (silent picking → we explain), **Bumble AI Photo Feedback** (single-platform lineup feedback → we cover all three), and **Picker AI** (generic camera-roll picker → we tune per dating platform). Surfaces ordered lineups per Hinge / Tinder / Bumble with per-slot rationale text and an "unfilled slot types" callout for the user's selected platforms.
 - **Reference Selfie Vault** — counter to *every* photo-feature competitor that re-asks the user to upload a selfie per generation (ReGen, Aragon, Sway, PhotoAI). Set baseline once, every Identity Match check uses it. Stored on-device, excluded from backups.
 
-### Sprint 4 photo counters (next)
+### Sprint 4 photo counters — ✅ Shipped 2026-05-15
+
+- **Reference Selfie Quality Coach** — counters every photo competitor (ReGen, Aragon, Sway, PhotoAI) that silently lets users upload a bad baseline and then ships low-confidence outputs without explanation. We surface the bad reference as a banner in Photo Brief Studio with specific advice (re-shoot near a window, get face larger in frame, etc.).
+- **Scene catalog grown to 21 environments** (added gym, sailing race, sushi bar, vineyard, observation deck, dog park, golf course, dance studio) with a new "Active" category — direct ReGen catalog-breadth counter.
+- **Generation Receipt JPEG embedding (EXIF UserComment)** — counter to FaceApp + Facetune opacity at the file level. The signed certificate now travels with the shared photo, so any downstream tool can verify what was done. Counters ReGen's complete absence of edit receipts.
+
+### Sprint 5 photo counters (next)
 
 - **Age-Faithful Lock** — fails any generation that drifts the apparent age >5 years from the user's reference. Direct Sway AI counter.
 

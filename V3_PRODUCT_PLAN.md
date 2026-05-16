@@ -22,8 +22,8 @@
 | 1 | FaceCheck Pre-Flight, Identity Match Certificate, FaceDriftDetector (oversmoothing / eye widening / jaw narrowing / brightness / face size / mouth open), Face Refine Studio (smile enhance + add smile + jaw refine + nose refine + lip enhance + eye color + AI portrait), Glow Up Chain coordinator with rollback | ✅ Shipped 2026-05-14 |
 | 2 | Photo Brief Studio — plain English brief + 13-scene curated catalog (helicopter, movie theatre, rooftop bar, art gallery, coffee shop, concert, yacht deck, ski lift, Tokyo street, Italian café, recording studio, motorcycle, private jet); per-variant Identity Match chips + drift count + signed certificate; backend `scene_*` GenerationStyle prompts with identity lock | ✅ Shipped 2026-05-15 |
 | 3 | Reference Selfie Vault (set baseline once; auto-injected into Photo Brief Studio + Glow Up Studio + Settings) + Photo Sequence Optimizer per platform (Hinge/Tinder/Bumble per-slot ranking with rationale) | ✅ Shipped 2026-05-15 |
-| 4 | Auto-pick best baseline selfie + surface Identity Match chips throughout the gallery | Next |
-| 5 | Age-Faithful Lock + Generation Receipt embedding (PNG/JPEG metadata) | Sprint 5 |
+| 4 | Reference Selfie Quality Coach + 8 more dating scenes (gym, sailing race, sushi bar, vineyard, observation deck, dog park, golf course, dance studio) bringing the catalog to 21 environments + Generation Receipt JPEG embedding via EXIF UserComment | ✅ Shipped 2026-05-15 |
+| 5 | Age-Faithful Lock (drop generations whose apparent age band shifts >5 years) | Next |
 | 6 | Live preview Glow Up — show step-by-step chain in motion in the UI with before/during/after slider | Sprint 6 |
 
 Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
@@ -47,6 +47,15 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
 
+**Sprint 4 (quality coach + scene expansion + receipt embedding):**
+- `Core/Services/ReferenceSelfieQuality.swift` — wraps `PhotoQualityAnalyzer` to score the stored reference selfie (excellent / acceptable / poor) with critical-vs-cosmetic issue flagging. Surfaced as a banner in `PhotoBriefStudioView` whenever the verdict is below excellent so users fix the baseline before burning generations.
+- `Core/Services/CertificateEmbedding.swift` — stamps the `IdentityMatchCertificate` JSON into the JPEG's EXIF `UserComment` tag so the receipt travels with the photo whenever the user shares it. Uses `CGImageDestination` to keep ImageIO's full property set intact. Round-tripping verified by `extract(from:)`.
+- `Features/Upgrade/PhotoBriefStudioView.swift` (BriefResultDetailSheet) — the share button now writes a temp JPEG with the receipt embedded and shares the URL instead of the bare `Image` so downstream apps preserve the metadata.
+- `backend/app/models/schemas.py` — 8 new GenerationStyle enums: `scene_gym`, `scene_sailing_race`, `scene_sushi_bar`, `scene_vineyard`, `scene_observation_deck`, `scene_dog_park`, `scene_golf_course`, `scene_dance_studio`. Catalog is now **21 dating environments**.
+- `backend/app/services/generation_service.py` — matching identity-locked prompt templates for each new scene.
+- `backend/tests/test_api.py` — extends scene-style validation + bumps the identity-preserving assertion count from 13 to 21.
+- `Core/Models/PhotoScene.swift` — adds the matching iOS catalog entries plus a new `active` Category bucket (Gym, Sailing race, Golf, Dance studio).
+
 **Sprint 3 (Reference Vault + Photo Sequence Optimizer):**
 - `Core/Services/ReferenceSelfieVault.swift` — `@MainActor ObservableObject` singleton. Persists the user's baseline selfie to Application Support (excluded from backups). Now auto-injected into PhotoBriefStudioView + GlowUpStudioView so users set their reference once and every photo-aware feature trusts it. Old "pick a selfie every time" friction is gone.
 - `Features/Settings/SettingsView.swift` — new "Reference Selfie Vault" section with thumbnail preview, replace, and forget. Replaces the previous "go set a selfie elsewhere" coaching cards across the photo features.
@@ -64,8 +73,8 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `backend/tests/test_api.py` — `test_generation_accepts_v3_sprint2_scene_styles` (schema validation across all 13 styles) + `test_scene_prompts_are_identity_preserving` (every prompt enforces the identity lock + 3:4 aspect).
 - `Core/Services/IdentityMatchService.swift` — refactored to a single nonisolated detached worker so non-Sendable Vision observations never cross actor boundaries (iOS 26 Sendable strictness fix uncovered while wiring Sprint 2).
 
-**Backend tests:** `35/35` passing (was 33; +2 new for Sprint 2 scene catalog).
-**iOS Debug simulator build:** clean (`** BUILD SUCCEEDED **`) after every regenerate-and-build cycle.
+**Backend tests:** `35/35` passing through Sprint 4 (test count covers Sprint 2 + 4 scene additions; idempotent and identity-preserving asserts updated to 21 scenes).
+**iOS Debug simulator build:** clean (`** BUILD SUCCEEDED **`) after every regenerate-and-build cycle through Sprint 4.
 
 ### FaceCheck Pre-Flight (Sprint 1 hero)
 

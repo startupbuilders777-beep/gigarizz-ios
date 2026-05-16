@@ -40,6 +40,7 @@ struct PhotoBriefStudioView: View {
     @State private var detailResult: BriefResult?
 
     @StateObject private var vault = ReferenceSelfieVault.shared
+    @State private var qualityReport: ReferenceSelfieQuality.Report?
 
     private var referenceImage: UIImage? { vault.currentSelfie }
 
@@ -51,6 +52,7 @@ struct PhotoBriefStudioView: View {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                 header
                 referenceSelfieCard
+                qualityBanner
                 sceneCard
                 briefEditor
                 variantPicker
@@ -85,6 +87,55 @@ struct PhotoBriefStudioView: View {
         .onChange(of: pickerItem) { _, _ in
             Task { await loadReference() }
         }
+        .onChange(of: vault.currentSelfie) { _, _ in
+            Task { await refreshQuality() }
+        }
+        .task { await refreshQuality() }
+    }
+
+    @ViewBuilder
+    private var qualityBanner: some View {
+        if let report = qualityReport, report.verdict != .excellent {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                HStack(spacing: 8) {
+                    Image(systemName: report.verdict.iconName)
+                        .foregroundStyle(report.verdict == .poor ? DesignSystem.Colors.error : DesignSystem.Colors.warning)
+                    Text(report.verdict.displayName)
+                        .font(DesignSystem.Typography.subheadline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                }
+                ForEach(report.issues) { issue in
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: issue.isCritical ? "xmark.circle.fill" : "info.circle.fill")
+                            .foregroundStyle(issue.isCritical ? DesignSystem.Colors.error : DesignSystem.Colors.warning)
+                            .frame(width: 18)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(issue.title)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                            Text(issue.advice)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(DesignSystem.Colors.textSecondary)
+                        }
+                    }
+                }
+            }
+            .padding(DesignSystem.Spacing.medium)
+            .background((report.verdict == .poor ? DesignSystem.Colors.error : DesignSystem.Colors.warning).opacity(0.10))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                    .stroke((report.verdict == .poor ? DesignSystem.Colors.error : DesignSystem.Colors.warning).opacity(0.30), lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+        }
+    }
+
+    private func refreshQuality() async {
+        guard let image = vault.currentSelfie else {
+            qualityReport = nil
+            return
+        }
+        qualityReport = await ReferenceSelfieQuality.evaluate(image: image)
     }
 
     // MARK: - Sections
@@ -559,7 +610,7 @@ struct BriefResultDetailSheet: View {
             .buttonStyle(.bordered)
             .tint(DesignSystem.Colors.flameOrange)
 
-            ShareLink(item: Image(uiImage: result.image), preview: SharePreview("GigaRizz photo", image: Image(uiImage: result.image))) {
+            ShareLink(item: shareItem, preview: SharePreview("GigaRizz photo", image: Image(uiImage: result.image))) {
                 Label("Share", systemImage: "square.and.arrow.up")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, DesignSystem.Spacing.medium)
@@ -567,6 +618,20 @@ struct BriefResultDetailSheet: View {
             .buttonStyle(.borderedProminent)
             .tint(DesignSystem.Colors.success)
         }
+    }
+
+    /// Materializes a temp JPEG with the certificate embedded in EXIF so the
+    /// receipt travels with the shared photo. Falls back to the raw image when
+    /// embedding fails — the share itself shouldn't break over a metadata
+    /// error.
+    private var shareItem: URL {
+        let fallbackURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(result.id.uuidString).jpg")
+        if let embedded = CertificateEmbedding.embed(certificate: result.certificate, into: result.image) {
+            try? embedded.write(to: fallbackURL, options: .atomic)
+        } else if let bare = result.image.jpegData(compressionQuality: 0.92) {
+            try? bare.write(to: fallbackURL, options: .atomic)
+        }
+        return fallbackURL
     }
 
     private func row(_ label: String, value: String) -> some View {
