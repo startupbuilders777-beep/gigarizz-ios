@@ -520,6 +520,13 @@ async def test_generation_accepts_v3_sprint2_scene_styles(client: AsyncClient):
         "scene_dog_park",
         "scene_golf_course",
         "scene_dance_studio",
+        # V3 Sprint 7 additions
+        "scene_rooftop_pool",
+        "scene_ramen_shop",
+        "scene_library",
+        "scene_museum",
+        "scene_beach_sunset",
+        "scene_boxing_gym",
     ]
     for style in scene_styles:
         resp = await client.post(
@@ -542,7 +549,7 @@ def test_scene_prompts_are_identity_preserving():
     from app.services.generation_service import STYLE_PROMPTS
 
     scene_keys = [k for k in STYLE_PROMPTS.keys() if k.startswith("scene_")]
-    assert len(scene_keys) == 21, f"Expected 21 scene prompts, found {len(scene_keys)}"
+    assert len(scene_keys) == 27, f"Expected 27 scene prompts, found {len(scene_keys)}"
     for key in scene_keys:
         prompt = STYLE_PROMPTS[key]
         assert "Same person as the reference photo" in prompt, f"{key} missing identity lock"

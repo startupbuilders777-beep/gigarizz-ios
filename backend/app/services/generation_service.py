@@ -414,6 +414,39 @@ STYLE_PROMPTS: dict[str, str] = {
         "mid-movement relaxed pose, confident half-smile. Vertical 3:4, photorealistic. Do not "
         "alter the face."
     ),
+    "scene_rooftop_pool": (
+        "Same person as the reference photo, same face, same identity. At a modern rooftop "
+        "infinity pool overlooking a city skyline, late golden hour, swimwear or linen shirt at "
+        "the edge, relaxed confident pose. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_ramen_shop": (
+        "Same person as the reference photo, same face, same identity. Seated at the counter of "
+        "a Tokyo-style ramen shop, warm pendant lights, steam rising from the bowl, smart-casual "
+        "outfit, small focused smile. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_library": (
+        "Same person as the reference photo, same face, same identity. In a beautiful old-world "
+        "library with tall wooden shelves, soft window light, smart-casual outfit, holding a "
+        "book, considered relaxed expression. Vertical 3:4, photorealistic. Do not alter the "
+        "face."
+    ),
+    "scene_museum": (
+        "Same person as the reference photo, same face, same identity. Walking through a modern "
+        "museum gallery, a large abstract piece behind, considered smart-casual outfit, soft "
+        "directional light, gentle interested expression. Vertical 3:4, photorealistic. Do not "
+        "alter the face."
+    ),
+    "scene_beach_sunset": (
+        "Same person as the reference photo, same face, same identity. Walking on a quiet beach "
+        "at sunset, ocean horizon behind, soft pastel sky, linen shirt rolled at the sleeves, "
+        "warm relaxed expression. Vertical 3:4, photorealistic. Do not alter the face."
+    ),
+    "scene_boxing_gym": (
+        "Same person as the reference photo, same face, same identity. In an old-school boxing "
+        "gym with worn brick walls, soft directional light, hand wraps and gloves loose at the "
+        "side, athletic grounded posture, small confident expression. Vertical 3:4, "
+        "photorealistic. Do not alter the face."
+    ),
 }
 
 

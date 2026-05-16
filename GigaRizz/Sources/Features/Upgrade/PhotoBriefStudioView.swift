@@ -152,46 +152,73 @@ struct PhotoBriefStudioView: View {
         }
     }
 
+    @ViewBuilder
     private var referenceSelfieCard: some View {
-        HStack(spacing: DesignSystem.Spacing.medium) {
-            ZStack {
+        if referenceImage == nil {
+            // Onboarding card — hero CTA when no vault is set so the very
+            // first run of Photo Brief Studio funnels through the trust step
+            // before any generation happens.
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                HStack(spacing: 8) {
+                    Image(systemName: "person.crop.square.badge.camera")
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
+                    Text("Set your reference selfie")
+                        .font(DesignSystem.Typography.headline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                }
+                Text("Identity Match scores every variant against this baseline. Stored on this device only — never uploaded except into a generation request.")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(DesignSystem.Colors.textSecondary)
+                PhotosPicker(selection: $pickerItem, matching: .images) {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                        Text("Add reference selfie")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Image(systemName: "arrow.right")
+                    }
+                    .padding(DesignSystem.Spacing.medium)
+                    .frame(maxWidth: .infinity)
+                    .background(DesignSystem.Colors.flameOrange)
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+                }
+            }
+            .padding(DesignSystem.Spacing.medium)
+            .background(DesignSystem.Colors.surface)
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium)
+                    .stroke(DesignSystem.Colors.flameOrange.opacity(0.6), lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
+        } else {
+            HStack(spacing: DesignSystem.Spacing.medium) {
                 if let referenceImage {
                     Image(uiImage: referenceImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 64, height: 64)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(DesignSystem.Colors.surfaceSecondary)
-                        .frame(width: 64, height: 64)
-                        .overlay {
-                            Image(systemName: "person.crop.square.badge.camera")
-                                .foregroundStyle(DesignSystem.Colors.textSecondary)
-                        }
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Reference selfie loaded")
+                        .font(DesignSystem.Typography.subheadline)
+                        .foregroundStyle(DesignSystem.Colors.textPrimary)
+                    Text("Tap to swap.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(DesignSystem.Colors.textSecondary)
+                }
+                Spacer()
+                PhotosPicker(selection: $pickerItem, matching: .images) {
+                    Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundStyle(DesignSystem.Colors.flameOrange)
                 }
             }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(referenceImage == nil ? "Add a reference selfie" : "Reference selfie loaded")
-                    .font(DesignSystem.Typography.subheadline)
-                    .foregroundStyle(DesignSystem.Colors.textPrimary)
-                Text(referenceImage == nil ? "Used to score Identity Match per variant." : "Tap to swap.")
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(DesignSystem.Colors.textSecondary)
-            }
-
-            Spacer()
-
-            PhotosPicker(selection: $pickerItem, matching: .images) {
-                Image(systemName: referenceImage == nil ? "plus.circle.fill" : "arrow.triangle.2.circlepath.circle.fill")
-                    .font(.system(size: 28))
-                    .foregroundStyle(DesignSystem.Colors.flameOrange)
-            }
+            .padding(DesignSystem.Spacing.medium)
+            .background(DesignSystem.Colors.surfaceSecondary)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
         }
-        .padding(DesignSystem.Spacing.medium)
-        .background(DesignSystem.Colors.surfaceSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.medium))
     }
 
     private var sceneCard: some View {
@@ -542,6 +569,7 @@ struct BriefResultDetailSheet: View {
     let result: BriefResult
 
     @State private var showCertificate = false
+    @State private var showFaceCheck = false
     @State private var saveStatus: SaveStatus = .idle
     @StateObject private var vault = ReferenceSelfieVault.shared
     @StateObject private var photoLibrary = PhotoLibraryService()
@@ -593,6 +621,17 @@ struct BriefResultDetailSheet: View {
             }
             .sheet(isPresented: $showCertificate) {
                 IdentityMatchCertificateSheet(certificate: result.certificate)
+            }
+            .sheet(isPresented: $showFaceCheck) {
+                if let reference = vault.currentSelfie {
+                    NavigationStack {
+                        FaceCheckPreflightView(
+                            candidate: result.image,
+                            reference: reference,
+                            onRegenerate: nil
+                        )
+                    }
+                }
             }
         }
     }
@@ -650,6 +689,18 @@ struct BriefResultDetailSheet: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(DesignSystem.Colors.success)
+            }
+
+            if vault.currentSelfie != nil {
+                Button {
+                    showFaceCheck = true
+                } label: {
+                    Label("Run FaceCheck Pre-Flight", systemImage: "checkmark.shield.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DesignSystem.Spacing.medium)
+                }
+                .buttonStyle(.bordered)
+                .tint(DesignSystem.Colors.hinge)
             }
 
             Button {

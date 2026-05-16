@@ -273,6 +273,64 @@ extension PhotoScene {
             blurb: "Kneeling next to a friendly dog at golden hour.",
             briefSeed: "In a sunlit park kneeling next to a friendly medium-sized dog, soft golden hour, casual cozy outfit, genuine warm smile, eye contact with camera.",
             iconName: "pawprint.fill"
+        ),
+        PhotoScene(
+            id: "rooftop_pool",
+            backendStyle: "scene_rooftop_pool",
+            category: .lifestyle,
+            displayName: "Rooftop pool",
+            blurb: "Modern infinity pool overlooking a city skyline.",
+            briefSeed: "At a modern rooftop infinity pool overlooking a city skyline, late golden hour, swimwear or linen shirt at the edge, relaxed confident pose.",
+            iconName: "drop.fill"
+        ),
+        PhotoScene(
+            id: "ramen_shop",
+            backendStyle: "scene_ramen_shop",
+            category: .lifestyle,
+            displayName: "Ramen shop",
+            blurb: "Tokyo-style ramen counter, steam, warm lights.",
+            briefSeed: "Seated at the counter of a Tokyo-style ramen shop, warm pendant lights, steam rising from the bowl, smart-casual outfit, small focused smile.",
+            iconName: "takeoutbag.and.cup.and.straw.fill"
+        ),
+        PhotoScene(
+            id: "beach_sunset",
+            backendStyle: "scene_beach_sunset",
+            category: .travel,
+            displayName: "Beach sunset",
+            blurb: "Quiet beach walk at sunset, ocean horizon behind.",
+            briefSeed: "Walking on a quiet beach at sunset, ocean horizon behind, soft pastel sky, linen shirt rolled at the sleeves, warm relaxed expression.",
+            iconName: "sunset.fill"
+        ),
+
+        // — Cinematic (additions) —
+        PhotoScene(
+            id: "library",
+            backendStyle: "scene_library",
+            category: .cinematic,
+            displayName: "Old library",
+            blurb: "Tall wooden shelves, soft window light, holding a book.",
+            briefSeed: "In a beautiful old-world library with tall wooden shelves, soft window light, smart-casual outfit, holding a book, considered relaxed expression.",
+            iconName: "books.vertical.fill"
+        ),
+        PhotoScene(
+            id: "museum",
+            backendStyle: "scene_museum",
+            category: .cinematic,
+            displayName: "Museum gallery",
+            blurb: "Modern gallery, large abstract piece behind.",
+            briefSeed: "Walking through a modern museum gallery, a large abstract piece behind, considered smart-casual outfit, soft directional light, gentle interested expression.",
+            iconName: "building.columns.fill"
+        ),
+
+        // — Active (addition) —
+        PhotoScene(
+            id: "boxing_gym",
+            backendStyle: "scene_boxing_gym",
+            category: .active,
+            displayName: "Boxing gym",
+            blurb: "Old-school brick walls, hand wraps, grounded posture.",
+            briefSeed: "In an old-school boxing gym with worn brick walls, soft directional light, hand wraps and gloves loose at the side, athletic grounded posture, small confident expression.",
+            iconName: "figure.boxing"
         )
     ]
 

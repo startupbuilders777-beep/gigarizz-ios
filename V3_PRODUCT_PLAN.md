@@ -25,7 +25,8 @@
 | 4 | Reference Selfie Quality Coach + 8 more dating scenes (gym, sailing race, sushi bar, vineyard, observation deck, dog park, golf course, dance studio) bringing the catalog to 21 environments + Generation Receipt JPEG embedding via EXIF UserComment | ✅ Shipped 2026-05-15 |
 | 5 | Age-Faithful drift signal (composite of skin texture amplification + face darkening — Sway AI counter), Before/After compare slider in Photo Brief Studio variant detail, Glow Up Chain V2 with backend `face_restore` step | ✅ Shipped 2026-05-15 |
 | 6 | Live in-flight Glow Up Chain preview (per-step thumbnails + final before/after slider in GlowUpStudioView), Save-with-receipt to Photos (JPEG bytes preserved so EXIF UserComment cert survives), Inline Naturalness slider directly in Photo Brief Studio | ✅ Shipped 2026-05-15 |
-| 7 | Multi-photo Reference Selfie Vault — auto-pick best baseline from a stored album | Next |
+| 7 | Reference Vault onboarding card + FaceCheck Pre-Flight route directly from Brief Studio variant detail + 6 more scenes (rooftop pool, ramen shop, library, museum, beach sunset, boxing gym) — catalog now 27 environments | ✅ Shipped 2026-05-15 |
+| 8 | Multi-photo Reference Selfie Vault — auto-pick best baseline from a stored album | Next |
 
 Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, Live Wingman) once photo features have a 30-day usage signal.
 
@@ -47,6 +48,14 @@ Sprints 7+ resume the original V3 bets (Match Outcome Capture, Concierge cron, L
 - `Features/Upgrade/GlowUpChainCoordinator.swift` — sequential apply with per-step Identity Match scoring + rollback. V1 chain: local face enhance (CIFilter skin smooth/saturation) → color grade (exposure lift). Stops at the first regression beyond the tolerance.
 - `Features/Upgrade/GlowUpStudioView.swift` — now wires the chain into the primary CTA with a step-by-step results panel.
 - `backend/app/models/schemas.py` — new `GenerationStyle` enums: `smile_enhance`, `add_smile`, `jaw_refine`, `nose_refine`, `lip_enhance`, `eye_color_swap`, `ai_portrait`. Each has a dedicated identity-preserving prompt template in `STYLE_PROMPTS`.
+
+**Sprint 7 (Vault Onboarding + FaceCheck route + 6 more scenes):**
+- `Features/Upgrade/PhotoBriefStudioView.swift` — reference selfie card now becomes a hero onboarding CTA when no vault is set (orange-bordered card with PhotosPicker), funneling first-run users through the trust step before any generation. Reverts to a compact swap card once a vault exists.
+- `Features/Upgrade/PhotoBriefStudioView.swift` (BriefResultDetailSheet) — new "Run FaceCheck Pre-Flight" button that presents `FaceCheckPreflightView` against the stored reference selfie. Closes the loop in Brief Studio so users can dry-run Hinge / Tinder verification on any variant without leaving the screen.
+- `Core/Models/PhotoScene.swift` — 6 new scenes (rooftop pool, ramen shop, library, museum, beach sunset, boxing gym) bringing the catalog to **27 environments**. New scenes spread across the existing five categories.
+- `backend/app/models/schemas.py` — 6 matching `GenerationStyle` enums.
+- `backend/app/services/generation_service.py` — 6 matching identity-locked prompt templates.
+- `backend/tests/test_api.py` — extended scene-style validation list + bumped the identity-preserving assertion count from 21 to 27.
 
 **Sprint 6 (Live Chain Preview + Save-with-Receipt + Inline Naturalness):**
 - `Features/Upgrade/GlowUpChainCoordinator.swift` — adds `@Published currentStep` so the studio UI can render the in-flight step. State is reset between runs.

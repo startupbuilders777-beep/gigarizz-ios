@@ -11,6 +11,11 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-15 (V4 counters active in code)
 
+**Sprint 7 (Vault Onboarding + FaceCheck Route + 27 Scenes):**
+- The Vault onboarding card removes the *first-run* friction that every competitor still ships — most photo apps just start asking for source uploads without any persistent baseline.
+- FaceCheck Pre-Flight from variant detail is the conversion-time trust beat: at the exact moment the user decides whether to upload, they see whether Hinge/Tinder will accept it.
+- 27 dating environments under one identity-lock contract closes the catalog-breadth narrative against ReGen with margin to spare.
+
 **Sprint 6 (Live Chain Preview + Save-with-Receipt + Inline Naturalness):**
 - Live chain preview turns the audit-driven Glow Up into a visible step-by-step process the user can trust — Facetune cannot ship this without exposing how often their freeform edits drift identity.
 - Save-with-receipt makes the V3 Sprint 4 EXIF embedding actually round-trip through the iOS Photos library, defeating the metadata-strip behavior that competitor save flows fall back into.
@@ -88,7 +93,13 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **Save-with-receipt to Photos** — counter to ReGen / Aragon / Sway / FaceApp / Facetune all stripping their edit metadata at save time. Saves the JPEG bytes with the EXIF UserComment certificate intact so the file itself carries the trust contract, not just our app UI.
 - **Inline Naturalness slider in the Brief Studio** — counter to PhotoAI's prompt-engineering ceiling. Users can tune the identity-preservation intensity without leaving the generate flow, surfacing the V2/V3 trust contract as a live control.
 
-### Sprint 7 photo counters (next)
+### Sprint 7 photo counters — ✅ Shipped 2026-05-15
+
+- **Reference Vault onboarding card** — closes the "first-run friction" gap that every photo competitor walks straight past. New users land in Brief Studio and the *very first* CTA is a single tap to set the baseline that powers every Identity Match check.
+- **FaceCheck Pre-Flight route from Brief Studio variants** — counter to FaceApp + Facetune at the most-decision-point moment. The user generates a variant, taps "Run FaceCheck Pre-Flight," and sees the Pass / Borderline / Fail verdict against Hinge + Tinder verification before they upload.
+- **Scene catalog at 27 environments** (added rooftop pool, ramen shop, library, museum, beach sunset, boxing gym) — keeps the ReGen catalog-breadth gap growing. Cinematic + Active categories now have enough density to credibly cover any dating archetype on their own.
+
+### Sprint 8 photo counters (next)
 
 ---
 

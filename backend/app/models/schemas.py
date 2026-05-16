@@ -65,6 +65,14 @@ class GenerationStyle(str, Enum):
     scene_dog_park = "scene_dog_park"
     scene_golf_course = "scene_golf_course"
     scene_dance_studio = "scene_dance_studio"
+    # V3 Sprint 7 — additional environments. Push catalog past 25 to make
+    # ReGen's preset library look thin.
+    scene_rooftop_pool = "scene_rooftop_pool"
+    scene_ramen_shop = "scene_ramen_shop"
+    scene_library = "scene_library"
+    scene_museum = "scene_museum"
+    scene_beach_sunset = "scene_beach_sunset"
+    scene_boxing_gym = "scene_boxing_gym"
     custom = "custom"
 
 
