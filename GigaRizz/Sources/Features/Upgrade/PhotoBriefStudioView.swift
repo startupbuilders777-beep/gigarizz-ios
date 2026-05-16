@@ -529,17 +529,27 @@ struct BriefResultDetailSheet: View {
     let result: BriefResult
 
     @State private var showCertificate = false
+    @StateObject private var vault = ReferenceSelfieVault.shared
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: DesignSystem.Spacing.medium) {
-                    Image(uiImage: result.image)
-                        .resizable()
-                        .scaledToFit()
+                    if let reference = vault.currentSelfie {
+                        BeforeAfterCompare(
+                            before: reference,
+                            after: result.image
+                        )
                         .frame(maxHeight: 420)
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
+                    } else {
+                        Image(uiImage: result.image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 420)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.large))
+                    }
 
                     metricBlock
 

@@ -160,6 +160,7 @@
 		E97813F160D6FDD26E794D13 /* BioStrengthMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE95FE09BA3D814B95FD01 /* BioStrengthMeter.swift */; };
 		E9A9972EB735E94CBE8A96FD /* MatchInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F220CE10BD2C5715FE293 /* MatchInboxView.swift */; };
 		EA7BF5C75B9916179A092DAD /* NaturalnessSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA9062A46B79F8C240CA47 /* NaturalnessSettings.swift */; };
+		EB0D1C0D32C4251233808A37 /* BeforeAfterCompare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F123DE2CAAECBA395DCD268 /* BeforeAfterCompare.swift */; };
 		EB7177E0E5CDAF49B0D844B0 /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB6EAB7092E24EC5F0182DB /* AnalyticsDashboardView.swift */; };
 		EBD8891EEABCE6A2E53E6B6C /* AnalyticsDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C87434085205F077DB4F389 /* AnalyticsDashboardViewModel.swift */; };
 		EBFBD93305D5B59E8548663F /* ResponseTimeTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544291A9D2E84F87825B3197 /* ResponseTimeTrackerView.swift */; };
@@ -276,6 +277,7 @@
 		77F49FCAFFE752C731AD3C66 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		797552FDA3474CB5702B1EC8 /* PoseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseLibraryView.swift; sourceTree = "<group>"; };
 		7BA503BC7CB9D3845A2FB76E /* PhotoComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoComparisonView.swift; sourceTree = "<group>"; };
+		7F123DE2CAAECBA395DCD268 /* BeforeAfterCompare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeAfterCompare.swift; sourceTree = "<group>"; };
 		7F57DF58B39F10905B8B6279 /* FaceEnhancementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceEnhancementView.swift; sourceTree = "<group>"; };
 		80525043E6165C988CDA301C /* GigaRizzTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GigaRizzTests.swift; sourceTree = "<group>"; };
 		8176D1ADE0C70C90CA5A225F /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -1017,6 +1019,7 @@
 		DACA1F4CC31479C9E8C30C9B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				7F123DE2CAAECBA395DCD268 /* BeforeAfterCompare.swift */,
 				AF80505BFE1C5B4A1F61812D /* PremiumBadge.swift */,
 			);
 			path = Components;
@@ -1243,6 +1246,7 @@
 				888CD699D163446317D2F07F /* AppRatingView.swift in Sources */,
 				5A50FD2339D83D88DBE3F7BE /* AuthManager.swift in Sources */,
 				BDA18D8F727A0E538DA1F675 /* BackgroundReplacerView.swift in Sources */,
+				EB0D1C0D32C4251233808A37 /* BeforeAfterCompare.swift in Sources */,
 				4F556934BBF66A63BE59B3A1 /* BeforeAfterShareView.swift in Sources */,
 				E97813F160D6FDD26E794D13 /* BioStrengthMeter.swift in Sources */,
 				C73EF4F981AF555D69AF5476 /* BioWriterView.swift in Sources */,

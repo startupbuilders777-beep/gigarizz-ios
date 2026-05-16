@@ -11,6 +11,11 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 
 ### What shipped on 2026-05-15 (V4 counters active in code)
 
+**Sprint 5 (Age-Faithful Lock + Compare Slider + Chain V2):**
+- Age-Faithful Lock targets Sway's most-cited 1-star complaint with an on-device, transparent signal. Hits while the photo is still in the Brief Studio so the user doesn't ship an aged-looking variant.
+- Before/After compare slider is the visual proof of the V2/V3 trust contract. Most photo competitors use marketing copy here; we use the user's own reference selfie as the comparison ground truth.
+- Glow Up Chain V2 brings Facetune-comparable face restore quality into the audit-driven chain — plays Facetune's strongest card while preserving the chain's identity rollback.
+
 **Sprint 4 (Quality Coach + Scene Expansion + Receipt Embedding):**
 - Reference Selfie Quality Coach makes the V3 trust contract enforceable from the input side: if the baseline is bad, we say so and route the user to fix it instead of producing low-confidence outputs.
 - Scene catalog at 21 environments puts the gap with ReGen's preset library out of reach in one push. Adding the "Active" category covers fitness/golf/dance demographics that ReGen's lifestyle preset list misses.
@@ -66,9 +71,13 @@ V4 also re-prioritizes around the photo wedge. Every counter that is not a photo
 - **Scene catalog grown to 21 environments** (added gym, sailing race, sushi bar, vineyard, observation deck, dog park, golf course, dance studio) with a new "Active" category — direct ReGen catalog-breadth counter.
 - **Generation Receipt JPEG embedding (EXIF UserComment)** — counter to FaceApp + Facetune opacity at the file level. The signed certificate now travels with the shared photo, so any downstream tool can verify what was done. Counters ReGen's complete absence of edit receipts.
 
-### Sprint 5 photo counters (next)
+### Sprint 5 photo counters — ✅ Shipped 2026-05-15
 
-- **Age-Faithful Lock** — fails any generation that drifts the apparent age >5 years from the user's reference. Direct Sway AI counter.
+- **Age-Faithful Lock** — direct **Sway AI** counter for the "looks older than actual age" complaint. New `apparentAgeShift` drift signal triggers when skin variance amplifies + face darkens. Surfaces in FaceCheck Pre-Flight verdict and the Photo Brief Studio variant detail's drift block, with a one-tap "Regenerate at lower intensity" path.
+- **Before/After compare slider** — counter to **ReGen / Aragon / Sway** "trust us, it looks like you" framing. Direct visual proof against the user's stored baseline. Slider lives in the Photo Brief Studio variant detail.
+- **Glow Up Chain V2** — backend `face_restore` step (CodeFormer) added to the chain. Counters Facetune AI Studio's blur recovery + Aragon's editing toolkit by chaining identity-match-gated steps instead of a freeform tool palette.
+
+### Sprint 6 photo counters (next)
 
 ---
 

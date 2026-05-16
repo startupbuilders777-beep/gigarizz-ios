@@ -8,10 +8,10 @@ import UIKit
 // re-scoring Identity Match between each step, and rolling back if the score
 // regresses below the band threshold.
 //
-// V1 chain steps (in order):
+// V2 chain steps (in order):
 //   1. Local CIFilter face enhance (subtle skin + teeth + eye work, fast)
-//   2. Color grade (lighting correction)
-//   3. (Future) backend face_restore for blur recovery — needs network round-trip
+//   2. Backend face_restore (CodeFormer; recovers blur, anti-plastic) — V3 Sprint 5 add
+//   3. Color grade (lighting correction)
 //
 // Each step is wrapped in identity-match scoring. If the score drops by more
 // than `rollbackTolerance`, we stop the chain and return the last passing
@@ -24,12 +24,14 @@ final class GlowUpChainCoordinator: ObservableObject {
 
     enum StepKind: String, CaseIterable {
         case localEnhance       // CIFilter skin smooth + teeth whiten + eye brighten
+        case faceRestore        // V3 Sprint 5: backend CodeFormer (anti-plastic, identity-locked)
         case colorGrade         // CIFilter lighting correction
-        // Future: faceRestore, backgroundCleanup, hingeFraming
+        // Future: backgroundCleanup, hingeFraming
 
         var displayName: String {
             switch self {
             case .localEnhance: return "Face enhance"
+            case .faceRestore: return "Face restore"
             case .colorGrade: return "Lighting"
             }
         }
@@ -114,9 +116,44 @@ final class GlowUpChainCoordinator: ObservableObject {
         switch step {
         case .localEnhance:
             return await applyLocalEnhance(image: image)
+        case .faceRestore:
+            return await applyFaceRestore(image: image)
         case .colorGrade:
             return await applyColorGrade(image: image)
         }
+    }
+
+    /// Backend CodeFormer face restoration. V3 Sprint 5 — adds the network
+    /// round-trip step that the V1 chain deferred. We upload the current
+    /// frame, submit a `face_restore` style generation, poll, and load the
+    /// result. The chain's identity-match gate covers anything that drifts.
+    private func applyFaceRestore(image: UIImage) async -> UIImage? {
+        guard let sourceUrl = await PhotoUploadService.shared.tryUpload(image, purpose: "source") else {
+            return nil
+        }
+        do {
+            let job = try await GigaRizzAPIClient.shared.submitGeneration(
+                style: "ai_portrait",
+                model: "face_restore",
+                sourceImageUrl: sourceUrl.absoluteString,
+                sourceImageUrls: [sourceUrl.absoluteString]
+            )
+            for _ in 0..<60 {
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                let status = try await GigaRizzAPIClient.shared.checkGeneration(jobId: job.jobId)
+                if status.status == "completed", let first = status.resultUrls.first,
+                   let url = URL(string: first) {
+                    let (data, _) = try await URLSession.shared.data(from: url)
+                    if let restored = UIImage(data: data) {
+                        return restored
+                    }
+                }
+                if status.status == "failed" { return nil }
+            }
+        } catch {
+            return nil
+        }
+        return nil
     }
 
     /// Subtle skin smooth + warm tone lift via CIFilter, gated by naturalness.

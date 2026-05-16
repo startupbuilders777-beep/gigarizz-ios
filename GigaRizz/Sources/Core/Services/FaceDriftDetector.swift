@@ -43,6 +43,16 @@ enum FaceDriftDetector {
     /// Mouth opening ratio delta for mouthOpenChange.
     private static let mouthOpenDelta: Double = 0.12
 
+    /// Skin variance ratio above which we suspect added age texture.
+    private static let agingTextureUpperRatio: Double = 1.5
+
+    /// Combined-signal aging threshold (lower variance bump + face darkening).
+    private static let agingTextureSoftRatio: Double = 1.2
+
+    /// Face brightness drop that, paired with extra texture, suggests an
+    /// aged-looking output. Sway AI's #1 complaint cluster.
+    private static let agingDarkenThreshold: Double = 0.15
+
     // MARK: - Signal
 
     enum Signal: String, Equatable, Identifiable {
@@ -52,6 +62,10 @@ enum FaceDriftDetector {
         case brightnessShift
         case faceSizeShift
         case mouthOpenChange
+        // V3 Sprint 5 — Age-Faithful Lock. Composite of skin texture amplification
+        // + face darkening. Direct counter to Sway AI's "looks older than actual
+        // age" complaint cluster.
+        case apparentAgeShift
 
         var id: String { rawValue }
 
@@ -63,6 +77,7 @@ enum FaceDriftDetector {
             case .brightnessShift: return "Brightness shifted"
             case .faceSizeShift: return "Face framing changed"
             case .mouthOpenChange: return "Mouth shape changed"
+            case .apparentAgeShift: return "Looks older than your reference"
             }
         }
 
@@ -80,6 +95,8 @@ enum FaceDriftDetector {
                 return "Your face is framed differently. Re-crop or regenerate to match your reference framing."
             case .mouthOpenChange:
                 return "Mouth shape changed (e.g. smile added). Some verification models flag this."
+            case .apparentAgeShift:
+                return "Skin texture and lighting added perceived age. Most common AI photo complaint — re-roll at lower naturalness intensity."
             }
         }
 
@@ -91,6 +108,7 @@ enum FaceDriftDetector {
             case .brightnessShift: return "sun.max.fill"
             case .faceSizeShift: return "rectangle.dashed"
             case .mouthOpenChange: return "mouth.fill"
+            case .apparentAgeShift: return "hourglass"
             }
         }
     }
@@ -192,6 +210,24 @@ enum FaceDriftDetector {
             mouthDelta = delta
             if delta > mouthOpenDelta {
                 signals.append(.mouthOpenChange)
+            }
+        }
+
+        // Apparent-age shift (Sway AI counter). Skin variance ratio above 1.5
+        // means the candidate carries significantly more wrinkle/line detail
+        // than the reference — a near-perfect proxy for "looks older." A
+        // softer ratio bump combined with face darkening also triggers it,
+        // because the dating-photo failure mode is "more wrinkles + heavier
+        // shadows" rather than either alone.
+        if let ratio = oversmoothing {
+            let darkening: Double = {
+                guard let candBright = cand.faceBrightness, let refBright = ref.faceBrightness else { return 0 }
+                return refBright - candBright
+            }()
+            let hardSignal = ratio > agingTextureUpperRatio
+            let softSignal = ratio > agingTextureSoftRatio && darkening > agingDarkenThreshold
+            if hardSignal || softSignal {
+                signals.append(.apparentAgeShift)
             }
         }
 
