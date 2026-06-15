@@ -226,12 +226,7 @@ struct ProfileDiagnosisView: View {
                         .font(.system(size: 14, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
                         .frame(width: 28, height: 28)
-                        .background(
-                            LinearGradient(
-                                colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.hinge],
-                                startPoint: .topLeading, endPoint: .bottomTrailing
-                            )
-                        )
+                        .background(DesignSystem.Gradients.flameCTA)
                         .clipShape(Circle())
                     VStack(alignment: .leading, spacing: 6) {
                         Text(fix.title)

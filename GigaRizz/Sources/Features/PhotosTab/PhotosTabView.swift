@@ -21,6 +21,8 @@ struct PhotosTabView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
+                    magicStudioHero
+
                     if let kit = kitStore.current, !kit.totalPhotos.isZero {
                         kitPhotosSection(kit: kit)
                     } else {
@@ -84,6 +86,41 @@ struct PhotosTabView: View {
 
     // MARK: - Sections
 
+    private var magicStudioHero: some View {
+        NavigationLink {
+            MagicStudioView()
+        } label: {
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.card)
+                    .fill(DesignSystem.Gradients.flameCTA)
+                HStack(spacing: 14) {
+                    Image(systemName: "wand.and.stars")
+                        .font(.system(size: 26, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 52, height: 52)
+                        .background(.white.opacity(0.18))
+                        .clipShape(Circle())
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Magic Studio")
+                            .font(DesignSystem.Typography.title)
+                            .foregroundStyle(.white)
+                        Text("Describe any edit — we plan and do it all, locked to your face.")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.white.opacity(0.9))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 4)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.85))
+                }
+                .padding(16)
+            }
+            .shadow(color: DesignSystem.Colors.flameOrange.opacity(0.4), radius: 16, x: 0, y: 8)
+        }
+        .buttonStyle(.plain)
+    }
+
     private var emptyState: some View {
         V2HeroCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -109,12 +146,7 @@ struct PhotosTabView: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(
-                        LinearGradient(
-                            colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.hinge],
-                            startPoint: .leading, endPoint: .trailing
-                        )
-                    )
+                    .background(DesignSystem.Gradients.flameCTA)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
                 }
             }
@@ -215,6 +247,12 @@ struct PhotosTabView: View {
                 GridItem(.flexible(), spacing: 10),
                 GridItem(.flexible(), spacing: 10)
             ], spacing: 10) {
+                photoToolTile(
+                    title: "Drop Me In",
+                    subtitle: "Any scene you choose",
+                    icon: "person.and.background.dotted",
+                    tint: DesignSystem.Colors.flameOrange
+                ) { AnyView(SceneSwapView()) }
                 if featureFlags.isEnabled(.faceEnhance) {
                     photoToolTile(
                         title: "Face Enhance",

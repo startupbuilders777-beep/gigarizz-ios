@@ -64,7 +64,17 @@ struct GigaRizzApp: App {
     /// App Review also expects core functionality to be usable when account
     /// features are not essential to the first-run experience.
     private var localAuthBypass: Bool {
-        FirebaseApp.app() == nil
+        if FirebaseApp.app() == nil { return true }
+        #if DEBUG
+        // Dev-only: jump straight to MainTabView for simulator design review
+        // and UI tests. Enable with `-dev_bypass_auth 1` launch arg or the
+        // `dev_bypass_auth` UserDefault. Never compiled into Release builds.
+        if ProcessInfo.processInfo.arguments.contains("-dev_bypass_auth")
+            || UserDefaults.standard.bool(forKey: "dev_bypass_auth") {
+            return true
+        }
+        #endif
+        return false
     }
 
     /// When V2 is on, skip the V1 30-step onboarding entirely. The Upgrade tab

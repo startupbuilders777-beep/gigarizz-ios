@@ -169,14 +169,9 @@ struct V2PrimaryButton: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 17)
-            .background(
-                LinearGradient(
-                    colors: [DesignSystem.Colors.flameOrange, DesignSystem.Colors.hinge],
-                    startPoint: .leading, endPoint: .trailing
-                )
-            )
+            .background(DesignSystem.Gradients.flameCTA)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.button))
-            .shadow(color: DesignSystem.Colors.flameOrange.opacity(0.35), radius: 14, x: 0, y: 8)
+            .shadow(color: DesignSystem.Colors.flameOrange.opacity(0.45), radius: 16, x: 0, y: 8)
         }
         .disabled(!isEnabled || isLoading)
         .opacity(isEnabled ? 1 : 0.5)

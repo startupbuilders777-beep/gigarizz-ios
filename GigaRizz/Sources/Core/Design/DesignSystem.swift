@@ -82,6 +82,14 @@ enum DesignSystem {
             startPoint: .topLeading, endPoint: .bottomTrailing
         )
 
+        /// Primary CTA gradient — saturated flame. Bright warm → deep vivid
+        /// orange on the diagonal. Reads premium and energetic; replaces the
+        /// old flame→beige (`.hinge`) blend that looked faded/disabled.
+        static let flameCTA = LinearGradient(
+            colors: [Color(hex: "FF8A4B"), Color(hex: "F5481C")],
+            startPoint: .topLeading, endPoint: .bottomTrailing
+        )
+
         /// Premium gold gradient — for Gold tier.
         static let gold = LinearGradient(
             colors: [Color(hex: "FFD700"), Color(hex: "FFA500"), Color(hex: "FF8C00")],
